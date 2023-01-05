@@ -1,6 +1,7 @@
 import React, { createContext, useState, useRef, useEffect, useCallback } from "react";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
+import { socketEmitters } from "../../constants/emitters";
 
 const SocketContext = createContext(null);
 
@@ -52,9 +53,12 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
         }
         setupWebCam();
 
-        socket.on("me", (id) => setMe(id));
+        socket.on(socketEmitters.ME, (id) => {
+            console.log("emitted ID", id);
+            setMe(id)
+        });
 
-        socket.on("calluser", ({ from, name: callerName, signal }) => {
+        socket.on(socketEmitters.CALLUSER, ({ from, name: callerName, signal }) => {
             setCall({ isReceivedCall: true, from, name: callerName, signal });
         });
 
@@ -90,14 +94,14 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
         });
 
         peer.on("signal", (data) => {
-            socket.emit("calluser", { userToCall: id, signalData: data, from: me, name });
+            socket.emit(socketEmitters.CALLUSER, { userToCall: id, signalData: data, from: me, name });
         });
 
         peer.on("stream", (currStream) => {
             userVideo.current.srcObject = currStream;
         });
 
-        socket.on("callaccepted", (signal) => {
+        socket.on(socketEmitters.CALLACCEPTED, (signal) => {
             setCallAccepted(true);
             peer.signal(signal)
         });

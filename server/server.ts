@@ -7,6 +7,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 //Router
 import Ml5Routes from "./ml5/ml5.routes.config";
+//constants
+import { socketEmitters } from "../constants/emitters"
 
 
 const port = parseInt(process.env.PORT || '3000', 10)
@@ -38,18 +40,18 @@ app.prepare().then(() => {
   io.on('connection', (socket) => {
     console.log('Connection established');
 
-	socket.emit("me", socket.id);
+	socket.emit(socketEmitters.ME, socket.id);
 
 	socket.on("disconnect", () => {
-		socket.broadcast.emit("callended");
+		socket.broadcast.emit(socketEmitters.CALLENDED);
 	})
 
 	socket.on("calluser", ({ userToCall, signal, from, name }) => {
-		io.to(userToCall).emit("calluser", { signal, from, name });
+		io.to(userToCall).emit(socketEmitters.CALLUSER, { signal, from, name });
 	});
 
 	socket.on("answercall", (data) => {
-		io.to(data.to).emit("callaccepted", data.signal);
+		io.to(data.to).emit(socketEmitters.CALLACCEPTED, data.signal);
 	});
   });
 

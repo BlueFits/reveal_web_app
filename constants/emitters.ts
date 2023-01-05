@@ -1,6 +1,6 @@
-export enum IEmitters {
-    DISCONNECT = "disconnect",
+export enum socketEmitters {
+    CALLENDED = "callended",
     CALLUSER = "calluser",
-    ANSWERCALL = "answercall",
+    CALLACCEPTED = "callaccepted",
     ME = "me",
 } 
