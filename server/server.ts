@@ -28,7 +28,7 @@ app.prepare().then(() => {
   server.use(cors());
   server.use(cookieParser());
 
-//   server.use("/ml5", ml5Router);
+  server.use("/ml5", ml5Router);
 
   //Connects NextJS application
   server.all("*", (req: express.Request, res: express.Response) => {

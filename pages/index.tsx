@@ -1,18 +1,21 @@
 import Link from 'next/link'
 
-export default function Home() {
+export default () => {
   return (
-    <ul>
-      <li>
-        <Link href="/a" as="/a">
-          Test deployment
-        </Link>
-      </li>
-      <li>
-        <Link href="/b" as="/b">
-          b
-        </Link>
-      </li>
-    </ul>
+    <div>
+      <p>Video Chat</p>
+    </div>
+    // <ul>
+    //   <li>
+    //     <Link href="/a" as="/a">
+    //       Test deployment
+    //     </Link>
+    //   </li>
+    //   <li>
+    //     <Link href="/b" as="/b">
+    //       b
+    //     </Link>
+    //   </li>
+    // </ul>
   )
 }

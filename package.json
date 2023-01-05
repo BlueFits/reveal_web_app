@@ -6,6 +6,9 @@
     "start": "cross-env NODE_ENV=production nodemon dist/server.js"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.11.3",
     "@types/morgan": "^1.9.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -15,7 +18,9 @@
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "socket.io": "^4.5.4"
+    "simple-peer": "^9.11.1",
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.5.4"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
