@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState, useRef } from "react";
-import Link from 'next/link'
+import { useContext } from "react";
 import { SocketContext } from '../contexts/SocketContext/SocketContext'
 
 export default () => {
@@ -26,17 +25,5 @@ export default () => {
 				<video playsInline muted ref={context.userVideo} autoPlay />
 			} */}
 		</div>
-		// <ul>
-		//   <li>
-		//     <Link href="/a" as="/a">
-		//       Test deployment
-		//     </Link>
-		//   </li>
-		//   <li>
-		//     <Link href="/b" as="/b">
-		//       b
-		//     </Link>
-		//   </li>
-		// </ul>
 	)
 }
