@@ -1,8 +1,8 @@
-import React, { createContext, useState, useRef, useEffect } from "react";
+import React, { createContext, useState, useRef, useEffect, useCallback } from "react";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
 
-const SocketContext = createContext({});
+const SocketContext = createContext(null);
 
 const socket = io("http://localhost:3000");
 
@@ -19,19 +19,38 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
     const [callEnded, setCallEnded] = useState(false);
     const [name, setName]: any = useState("");
 
-    const myVid = useRef();
+    const myVid: any = useRef();
     const userVideo: any = useRef();
     const connectionRef: any = useRef();
 
+    const setupMediaStream = async () => {
+        try {
+            const ms = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+            setStream(ms);
+        } catch (e) {
+            alert("Camera is disabled");
+            throw e;
+        }
+    }
+
     useEffect(() => {
 
-        const permissions = async () => {
-            const currStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            setStream(currStream);
-            (myVid! as any).current.srcObject = currStream;
+        const setupWebCam = async () => {
+            if (!stream) {
+                await setupMediaStream();
+            } else {
+                const videoCurr = myVid.current;
+                if (!videoCurr) return;
+                const video = videoCurr;
+                if (!video.srcObject) {
+                    video.srcObject = stream;
+                }
+            }
         }
-
-        permissions(); 
+        setupWebCam();
 
         socket.on("me", (id) => setMe(id));
 
@@ -39,16 +58,16 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
             setCall({ isReceivedCall: true, from, name: callerName, signal });
         });
 
-    }, []);
+    }, [stream]);
 
     const answerCall = () => {
         setCallAccepted(true);
 
-        const peer = new Peer({ 
+        const peer = new Peer({
             initiator: false,
             trickle: false,
             stream
-         });
+        });
 
         peer.on("signal", (data) => {
             socket.emit("answercall", { signal: data, to: call.from });
@@ -64,7 +83,7 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
     };
 
     const callUser = (id) => {
-        const peer = new Peer({ 
+        const peer = new Peer({
             initiator: true,
             trickle: false,
             stream
@@ -107,7 +126,7 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
             leaveCall,
             answerCall
         }}>
-            { children }
+            {children}
         </SocketContext.Provider>
     );
 };
