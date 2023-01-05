@@ -23,10 +23,10 @@ export default () => {
 					/>
 				</div>
 			}
-			{/* {
+			{
 				context.callAccepted && !context.callEnded &&
 				<video playsInline muted ref={context.userVideo} autoPlay />
-			} */}
+			}
 
 			<div>
 				<form>

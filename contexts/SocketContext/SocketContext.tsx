@@ -5,7 +5,7 @@ import { socketEmitters } from "../../constants/emitters";
 
 const SocketContext = createContext(null);
 
-const socket = io("http://localhost:3000");
+const socket = io();
 
 interface IContextProvider {
     children: any;
@@ -51,8 +51,9 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
                 }
             }
         }
-        setupWebCam();
 
+        setupWebCam();
+        
         socket.on(socketEmitters.ME, (id) => {
             console.log("emitted ID", id);
             setMe(id)
