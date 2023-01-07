@@ -3,4 +3,6 @@ export enum socketEmitters {
     CALLUSER = "calluser",
     CALLACCEPTED = "callaccepted",
     ME = "me",
+    DISCONNECT = "disconnect",
+    ANSWER_CALL = "answercall",
 } 

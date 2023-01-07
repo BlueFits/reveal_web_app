@@ -1,10 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext } from '../contexts/SocketContext/SocketContext'
 
 export default () => {
 	const [IDToCall, setIDToCall] = useState<string>("");
 
 	const context = useContext(SocketContext);
+
+	// useEffect(() => {
+	// 	console.log(context);
+	// }, [context]);
 
 	return (
 		<div>
@@ -25,11 +29,11 @@ export default () => {
 			}
 			{
 				context.callAccepted && !context.callEnded &&
-				<video playsInline muted ref={context.userVideo} autoPlay />
+				<video playsInline ref={context.userVideo} autoPlay />
 			}
 
 			<div>
-				<form>
+				<form onSubmit={e => e.preventDefault()}>
 					<input value={context.name} onChange={(e) => context.setName(e.target.value)}/>
 					<p>{context.me}</p>
 					<input value={IDToCall} onChange={(e) => setIDToCall(e.target.value)}/>
@@ -45,6 +49,14 @@ export default () => {
 						)
 					}
 				</form>
+				{context.call.isReceivedCall && !context.callAccepted && (
+					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+						<h1>{context.call.name} is calling:</h1>
+						<button color="primary" onClick={context.answerCall}>
+							Answer
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	)

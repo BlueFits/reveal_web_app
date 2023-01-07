@@ -12,13 +12,13 @@ interface IContextProvider {
 }
 
 const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
-
     const [stream, setStream] = useState(null);
     const [me, setMe] = useState("");
     const [call, setCall]: any = useState({});
     const [callAccepted, setCallAccepted] = useState(false);
     const [callEnded, setCallEnded] = useState(false);
     const [name, setName]: any = useState("");
+    // const [socket, setSocket] = useState(socketInit);
 
     const myVid: any = useRef();
     const userVideo: any = useRef();
@@ -39,6 +39,8 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
 
     useEffect(() => {
 
+        console.log("myid", me);
+
         const setupWebCam = async () => {
             if (!stream) {
                 await setupMediaStream();
@@ -53,14 +55,16 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
         }
 
         setupWebCam();
+
+        socket.emit("send_id");
         
         socket.on(socketEmitters.ME, (id) => {
             console.log("emitted ID", id);
             setMe(id)
         });
 
-        socket.on(socketEmitters.CALLUSER, ({ from, name: callerName, signal }) => {
-            setCall({ isReceivedCall: true, from, name: callerName, signal });
+        socket.on(socketEmitters.CALLUSER, ({ from, name, signal }) => {
+            setCall({ isReceivedCall: true, from, name, signal });
         });
 
     }, [stream]);
@@ -75,7 +79,8 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
         });
 
         peer.on("signal", (data) => {
-            socket.emit("answercall", { signal: data, to: call.from });
+            console.log("received a signal");
+            socket.emit(socketEmitters.ANSWER_CALL, { signal: data, to: call.from });
         });
 
         peer.on("stream", (currStream) => {
@@ -95,6 +100,7 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
         });
 
         peer.on("signal", (data) => {
+            console.log("recevide a signal on call user");
             socket.emit(socketEmitters.CALLUSER, { userToCall: id, signalData: data, from: me, name });
         });
 
@@ -103,6 +109,7 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
         });
 
         socket.on(socketEmitters.CALLACCEPTED, (signal) => {
+            console.log("call has been accepted by user");
             setCallAccepted(true);
             peer.signal(signal)
         });
