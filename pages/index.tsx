@@ -15,7 +15,7 @@ export default () => {
 			{
 				context.stream &&
 				<div style={{ border: "1px solid red" }}>
-					<p>{ context.name }</p>
+					<p>{context.name}</p>
 					<video
 						height={500}
 						width={500}
@@ -34,9 +34,9 @@ export default () => {
 
 			<div>
 				<form onSubmit={e => e.preventDefault()}>
-					<input value={context.name} onChange={(e) => context.setName(e.target.value)}/>
+					<input value={context.name} onChange={(e) => context.setName(e.target.value)} />
 					<p>{context.me}</p>
-					<input value={IDToCall} onChange={(e) => setIDToCall(e.target.value)}/>
+					<input value={IDToCall} onChange={(e) => setIDToCall(e.target.value)} />
 					{
 						context.callAccepted && !context.callEnded ? (
 							<button onClick={context.leaveCall}>

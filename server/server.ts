@@ -11,13 +11,14 @@ import Ml5Routes from "./ml5/ml5.routes.config";
 import { socketEmitters } from "../constants/emitters"
 
 
-const port = parseInt(process.env.PORT || '3000', 10)
+const port = parseInt(process.env.PORT || '5000', 10)
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 const server: express.Application = express();
 const httpServer = createServer(server)
-const io = new Server(httpServer, { cors: { origin: '*', methods: [ "GET", "POST" ] } });
+
+const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"] } });
 // const ml5Router = new Ml5Routes("Ml5Routes").getRouter;
 
 
@@ -38,7 +39,7 @@ app.prepare().then(() => {
 	});
 
 	io.on('connection', (socket) => {
-		console.log('Connection established');
+		console.log('Connection established for: ', socket.id);
 
 		// socket.emit(socketEmitters.ME, socket.id);
 
@@ -48,7 +49,7 @@ app.prepare().then(() => {
 		})
 
 		socket.on(socketEmitters.DISCONNECT, () => {
-			console.log("User disconnected");
+			console.log("User disconnected: ", socket.id);
 			socket.broadcast.emit(socketEmitters.CALLENDED);
 		})
 
@@ -57,14 +58,9 @@ app.prepare().then(() => {
 		});
 
 		socket.on(socketEmitters.ANSWER_CALL, (data) => {
-			console.log("answer call", data);
 			io.to(data.to).emit(socketEmitters.CALLACCEPTED, data.signal);
 		});
 	});
-
-	server.get("/socket/me", () => {
-		
-	})
 
 	httpServer.listen(port, () => {
 		// our only exception to avoiding console.log(), because we

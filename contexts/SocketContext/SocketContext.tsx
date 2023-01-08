@@ -33,7 +33,7 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
             setStream(ms);
         } catch (e) {
             alert("Camera is disabled");
-            throw e;
+            // throw e;
         }
     }
 
@@ -57,7 +57,7 @@ const ContextProvider: React.FC<IContextProvider> = ({ children }) => {
         setupWebCam();
 
         socket.emit("send_id");
-        
+
         socket.on(socketEmitters.ME, (id) => {
             console.log("emitted ID", id);
             setMe(id)

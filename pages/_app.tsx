@@ -4,7 +4,7 @@ import { ContextProvider } from "../contexts/SocketContext/SocketContext";
 function MyApp({ Component, pageProps }) {
   return (
     <ContextProvider>
-          <Component {...pageProps} />
+      <Component {...pageProps} />
     </ContextProvider>
   );
 }
