@@ -69,7 +69,6 @@ const ContextProvider: React.FC<{
         setupWebCam();
         socket.emit("send_id");
         socket.on(socketEmitters.ME, (id) => {
-            console.log("emitted ID", id);
             setMe(id)
         });
         socket.on(socketEmitters.CALLUSER, ({ from, name, signal }) => {
@@ -85,7 +84,6 @@ const ContextProvider: React.FC<{
         });
 
         peer.on("signal", (data) => {
-            console.log("recevide a signal on call user");
             socket.emit(socketEmitters.CALLUSER, { userToCall: id, signalData: data, from: me, name });
         });
 
@@ -94,7 +92,6 @@ const ContextProvider: React.FC<{
         });
 
         socket.on(socketEmitters.CALLACCEPTED, (signal) => {
-            console.log("call has been accepted by user");
             setCallAccepted(true);
             peer.signal(signal)
         });
@@ -112,7 +109,6 @@ const ContextProvider: React.FC<{
         });
 
         peer.on("signal", (data) => {
-            console.log("received a signal");
             socket.emit(socketEmitters.ANSWER_CALL, { signal: data, to: call.from });
         });
 
