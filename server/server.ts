@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import SocketInit from './utils/sockeinit';
+import SocketInstance from './utils/socketInstance';
 
 //Router
 // import Ml5Routes from "./ml5/ml5.routes.config";
@@ -36,7 +36,7 @@ app.prepare().then(() => {
 		return handle(req, res);
 	});
 
-	new SocketInit(io);
+	new SocketInstance(io);
 
 	httpServer.listen(port, () => {
 		// our only exception to avoiding console.log(), because we
