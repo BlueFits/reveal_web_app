@@ -5,19 +5,18 @@ import cors from "cors";
 import morgan from "morgan";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import SocketInit from './utils/sockeinit';
+
 //Router
-import Ml5Routes from "./ml5/ml5.routes.config";
-//constants
-import { socketEmitters } from "../constants/emitters"
+// import Ml5Routes from "./ml5/ml5.routes.config";
 
 
-const port = parseInt(process.env.PORT || '5000', 10)
+const port = parseInt(process.env.PORT || '3000', 10)
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 const server: express.Application = express();
 const httpServer = createServer(server)
-
 const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"] } });
 // const ml5Router = new Ml5Routes("Ml5Routes").getRouter;
 
@@ -33,34 +32,11 @@ app.prepare().then(() => {
 
 	// server.use("/ml5", ml5Router);
 
-
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);
 	});
 
-	io.on('connection', (socket) => {
-		console.log('Connection established for: ', socket.id);
-
-		// socket.emit(socketEmitters.ME, socket.id);
-
-		socket.on("send_id", () => {
-			console.log("This emiited");
-			socket.emit(socketEmitters.ME, socket.id)
-		})
-
-		socket.on(socketEmitters.DISCONNECT, () => {
-			console.log("User disconnected: ", socket.id);
-			socket.broadcast.emit(socketEmitters.CALLENDED);
-		})
-
-		socket.on(socketEmitters.CALLUSER, ({ userToCall, signalData, from, name }) => {
-			io.to(userToCall).emit(socketEmitters.CALLUSER, { signal: signalData, from, name });
-		});
-
-		socket.on(socketEmitters.ANSWER_CALL, (data) => {
-			io.to(data.to).emit(socketEmitters.CALLACCEPTED, data.signal);
-		});
-	});
+	new SocketInit(io);
 
 	httpServer.listen(port, () => {
 		// our only exception to avoiding console.log(), because we
