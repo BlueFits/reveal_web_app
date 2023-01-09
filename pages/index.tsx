@@ -1,14 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { SocketContext } from '../contexts/SocketContext/SocketContext'
+import { SocketContext, ISocketContextValues } from '../contexts/SocketContext/SocketContext'
 
 export default () => {
 	const [IDToCall, setIDToCall] = useState<string>("");
 
-	const context = useContext(SocketContext);
-
-	// useEffect(() => {
-	// 	console.log(context);
-	// }, [context]);
+	const context: ISocketContextValues = useContext(SocketContext);
 
 	return (
 		<div>
