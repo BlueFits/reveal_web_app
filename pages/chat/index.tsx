@@ -13,16 +13,16 @@ const Index = () => {
         <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
             <VideoPreview />
             <VideoPreview />
-            <Container className="absolute flex flex-col bottom-10">
+            <Container className="absolute flex flex-col bottom-5">
                 <ButtonContainer>
-                    <Button className="rounded-full" sx={{ width: 100 }} size="large" variant="outlined">Skip</Button>
+                    <Button sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </ButtonContainer>
                 <ButtonContainer>
-                    <Button className="rounded-full" style={{ backgroundColor: "#0971f1", color: "#fff", width: 100 }} size="large" variant="contained">Reveal</Button>
+                    <Button style={{ backgroundColor: "#0971f1", color: "#fff", width: 100, borderRadius: 9999 }} size="large" variant="contained">Reveal</Button>
                 </ButtonContainer>
                 <div className="flex justify-between">
-                    <Button className="rounded-full" size="large" variant="outlined">Leave</Button>
-                    <Button className="rounded-full" style={{ backgroundColor: "green", color: "#fff", width: 100 }} size="large" variant="contained">Match</Button>
+                    <Button sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
+                    <Button style={{ backgroundColor: "green", color: "#fff", width: 100, borderRadius: 9999 }} size="large" variant="contained">Match</Button>
                 </div>
             </Container>
         </Container>
