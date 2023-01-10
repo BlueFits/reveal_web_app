@@ -17,7 +17,7 @@ export default () => {
 					Enter a topic
 				</Typography>
 				<TextField fullWidth label="preference" variant="outlined" />
-				<Button color="secondary" className="my-4" variant="outlined">Start</Button>
+				<Button color="secondary" sx={{ margin: "15px 0" }} variant="outlined">Start</Button>
 			</Container>
 		</Container>
 	)
