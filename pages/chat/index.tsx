@@ -10,7 +10,7 @@ const Index = () => {
     );
 
     return (
-        <Container className="flex justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
+        <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
             <VideoPreview />
             <VideoPreview />
             <Container className="absolute flex flex-col bottom-10">

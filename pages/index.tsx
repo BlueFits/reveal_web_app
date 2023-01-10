@@ -2,7 +2,16 @@ import { Container, Typography, TextField, Button } from "@mui/material"
 
 export default () => {
 	return (
-		<Container className="flex justify-center items-center h-screen flex-col" maxWidth="lg">
+		<Container
+			sx={{
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				flexDirection: "coloumn"
+			}}
+			className="h-screen"
+			maxWidth="lg"
+		>
 			<Container>
 				<Typography variant="h5" gutterBottom>
 					Enter a topic
