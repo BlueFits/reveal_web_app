@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import tempUsersDao from "../daos/tempUsers.dao";
 
-type preference = Array<string>;
+type preferences = Array<string>;
 
 class TempUsersController {
     async listUsers(req: Request, res: Response) {
@@ -12,9 +12,18 @@ class TempUsersController {
         res.status(200).send(tempUsers)
     }
 
+    async getTempUserWithSamePref(req: Request, res: Response) {
+        const preferenceArr: preferences = req.body.preference;
+        //If preference contains at least one value from preferenceArr
+        const tempUsers = await tempUsersDao.getTempUsers({
+            filter: { preference: { $in: preferenceArr } }
+        })
+        res.status(200).send(tempUsers);
+    }
+
     async getTempUserByID(req: Request, res: Response) {
-        const user = await tempUsersDao.getUserByID(req.body.id)
-        res.status(200).send(user)
+        const tempUser = await tempUsersDao.getUserByID(req.body.id)
+        res.status(200).send(tempUser)
     }
 
     async createUser(req: Request, res: Response) {
