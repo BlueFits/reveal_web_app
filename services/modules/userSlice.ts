@@ -23,7 +23,7 @@ export interface IUserReducer {
     username: string,
     socketID: string;
     preference: Array<string>;
-    isReady?: boolean;
+    // isReady?: boolean;
 }
 
 const initialState: IUserReducer = {
@@ -31,7 +31,7 @@ const initialState: IUserReducer = {
     username: null,
     socketID: null,
     preference: null,
-    isReady: false,
+    // isReady: false,
 };
 
 //Thunks
@@ -74,9 +74,9 @@ const userSlice = createSlice({
         setSocketID: (state, action: { payload: string }) => {
             state.socketID = action.payload;
         },
-        setIsReady: (state, action: { payload: boolean }) => {
-            state.isReady = action.payload;
-        },
+        // setIsReady: (state, action: { payload: boolean }) => {
+        //     state.isReady = action.payload;
+        // },
     },
     extraReducers: (builder) => {
         builder.addCase(createTempUser.fulfilled, (state, action: { payload: ICreateTempUser }) => {
@@ -97,7 +97,7 @@ export const {
     setPreference,
     setUsername,
     setSocketID,
-    setIsReady
+    // setIsReady
 } = userSlice.actions;
 
 export default userSlice;

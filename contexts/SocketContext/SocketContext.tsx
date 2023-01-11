@@ -62,8 +62,6 @@ const ContextProvider: React.FC<{
     }
 
     useEffect(() => {
-        if (!userReducer.isReady) return;
-
         const setupWebCam = async () => {
             if (!stream) {
                 await setupMediaStream();
@@ -87,10 +85,11 @@ const ContextProvider: React.FC<{
             }));
         });
         socket.on(socketEmitters.CALLUSER, ({ from, name, signal }) => {
+            console.log("Setting call");
             setCall({ isReceivedCall: true, from, name, signal });
         });
 
-    }, [stream, userReducer.isReady]);
+    }, [stream]);
 
     const callUser = (id) => {
         const peer = new Peer({
@@ -100,6 +99,7 @@ const ContextProvider: React.FC<{
         });
 
         peer.on("signal", (data) => {
+            console.log("signal emitted");
             socket.emit(socketEmitters.CALLUSER, { userToCall: id, signalData: data, from: me, name });
         });
 
@@ -122,7 +122,7 @@ const ContextProvider: React.FC<{
         const peer = new Peer({
             initiator: false,
             trickle: false,
-            stream
+            stream: stream
         });
 
         peer.on("signal", (data) => {
@@ -146,7 +146,7 @@ const ContextProvider: React.FC<{
         window.location.reload();
     };
 
-    const returnValue: Partial<ISocketContextValues> = !userReducer.isReady ? { isReady: false } : {
+    const returnValue: Partial<ISocketContextValues> = {
         me,
         stream,
         call,
@@ -159,7 +159,6 @@ const ContextProvider: React.FC<{
         callUser,
         leaveCall,
         answerCall,
-        isReady: true,
     };
 
     return (

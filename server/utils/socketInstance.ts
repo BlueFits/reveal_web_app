@@ -20,7 +20,7 @@ export default class SocketInit {
             })
 
             socket.on(socketEmitters.CALLUSER, ({ userToCall, signalData, from, name }) => {
-                console.log("User calling");
+                console.log("User calling:", userToCall);
                 io.to(userToCall).emit(socketEmitters.CALLUSER, { signal: signalData, from, name });
             });
 
