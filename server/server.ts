@@ -9,6 +9,7 @@ import SocketInstance from './utils/socketInstance';
 
 //Router
 // import Ml5Routes from "./ml5/ml5.routes.config";
+import TempUserRoutes from "./tempUser/tempUsers.routes.config";
 
 
 const port = parseInt(process.env.PORT || '3000', 10)
@@ -19,6 +20,7 @@ const server: express.Application = express();
 const httpServer = createServer(server)
 const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"] } });
 // const ml5Router = new Ml5Routes("Ml5Routes").getRouter;
+const tempUserRouter = new TempUserRoutes("TempUserRoutes").getRouter;
 
 
 app.prepare().then(() => {
@@ -31,6 +33,7 @@ app.prepare().then(() => {
 	server.use(cookieParser());
 
 	// server.use("/ml5", ml5Router);
+	server.use("/temp_user", tempUserRouter);
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);
@@ -42,8 +45,7 @@ app.prepare().then(() => {
 		// our only exception to avoiding console.log(), because we
 		// always want to know when the server is done starting up
 		console.log(
-			`> Server listening at http://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV
-			}`
+			`> Server listening at http://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV}`
 		)
 	})
 })
