@@ -27,7 +27,7 @@ export interface ISocketContextValues {
     callEnded: boolean;
     callUser: (string) => void;
     leaveCall: MouseEventHandler<HTMLButtonElement>;
-    answerCall: MouseEventHandler<HTMLButtonElement>;
+    answerCall: () => void;
     isReady: boolean;
 }
 

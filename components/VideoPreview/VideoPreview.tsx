@@ -4,9 +4,10 @@ import { Container, Avatar } from "@mui/material"
 interface IVideoPreview {
     username: string;
     videoRef?: MutableRefObject<HTMLVideoElement>;
+    isMuted?: boolean;
 }
 
-const VideoPreview: React.FC<IVideoPreview> = ({ username, videoRef = null }) => {
+const VideoPreview: React.FC<IVideoPreview> = ({ username, videoRef = null, isMuted = true }) => {
 
     const [localRef, setLocalRef] = useState(videoRef);
 
@@ -24,7 +25,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({ username, videoRef = null }) =>
             <video
                 style={{ background: "black", height: "100%", width: "100%", objectFit: "cover" }}
                 playsInline
-                muted
+                muted={isMuted}
                 autoPlay
                 ref={localRef}
             />
