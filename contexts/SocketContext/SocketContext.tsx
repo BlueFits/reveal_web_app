@@ -28,6 +28,7 @@ export interface ISocketContextValues {
     callUser: (string) => void;
     leaveCall: MouseEventHandler<HTMLButtonElement>;
     answerCall: MouseEventHandler<HTMLButtonElement>;
+    isReady: boolean;
 }
 
 const ContextProvider: React.FC<{
@@ -95,7 +96,7 @@ const ContextProvider: React.FC<{
         const peer = new Peer({
             initiator: true,
             trickle: false,
-            stream
+            stream,
         });
 
         peer.on("signal", (data) => {
@@ -103,6 +104,7 @@ const ContextProvider: React.FC<{
         });
 
         peer.on("stream", (currStream) => {
+            console.log("setting userVideoStrream after sending");
             userVideo.current.srcObject = currStream;
         });
 
@@ -124,10 +126,12 @@ const ContextProvider: React.FC<{
         });
 
         peer.on("signal", (data) => {
+            console.log("sending connection after answering");
             socket.emit(socketEmitters.ANSWER_CALL, { signal: data, to: call.from });
         });
 
         peer.on("stream", (currStream) => {
+            console.log("setting userVideoStrream after receiving");
             userVideo.current.srcObject = currStream;
         });
 
@@ -142,7 +146,7 @@ const ContextProvider: React.FC<{
         window.location.reload();
     };
 
-    const returnValue: ISocketContextValues = !userReducer.isReady ? null : {
+    const returnValue: Partial<ISocketContextValues> = !userReducer.isReady ? { isReady: false } : {
         me,
         stream,
         call,
@@ -154,7 +158,8 @@ const ContextProvider: React.FC<{
         callEnded,
         callUser,
         leaveCall,
-        answerCall
+        answerCall,
+        isReady: true,
     };
 
     return (

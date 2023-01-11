@@ -14,6 +14,7 @@ class TempUsersController {
 
     async getTempUserWithSamePref(req: Request, res: Response) {
         const preferenceArr: preferences = req.body.preference;
+        console.log(preferenceArr);
         //If preference contains at least one value from preferenceArr
         const tempUsers = await tempUsersDao.getTempUsers({
             filter: { preference: { $in: preferenceArr } }

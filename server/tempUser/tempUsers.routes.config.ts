@@ -22,20 +22,19 @@ export default class TempUserRoutes extends CommonRoutesConfig {
                 tempUsersController.createUser
             );
 
+        this.router.route("/preference_match")
+            .post(
+                body("preference").exists().isArray(),
+                BodyValidationMiddleware.verifyBodyFieldsErrors,
+                tempUsersController.getTempUserWithSamePref
+            );
+
         this.router.param("tempUserID", tempUsersMiddleware.extractUserId);
 
         this.router.route("/:tempUserID")
             .all(tempUsersMiddleware.validateUserExists)
             .get(tempUsersController.getTempUserByID)
             .delete(tempUsersController.removeUser)
-
-        this.router.route("/:tempUserID/preference_match")
-            .all(tempUsersMiddleware.validateUserExists)
-            .post(
-                body("preference").exists().isArray(),
-                BodyValidationMiddleware.verifyBodyFieldsErrors,
-                tempUsersController.getTempUserWithSamePref
-            );
 
     }
 };

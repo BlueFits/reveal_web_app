@@ -5,8 +5,16 @@ enum apiErrors {
     socketIdExsists = "SocketID already exists",
 }
 
+interface apiUser {
+    _id: string;
+    preference: Array<string>;
+    username: string;
+    socketID: string;
+    __V: number
+}
+
 interface ICreateTempUser extends Partial<IUserReducer> {
-    err?: { msg: apiErrors.socketIdExsists },
+    err?: apiErrors.socketIdExsists,
     _id: string;
 }
 
@@ -25,11 +33,6 @@ const initialState: IUserReducer = {
     preference: null,
     isReady: false,
 };
-
-const extractUser = (data) => {
-    const { username, preference, socketID, _id: id } = data;
-    return { username, preference, socketID, id };
-}
 
 //Thunks
 export const createTempUser: any = createAsyncThunk("user/createTemp", async (data: any) => {
@@ -58,31 +61,6 @@ export const createTempUser: any = createAsyncThunk("user/createTemp", async (da
     }
 });
 
-export const gen25TempUserPool: any = createAsyncThunk("usaer/gen25TempUserPool", async (data: any) => {
-    try {
-        const tempUsers = await fetch(serverURL + `/api/${data.id}/preference_match`, {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type:": "application/json",
-            },
-            body: JSON.stringify({
-                preference: data.preference,
-            }),
-        });
-        if (!tempUsers.ok) {
-            const errData = await tempUsers.json();
-            return { err: errData.error };
-        } else {
-            const resData = await tempUsers.json();
-            return resData;
-        }
-    } catch (err) {
-        throw err;
-    }
-});
-
-// Then, handle actions in your reducers:
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -103,17 +81,15 @@ const userSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(createTempUser.fulfilled, (state, action: { payload: ICreateTempUser }) => {
             //If possible fix the socket duplication in the future
-            if (action.payload.err.msg === apiErrors.socketIdExsists) return;
+            if (action.payload.err === apiErrors.socketIdExsists) return;
             //CAUTION - setting state to action payload like so state = {} leaves out isReady avoid if possible
+            console.log("setting temp user reducer to", action.payload);
             const { username, preference, socketID, _id } = action.payload;
             state.username = username;
             state.preference = preference;
             state.socketID = socketID;
             state.id = _id;
         })
-        builder.addCase(gen25TempUserPool, (state, action: { payload: Array<string> }) => {
-
-        });
     }
 })
 

@@ -1,4 +1,4 @@
-import { MutableRefObject } from "react";
+import { MutableRefObject, useEffect, useState } from "react";
 import { Container, Avatar } from "@mui/material"
 
 interface IVideoPreview {
@@ -7,6 +7,14 @@ interface IVideoPreview {
 }
 
 const VideoPreview: React.FC<IVideoPreview> = ({ username, videoRef = null }) => {
+
+    const [localRef, setLocalRef] = useState(videoRef);
+
+    useEffect(() => {
+        console.log(`video reference for ${username}`, videoRef);
+        setLocalRef(videoRef)
+    }, [videoRef]);
+
     return (
         <Container disableGutters className="flex-1 relative">
             <div className="p-2 absolute bg-black/50 w-2/4 flex rounded-full items-center" style={{ top: 30, left: 10 }}>
@@ -18,7 +26,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({ username, videoRef = null }) =>
                 playsInline
                 muted
                 autoPlay
-                ref={videoRef}
+                ref={localRef}
             />
         </Container>
     );

@@ -13,14 +13,13 @@ export default () => {
 	const [hasErrors, setHasErrors] = useState<boolean>(false);
 
 
-	const onStartHandler = () => {
+	const onStartHandler = async () => {
 		//Basic Sanitation
 		if (username.length <= 0 || preference.length <= 0) {
 			setHasErrors(true);
 			return;
 		}
 		const preferenceArr: Array<string> = preference.replace(/ /g, '').split(",");
-		console.log(username, preferenceArr);
 		dispatch(setUsername(username));
 		dispatch(setPreference(preferenceArr));
 		router.push("/chat");
