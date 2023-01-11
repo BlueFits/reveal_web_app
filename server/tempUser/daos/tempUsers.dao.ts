@@ -21,7 +21,7 @@ class TempUsersDao {
             "expireAt": { type: Date, expires: "12h" },
         });
         const newTempUser = await tempUser.save().catch(err => err);
-        return newTempUser._id;
+        return newTempUser;
     }
 
     async getUserByID(userID: string) {
@@ -55,6 +55,14 @@ class TempUsersDao {
 
     async removeTempUserByID(id: string) {
         return this.TempUser.deleteOne({ _id: id }).exec();
+    }
+
+    async removeTempUserBySocketID(socketID: string) {
+        return this.TempUser.deleteOne({ socketID: socketID }).exec();
+    }
+
+    async getTempUserBySocketID(socketID: string) {
+        return this.TempUser.findOne({ socketID }).exec();
     }
 };
 

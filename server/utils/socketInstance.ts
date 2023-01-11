@@ -1,4 +1,5 @@
 import { socketEmitters } from "../../constants/emitters";
+import tempUsersDao from "../tempUser/daos/tempUsers.dao";
 
 export default class SocketInit {
     constructor(io: any) {
@@ -11,7 +12,10 @@ export default class SocketInit {
                 socket.emit(socketEmitters.ME, socket.id)
             })
 
-            socket.on(socketEmitters.DISCONNECT, () => {
+            socket.on(socketEmitters.DISCONNECT, async () => {
+                console.log("User disconnected:", socket.id);
+                const removedTempUser = await tempUsersDao.removeTempUserBySocketID(socket.id);
+                console.log("removed user by socketID:", removedTempUser);
                 socket.broadcast.emit(socketEmitters.CALLENDED);
             })
 
@@ -24,4 +28,4 @@ export default class SocketInit {
             });
         });
     }
-}
+};

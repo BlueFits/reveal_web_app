@@ -1,7 +1,10 @@
-import React, { createContext, useState, useRef, useEffect, MutableRefObject, MouseEventHandler } from "react";
+import React, { createContext, useState, useRef, useEffect, MutableRefObject, MouseEventHandler, useCallback } from "react";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
+import { useSelector, useDispatch } from "react-redux";
+import { IReducer } from "../../services/store";
+import { IUserReducer, createTempUser } from "../../services/modules/userSlice";
 
 const SocketContext = createContext(null);
 
@@ -30,6 +33,10 @@ export interface ISocketContextValues {
 const ContextProvider: React.FC<{
     children: JSX.Element | JSX.Element[] | string | string[];
 }> = ({ children }) => {
+
+    const dispatch = useDispatch();
+    const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
+
     const [stream, setStream] = useState(null);
     const [me, setMe] = useState("");
     const [call, setCall]: any = useState({});
@@ -54,6 +61,8 @@ const ContextProvider: React.FC<{
     }
 
     useEffect(() => {
+        if (!userReducer.isReady) return;
+
         const setupWebCam = async () => {
             if (!stream) {
                 await setupMediaStream();
@@ -70,11 +79,17 @@ const ContextProvider: React.FC<{
         socket.emit("send_id");
         socket.on(socketEmitters.ME, (id) => {
             setMe(id)
+            dispatch(createTempUser({
+                username: userReducer.username,
+                socketID: id,
+                preference: userReducer.preference,
+            }));
         });
         socket.on(socketEmitters.CALLUSER, ({ from, name, signal }) => {
             setCall({ isReceivedCall: true, from, name, signal });
         });
-    }, [stream]);
+
+    }, [stream, userReducer.isReady]);
 
     const callUser = (id) => {
         const peer = new Peer({
@@ -127,7 +142,7 @@ const ContextProvider: React.FC<{
         window.location.reload();
     };
 
-    const returnValue: ISocketContextValues = {
+    const returnValue: ISocketContextValues = !userReducer.isReady ? null : {
         me,
         stream,
         call,

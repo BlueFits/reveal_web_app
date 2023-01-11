@@ -8,6 +8,19 @@ class UsersMiddleware {
     //Validation middleware 
     // Here we need to use an arrow function to bind `this` correctly
 
+    async validateSameSocketIdDoesntExist(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) {
+        const user = await tempUsersDao.getTempUserBySocketID(req.body.socketID);
+        if (user) {
+            res.status(400).send({ error: `SocketID already exists` });
+        } else {
+            next();
+        }
+    }
+
     async validateUserExists(
         req: express.Request,
         res: express.Response,

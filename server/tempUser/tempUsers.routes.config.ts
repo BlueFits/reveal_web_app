@@ -18,6 +18,7 @@ export default class TempUserRoutes extends CommonRoutesConfig {
                 body("username").isString(),
                 body("socketID").exists().isString(),
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
+                tempUsersMiddleware.validateSameSocketIdDoesntExist,
                 tempUsersController.createUser
             );
 

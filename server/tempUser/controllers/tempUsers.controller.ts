@@ -27,8 +27,8 @@ class TempUsersController {
     }
 
     async createUser(req: Request, res: Response) {
-        const userID = await tempUsersDao.addTempUser(req.body)
-        res.status(201).send({ id: userID });
+        const tempUser = await tempUsersDao.addTempUser(req.body)
+        res.status(201).send(tempUser);
     }
 
     async removeUser(req: Request, res: Response) {

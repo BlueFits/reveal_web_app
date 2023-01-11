@@ -31,7 +31,7 @@ app.prepare().then(() => {
 	server.use(cors());
 	server.use(cookieParser());
 
-	server.use("/temp_user", tempUserRouter);
+	server.use("/api/temp_user", tempUserRouter);
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);

@@ -1,6 +1,15 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import userSlice, { IUserReducer } from './modules/userSlice';
 
-const reducer = combineReducers({});
+export interface IReducer {
+  user: any,
+}
+
+const reducerObject: IReducer = {
+  user: userSlice.reducer,
+};
+
+const reducer = combineReducers(reducerObject);
 
 export const store = configureStore({
   reducer,
