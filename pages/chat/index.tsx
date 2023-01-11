@@ -21,8 +21,9 @@ const Index = () => {
             return;
         }
         dispatch(setIsReady(true))
-        console.log(context && context.myVid);
         console.log("reducer file", userReducer);
+
+
     }, [context, userReducer]);
 
     const ButtonContainer = ({ children }) => (
