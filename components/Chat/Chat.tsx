@@ -42,8 +42,7 @@ const Chat = () => {
         const randomIndex = Math.floor(Math.random() * (tempUserPoolReducer.tempUsers.length));
         const userToCall = tempUserPoolReducer.tempUsers[randomIndex]
         if (userToCall && context.stream) {
-            console.log("stream before otherUser", context.stream);
-            setOtherUser(userToCall);
+            context.callUser(userToCall.socketID);
         }
     }, [tempUserPoolReducer, context.stream]);
 
@@ -90,9 +89,6 @@ const Chat = () => {
                     <Button style={{ backgroundColor: "green", color: "#fff", width: 100, borderRadius: 9999 }} size="large" variant="contained">Match</Button>
                 </div>
             </Container>
-            {
-                otherUser && <button onClick={() => context.callUser(otherUser.socketID)}>Start</button>
-            }
             {context.call.isReceivedCall && !context.callAccepted && (
                 <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                     <h1>{context.call.name} is connecting:</h1>
