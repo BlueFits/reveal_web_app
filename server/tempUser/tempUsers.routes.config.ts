@@ -1,6 +1,7 @@
 import { CommonRoutesConfig } from "../common/common.routes.config";
 import express from "express";
 import tempUsersController from "./controllers/tempUsers.controller";
+import tempUsersMiddleware from "./middleware/tempUsers.middleware";
 import { body } from "express-validator";
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 
@@ -19,5 +20,12 @@ export default class TempUserRoutes extends CommonRoutesConfig {
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
                 tempUsersController.createUser
             );
+
+        this.router.param("tempUserID", tempUsersMiddleware.extractUserId);
+
+        this.router.route("/:tempUserID")
+            .all(tempUsersMiddleware.validateUserExists)
+            .get(tempUsersController.getTempUserByID)
+            .delete(tempUsersController.removeUser)
     }
 };

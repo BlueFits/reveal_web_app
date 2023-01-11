@@ -8,7 +8,6 @@ import { Server } from "socket.io";
 import SocketInstance from './utils/socketInstance';
 
 //Router
-// import Ml5Routes from "./ml5/ml5.routes.config";
 import TempUserRoutes from "./tempUser/tempUsers.routes.config";
 
 
@@ -32,7 +31,6 @@ app.prepare().then(() => {
 	server.use(cors());
 	server.use(cookieParser());
 
-	// server.use("/ml5", ml5Router);
 	server.use("/temp_user", tempUserRouter);
 
 	server.all("*", (req: express.Request, res: express.Response) => {
