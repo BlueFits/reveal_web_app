@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serverURL } from "../../config/Server";
 
-interface apiTempUser {
+export interface apiTempUser {
     _id: string;
     preference: Array<string>;
     username: string;

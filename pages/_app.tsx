@@ -1,5 +1,4 @@
 import "../styles/global.css";
-import { ContextProvider } from "../contexts/SocketContext/SocketContext";
 import { Provider } from "react-redux";
 import { store } from "../services/store";
 import Head from "next/head";
@@ -61,11 +60,9 @@ function MyApp({ Component, pageProps }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Provider store={store}>
-        <ContextProvider>
-          <ThemeProvider theme={theme}>
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </ContextProvider>
+        <ThemeProvider theme={theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
       </Provider>
     </>
   );
