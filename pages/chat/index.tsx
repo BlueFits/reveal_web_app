@@ -33,7 +33,7 @@ const Index = () => {
     const [callAccepted, setCallAccepted] = useState<boolean>(false);
 
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
-    const userVideo: MutableRefObject<any> = useRef();
+    const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
 
     //Camera Setup
@@ -67,7 +67,7 @@ const Index = () => {
             console.log("Receving a call", from, name);
             setCall({ isReceivedCall: true, from, name, signal });
         });
-    });
+    }, []);
 
     //Define methods for calling 
     const callUser = (id) => {
@@ -89,6 +89,7 @@ const Index = () => {
         socket.on(socketEmitters.CALLACCEPTED, (signal) => {
             setCallAccepted(true);
             peer.signal(signal)
+            socket.off(socketEmitters.CALLACCEPTED,)
         });
 
         connectionRef.current = peer;
@@ -158,6 +159,7 @@ const Index = () => {
     const skipHandler = () => {
         setCall({});
         setCallAccepted(false)
+        connectionRef.current.destroy();
         setTimeout(() => {
             const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
             callUser(userToCall.socketID);
