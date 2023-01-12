@@ -19,6 +19,7 @@ class MongooseService {
     }
 
     connectWithRetry() {
+        mongoose.set('strictQuery', false)
         mongoose
             .connect(this.mongoDB, this.mongooseOptions)
             .then(() => {

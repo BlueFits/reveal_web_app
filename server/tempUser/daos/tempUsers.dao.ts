@@ -1,5 +1,5 @@
 import mongooseService from '../../common/services/mongoose.service';
-import { CreateTempUserDTO } from "../dto/create.tempUser.dto";
+import { CreateTempUserDTO, tempUserStatus } from "../dto/create.tempUser.dto";
 import { PatchTempUserDTO } from '../dto/patch.tempUser.dto copy';
 import { PutTempUserDTO } from '../dto/put.tempUser.dto';
 
@@ -9,6 +9,7 @@ class TempUsersDao {
         preference: [String],
         username: String,
         socketID: { type: String, required: true },
+        status: { type: String, default: tempUserStatus.WAITING },
     });
 
     TempUser = mongooseService.mongoose.model('TempUsers', this.tempUserSchema);

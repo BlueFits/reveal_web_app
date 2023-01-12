@@ -2,7 +2,7 @@ import { useEffect, useState, MutableRefObject, useRef } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
-import { IUserReducer, setIsReady, createTempUser } from "../../services/modules/userSlice";
+import { IUserReducer, createTempUser } from "../../services/modules/userSlice";
 import { gen25TempUserPool, ITempUserPool } from "../../services/modules/tempUserPoolSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import { useRouter } from "next/router";
@@ -158,7 +158,7 @@ const Index = () => {
 
     const skipHandler = () => {
         setCall({});
-        setCallAccepted(false)
+        setCallAccepted(false);
         connectionRef.current.destroy();
         setTimeout(() => {
             const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);

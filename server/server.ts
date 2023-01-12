@@ -11,12 +11,12 @@ import SocketInstance from './utils/socketInstance';
 import TempUserRoutes from "./tempUser/tempUsers.routes.config";
 
 
-const port = parseInt(process.env.PORT || '3000', 10)
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
+const port = parseInt(process.env.PORT || '3000', 10);
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev });
+const handle = app.getRequestHandler();
 const server: express.Application = express();
-const httpServer = createServer(server)
+const httpServer = createServer(server);
 const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"] } });
 // const ml5Router = new Ml5Routes("Ml5Routes").getRouter;
 const tempUserRouter = new TempUserRoutes("TempUserRoutes").getRouter;
