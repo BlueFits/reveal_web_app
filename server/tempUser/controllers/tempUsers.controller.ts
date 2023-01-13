@@ -18,7 +18,7 @@ class TempUsersController {
         console.log(preferenceArr);
         //If preference contains at least one value from preferenceArr
         const tempUsers = await tempUsersDao.getTempUsers({
-            filter: { preference: { $in: preferenceArr }, status: tempUserStatus.WAITING   }
+            filter: { preference: { $in: preferenceArr }, status: tempUserStatus.WAITING }
         })
         res.status(200).send(tempUsers);
     }
@@ -37,6 +37,11 @@ class TempUsersController {
         const removedUser = await tempUsersDao.removeTempUserByID(req.body.id);
         /* Send a 204 no content */
         res.status(204).send(removedUser);
+    }
+
+    async patch(req: Request, res: Response) {
+        await tempUsersDao.updateTempUserByID(req.body.id, req.body);
+        res.status(204).send();
     }
 };
 

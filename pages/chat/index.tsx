@@ -89,7 +89,7 @@ const Index = () => {
         socket.on(socketEmitters.CALLACCEPTED, (signal) => {
             setCallAccepted(true);
             peer.signal(signal)
-            socket.off(socketEmitters.CALLACCEPTED,)
+            socket.off(socketEmitters.CALLACCEPTED)
         });
 
         connectionRef.current = peer;

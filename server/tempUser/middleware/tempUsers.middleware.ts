@@ -8,6 +8,14 @@ class UsersMiddleware {
     //Validation middleware 
     // Here we need to use an arrow function to bind `this` correctly
 
+    async patchOnlyStatus(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) {
+        !req.body.status ? res.status(403).send("This route is only allowed to change status") : next();
+    }
+
     async validateSameSocketIdDoesntExist(
         req: express.Request,
         res: express.Response,

@@ -26,6 +26,7 @@ export default class SocketInit {
             socket.on(socketEmitters.ANSWER_CALL, (data) => {
                 console.log("User answer call");
                 io.to(data.to).emit(socketEmitters.CALLACCEPTED, data.signal);
+                /* Switch from waiting to in-call */
             });
         });
     }

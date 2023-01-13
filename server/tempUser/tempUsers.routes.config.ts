@@ -35,6 +35,10 @@ export default class TempUserRoutes extends CommonRoutesConfig {
             .all(tempUsersMiddleware.validateUserExists)
             .get(tempUsersController.getTempUserByID)
             .delete(tempUsersController.removeUser)
+            .patch(
+                tempUsersMiddleware.patchOnlyStatus,
+                tempUsersController.patch
+            );
 
     }
 };

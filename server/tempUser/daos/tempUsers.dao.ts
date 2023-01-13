@@ -14,7 +14,7 @@ class TempUsersDao {
 
     TempUser = mongooseService.mongoose.model('TempUsers', this.tempUserSchema);
 
-    constructor() { console.log("Created new instance of TempUser") }
+    constructor() { console.log("Initializing TempUser") }
 
     async addTempUser(userFields: CreateTempUserDTO) {
         const tempUser = new this.TempUser({
