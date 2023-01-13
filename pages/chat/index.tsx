@@ -117,6 +117,8 @@ const Index = () => {
         peer.signal(call.signal);
 
         connectionRef.current = peer;
+
+        /* Change status to incall once peer is established */
     };
 
 
