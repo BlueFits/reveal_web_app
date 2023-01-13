@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import tempUsersDao from "../daos/tempUsers.dao";
+import { tempUserStatus } from "../dto/create.tempUser.dto";
 
 type preferences = Array<string>;
 
@@ -17,7 +18,7 @@ class TempUsersController {
         console.log(preferenceArr);
         //If preference contains at least one value from preferenceArr
         const tempUsers = await tempUsersDao.getTempUsers({
-            filter: { preference: { $in: preferenceArr } }
+            filter: { preference: { $in: preferenceArr }, status: tempUserStatus.WAITING   }
         })
         res.status(200).send(tempUsers);
     }
