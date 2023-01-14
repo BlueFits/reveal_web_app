@@ -200,7 +200,7 @@ const Index = () => {
                 </ButtonContainer>
                 <div className="flex justify-between">
                     <Button sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
-                    <Button onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
+                    <Button disabled={!callAccepted || !connectionRef.current ? true : false} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </div>
             </Container>
         </Container>

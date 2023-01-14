@@ -50,7 +50,7 @@ const tempUserPoolSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(gen25TempUserPool.fulfilled, (state, action: { payload: Array<apiTempUser> }) => {
+        builder.addCase(genTempUserPool.fulfilled, (state, action: { payload: Array<apiTempUser> }) => {
             console.log("setting tempuserpool to:", action.payload);
             state.tempUsers = action.payload;
         });
