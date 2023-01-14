@@ -121,6 +121,20 @@ const Index = () => {
         /* Change status to incall once peer is established */
     };
 
+    const connectUser: () => NodeJS.Timer = () => {
+        const interval = setInterval(() => {
+            console.log("Connecting to User Pool", tempUserPoolReducer);
+            const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
+            //Make sure the stream exists first before attempting to call USER
+            if (userToCall && stream) {
+                callUser(userToCall.socketID);
+                clearInterval(interval);
+            } else {
+                console.log("User not found retrying...");
+            }
+        }, 3000);
+        return interval;
+    };
 
     /* Initial Sanity Check for for proper redux setup, and if preference exist generate the temp user pool */
     useEffect(() => {
@@ -137,17 +151,7 @@ const Index = () => {
 
     /* Find someone to call in the user pool at random */
     useEffect(() => {
-        const interval = setInterval(() => {
-            console.log("User Pool", tempUserPoolReducer);
-            const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
-            //Make sure the stream exists first before attempting to call USER
-            if (userToCall && stream) {
-                callUser(userToCall.socketID);
-                clearInterval(interval);
-            } else {
-                console.log("User not found retrying...")
-            }
-        }, 3000);
+        const interval = connectUser();
         return () => clearInterval(interval);
     }, [tempUserPoolReducer, stream]);
 
@@ -168,10 +172,7 @@ const Index = () => {
         setCall({});
         setCallAccepted(false);
         connectionRef.current.destroy();
-        setTimeout(() => {
-            const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
-            callUser(userToCall.socketID);
-        }, 1000);
+        connectUser();
     };
 
     return !userReducer.username ? (
