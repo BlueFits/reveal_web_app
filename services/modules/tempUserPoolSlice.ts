@@ -18,7 +18,7 @@ const initialState: ITempUserPool = {
     tempUsers: [],
 };
 
-export const gen25TempUserPool: any = createAsyncThunk("user/gen25TempUserPool", async (data: any) => {
+export const genTempUserPool: any = createAsyncThunk("user/gen25TempUserPool", async (data: any) => {
     try {
         const tempUsers = await fetch(serverURL + `/api/temp_user/preference_match`, {
             method: "POST",
@@ -31,7 +31,7 @@ export const gen25TempUserPool: any = createAsyncThunk("user/gen25TempUserPool",
             }),
         });
         if (!tempUsers.ok) {
-            console.error("gen25TempUserPool api error");
+            console.error("genTempUserPool api error");
             // const errData = await tempUsers.json();
             // return { err: errData.error };
         } else {

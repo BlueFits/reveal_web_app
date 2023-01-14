@@ -3,7 +3,7 @@ import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
 import { IUserReducer, createTempUser } from "../../services/modules/userSlice";
-import { gen25TempUserPool, ITempUserPool } from "../../services/modules/tempUserPoolSlice";
+import { genTempUserPool, ITempUserPool } from "../../services/modules/tempUserPoolSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import { useRouter } from "next/router";
 import Peer from "simple-peer";
@@ -145,7 +145,7 @@ const Index = () => {
         }
 
         if (userReducer.preference.length > 0) {
-            dispatch(gen25TempUserPool(userReducer.preference));
+            dispatch(genTempUserPool(userReducer.preference));
         }
     }, [userReducer]);
 
