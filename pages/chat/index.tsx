@@ -137,12 +137,18 @@ const Index = () => {
 
     /* Find someone to call in the user pool at random */
     useEffect(() => {
-        console.log("User Pool", tempUserPoolReducer);
-        const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
-        //Make sure the stream exists first before attempting to call USER
-        if (userToCall && stream) {
-            callUser(userToCall.socketID)
-        }
+        const interval = setInterval(() => {
+            console.log("User Pool", tempUserPoolReducer);
+            const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
+            //Make sure the stream exists first before attempting to call USER
+            if (userToCall && stream) {
+                callUser(userToCall.socketID);
+                clearInterval(interval);
+            } else {
+                console.log("User not found retrying...")
+            }
+        }, 3000);
+        return () => clearInterval(interval);
     }, [tempUserPoolReducer, stream]);
 
     useEffect(() => {
