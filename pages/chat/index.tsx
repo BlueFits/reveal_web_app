@@ -8,18 +8,15 @@ import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import { useRouter } from "next/router";
 import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
-import { io } from "socket.io-client";
-import { setupMediaStream, genTempUserFromPool } from "../../utils/videoCall.util";
+import { setupMediaStream, genTempUserFromPool, callUser, answerCall } from "../../utils/videoCall.util";
+import socket from "../../config/Socket";
 
-interface ICallObject {
+export interface ICallObject {
     isReceivedCall: boolean,
     from: string,
     name: string,
     signal: any
 }
-
-/* Initialize Socket */
-const socket = io();
 
 const Index = () => {
     const router = useRouter();
@@ -28,7 +25,7 @@ const Index = () => {
     const tempUserPoolReducer: ITempUserPool = useSelector((state: IReducer) => state.tempUserPool);
 
     //Video Call Shtuff
-    const [stream, setStream] = useState();
+    const [stream, setStream] = useState<MediaProvider>();
     const [call, setCall] = useState<Partial<ICallObject>>();
     const [callAccepted, setCallAccepted] = useState<boolean>(false);
 
@@ -69,65 +66,21 @@ const Index = () => {
         });
     }, []);
 
-    //Define methods for calling 
-    const callUser = (id) => {
-        const peer = new Peer({
-            initiator: true,
-            trickle: false,
-            stream,
-        });
-
-        peer.on("signal", (data) => {
-            socket.emit(socketEmitters.CALLUSER, { userToCall: id, signalData: data, from: userReducer.socketID, name: userReducer.username });
-        });
-
-        peer.on("stream", (currStream) => {
-            console.log("setting userVideoStrream after sending");
-            userVideo.current.srcObject = currStream;
-        });
-
-        socket.on(socketEmitters.CALLACCEPTED, (signal) => {
-            setCallAccepted(true);
-            peer.signal(signal)
-            socket.off(socketEmitters.CALLACCEPTED)
-        });
-
-        connectionRef.current = peer;
-    };
-
-    const answerCall = () => {
-        setCallAccepted(true);
-
-        const peer = new Peer({
-            initiator: false,
-            trickle: false,
-            stream
-        });
-
-        peer.on("signal", (data) => {
-            console.log("sending connection after answering");
-            socket.emit(socketEmitters.ANSWER_CALL, { signal: data, to: call.from });
-        });
-
-        peer.on("stream", (currStream) => {
-            console.log("setting userVideoStrream after receiving");
-            userVideo.current.srcObject = currStream;
-        });
-
-        peer.signal(call.signal);
-
-        connectionRef.current = peer;
-
-        /* Change status to incall once peer is established */
-    };
-
     const connectUser: () => NodeJS.Timer = () => {
         const interval = setInterval(() => {
             console.log("Connecting to User Pool", tempUserPoolReducer);
             const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
             //Make sure the stream exists first before attempting to call USER
             if (userToCall && stream) {
-                callUser(userToCall.socketID);
+                callUser(
+                    userToCall.socketID, 
+                    stream, 
+                    userReducer.socketID, 
+                    userReducer.username, 
+                    userVideo, 
+                    setCallAccepted, 
+                    connectionRef
+                );
                 clearInterval(interval);
             } else {
                 console.log("User not found retrying...");
@@ -158,7 +111,13 @@ const Index = () => {
     useEffect(() => {
         /* Call has been done to user and automatically answer call */
         if (call && call.isReceivedCall && !callAccepted) {
-            answerCall();
+            answerCall(
+                stream,
+                call,
+                userVideo,
+                connectionRef,
+                setCallAccepted
+            );
         }
     }, [call]);
 
