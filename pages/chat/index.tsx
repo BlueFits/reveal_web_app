@@ -104,10 +104,10 @@ const Index = () => {
 
     /* Run this only once */
     useEffect(() => {
-        if (userReducer.preference.length > 0) {
+        if (userReducer.preference && userReducer.preference.length > 0) {
             dispatch(genTempUserPool(userReducer.preference));
         }
-    }, [userReducer.preference.length]);
+    }, [userReducer.preference]);
 
     /* Find someone to call in the user pool at random */
     useEffect(() => {
