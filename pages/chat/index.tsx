@@ -2,7 +2,7 @@ import { useEffect, useState, MutableRefObject, useRef } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
-import { IUserReducer, createTempUser } from "../../services/modules/userSlice";
+import { IUserReducer, createTempUser, updateStatus } from "../../services/modules/userSlice";
 import { genTempUserPool, ITempUserPool } from "../../services/modules/tempUserPoolSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import { useRouter } from "next/router";
@@ -10,6 +10,7 @@ import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
 import { setupMediaStream, genTempUserFromPool, callUser, answerCall } from "../../utils/videoCall.util";
 import socket from "../../config/Socket";
+import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
 
 export interface ICallObject {
     isReceivedCall: boolean,
@@ -32,6 +33,7 @@ const Index = () => {
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
+    const connectUserRef: { current: NodeJS.Timer | undefined } = useRef();
 
     //Camera Setup
     useEffect(() => {
@@ -73,17 +75,19 @@ const Index = () => {
             //Make sure the stream exists first before attempting to call USER
             if (userToCall && stream) {
                 callUser(
-                    userToCall.socketID, 
-                    stream, 
-                    userReducer.socketID, 
-                    userReducer.username, 
-                    userVideo, 
-                    setCallAccepted, 
+                    userToCall.socketID,
+                    stream,
+                    userReducer.socketID,
+                    userReducer.username,
+                    userVideo,
+                    setCallAccepted,
                     connectionRef
                 );
                 clearInterval(interval);
             } else {
                 console.log("User not found retrying...");
+                /* update temp user pool */
+                dispatch(genTempUserPool(userReducer.preference));
             }
         }, 3000);
         return interval;
@@ -96,16 +100,19 @@ const Index = () => {
             router.push("/");
             return;
         }
+    }, [userReducer]);
 
+    /* Run this only once */
+    useEffect(() => {
         if (userReducer.preference.length > 0) {
             dispatch(genTempUserPool(userReducer.preference));
         }
-    }, [userReducer]);
+    }, [userReducer.preference.length]);
 
     /* Find someone to call in the user pool at random */
     useEffect(() => {
-        const interval = connectUser();
-        return () => clearInterval(interval);
+        connectUserRef.current = connectUser();
+        return () => clearInterval(connectUserRef.current);
     }, [tempUserPoolReducer, stream]);
 
     useEffect(() => {
@@ -118,8 +125,16 @@ const Index = () => {
                 connectionRef,
                 setCallAccepted
             );
+            clearInterval(connectUserRef.current);
         }
     }, [call]);
+
+    useEffect(() => {
+        if (callAccepted) {
+            console.log("updating call status to incall for ", userReducer.username);
+            dispatch(updateStatus(tempUserStatus.IN_CALL));
+        }
+    }, [callAccepted])
 
     const ButtonContainer = ({ children }) => (
         <div className="mb-8 flex justify-end">
@@ -131,7 +146,8 @@ const Index = () => {
         setCall({});
         setCallAccepted(false);
         connectionRef.current.destroy();
-        connectUser();
+        dispatch(updateStatus(tempUserStatus.WAITING));
+        connectUserRef.current = connectUser();
     };
 
     return !userReducer.username ? (

@@ -1,6 +1,7 @@
 import express from 'express';
 import debug from 'debug';
 import tempUsersDao from '../daos/tempUsers.dao';
+import mongoose from 'mongoose';
 
 const log: debug.IDebugger = debug('app:users-controller');
 class UsersMiddleware {
@@ -49,8 +50,15 @@ class UsersMiddleware {
         res: express.Response,
         next: express.NextFunction
     ) {
-        req.body.id = req.params.tempUserID;
-        next();
+        const ObjectID = mongoose.Types.ObjectId
+        if (!ObjectID.isValid(req.params.tempUserID)) {
+            res.status(400).send({
+                error: `Invalid ID`,
+            });
+        } else {
+            req.body.id = req.params.tempUserID;
+            next();
+        }
     }
 }
 

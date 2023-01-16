@@ -17,19 +17,21 @@ export const setupMediaStream = async (setStream) => {
     }
 };
 
-export const genTempUserFromPool = (userArray: Array<apiTempUser>) => {
-    const randomIndex = Math.floor(Math.random() * (userArray.length));
-    return userArray[randomIndex];
+export const genTempUserFromPool = (userArray: Array<apiTempUser>): void | apiTempUser => {
+    if (userArray && userArray.length > 0) {
+        const randomIndex = Math.floor(Math.random() * (userArray.length));
+        return userArray[randomIndex];
+    }
 };
 
-    //Define methods for calling 
-export const callUser = ( 
-    idToCall: string, 
-    stream: MediaProvider, 
+//Define methods for calling 
+export const callUser = (
+    idToCall: string,
+    stream: MediaProvider,
     userSocketID: string,
-    userName: string, 
-    userVideo: MutableRefObject<HTMLVideoElement>, 
-    setCallAccepted: Function, 
+    userName: string,
+    userVideo: MutableRefObject<HTMLVideoElement>,
+    setCallAccepted: Function,
     connectionRef: Peer
 ) => {
     const peer = new Peer({
@@ -49,18 +51,18 @@ export const callUser = (
 
     socket.on(socketEmitters.CALLACCEPTED, (signal) => {
         setCallAccepted(true);
-        peer.signal(signal)
-        socket.off(socketEmitters.CALLACCEPTED)
+        peer.signal(signal);
+        socket.off(socketEmitters.CALLACCEPTED);
     });
 
     connectionRef.current = peer;
 };
 
 export const answerCall = (
-    stream: MediaProvider, 
-    call: Partial<ICallObject>, 
-    userVideo: MutableRefObject<HTMLVideoElement>, 
-    connectionRef: Peer, 
+    stream: MediaProvider,
+    call: Partial<ICallObject>,
+    userVideo: MutableRefObject<HTMLVideoElement>,
+    connectionRef: Peer,
     setCallAccepted: Function
 ) => {
     setCallAccepted(true);

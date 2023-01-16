@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serverURL } from "../../config/Server";
+import { IReducer } from '../store';
+import { IUserReducer } from './userSlice';
 
 export interface apiTempUser {
     _id: string;
@@ -18,9 +20,10 @@ const initialState: ITempUserPool = {
     tempUsers: [],
 };
 
-export const genTempUserPool: any = createAsyncThunk("user/gen25TempUserPool", async (data: any) => {
+export const genTempUserPool: any = createAsyncThunk("user/gen25TempUserPool", async (data: any, { getState }) => {
     try {
-        const tempUsers = await fetch(serverURL + `/api/temp_user/preference_match`, {
+        const state: IUserReducer = (getState()! as IReducer).user;
+        const tempUsers = await fetch(serverURL + `/api/temp_user/${state.id}/preference_match`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',

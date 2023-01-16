@@ -1,5 +1,6 @@
 import { socketEmitters } from "../../constants/emitters";
 import tempUsersDao from "../tempUser/daos/tempUsers.dao";
+import { tempUserStatus } from "../tempUser/dto/create.tempUser.dto";
 
 export default class SocketInit {
     constructor(io: any) {
@@ -26,7 +27,6 @@ export default class SocketInit {
             socket.on(socketEmitters.ANSWER_CALL, (data) => {
                 console.log("User answer call");
                 io.to(data.to).emit(socketEmitters.CALLACCEPTED, data.signal);
-                /* Switch from waiting to in-call */
             });
         });
     }

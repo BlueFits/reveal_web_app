@@ -15,10 +15,11 @@ class TempUsersController {
 
     async getTempUserWithSamePref(req: Request, res: Response) {
         const preferenceArr: preferences = req.body.preference;
-        console.log(preferenceArr);
+        const userID = req.body.id;
+        console.log(preferenceArr, userID);
         //If preference contains at least one value from preferenceArr
         const tempUsers = await tempUsersDao.getTempUsers({
-            filter: { preference: { $in: preferenceArr }, status: tempUserStatus.WAITING }
+            filter: { "_id": { $ne: userID }, preference: { $in: preferenceArr }, status: tempUserStatus.WAITING }
         })
         res.status(200).send(tempUsers);
     }
@@ -40,8 +41,8 @@ class TempUsersController {
     }
 
     async patch(req: Request, res: Response) {
-        await tempUsersDao.updateTempUserByID(req.body.id, req.body);
-        res.status(204).send();
+        const updatedTempUser = await tempUsersDao.updateTempUserByID(req.body.id, req.body);
+        res.status(200).send(updatedTempUser);
     }
 };
 
