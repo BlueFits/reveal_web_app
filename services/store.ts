@@ -1,15 +1,15 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import userSlice from './modules/userSlice';
-import tempUserPoolSlice from './modules/tempUserPoolSlice';
+import otherUserSlice from './modules/otherUserSlice';
 
 export interface IReducer {
   user: any,
-  tempUserPool: any,
+  otherUser: any,
 }
 
 const reducerObject: IReducer = {
   user: userSlice.reducer,
-  tempUserPool: tempUserPoolSlice.reducer,
+  otherUser: otherUserSlice.reducer,
 };
 
 const reducer = combineReducers(reducerObject);

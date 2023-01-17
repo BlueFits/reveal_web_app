@@ -3,12 +3,12 @@ import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
 import { IUserReducer, createTempUser, updateStatus } from "../../services/modules/userSlice";
-import { genTempUserPool, ITempUserPool } from "../../services/modules/tempUserPoolSlice";
+import { genTempUser, apiTempUser, clearState } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import { useRouter } from "next/router";
 import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
-import { setupMediaStream, genTempUserFromPool, callUser, answerCall } from "../../utils/videoCall.util";
+import { setupMediaStream, callUser, answerCall } from "../../utils/videoCall.util";
 import socket from "../../config/Socket";
 import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
 
@@ -23,7 +23,7 @@ const Index = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
-    const tempUserPoolReducer: ITempUserPool = useSelector((state: IReducer) => state.tempUserPool);
+    const otherUserReducer: apiTempUser = useSelector((state: IReducer) => state.otherUser);
 
     //Video Call Shtuff
     const [stream, setStream] = useState<MediaProvider>();
@@ -69,13 +69,14 @@ const Index = () => {
     }, []);
 
     const connectUser: () => NodeJS.Timer = () => {
-        const interval = setInterval(() => {
-            console.log("Connecting to User Pool", tempUserPoolReducer);
-            const userToCall = genTempUserFromPool(tempUserPoolReducer.tempUsers);
+        const interval = setInterval(async () => {
+            await dispatch(genTempUser(userReducer.preference));
+            // console.log("my log", data);
             //Make sure the stream exists first before attempting to call USER
-            if (userToCall && stream) {
+            // console.log("condition", otherUserReducer);
+            if (otherUserReducer.socketID && stream && !callAccepted) {
                 callUser(
-                    userToCall.socketID,
+                    otherUserReducer.socketID,
                     stream,
                     userReducer.socketID,
                     userReducer.username,
@@ -86,8 +87,8 @@ const Index = () => {
                 clearInterval(interval);
             } else {
                 console.log("User not found retrying...");
-                /* update temp user pool */
-                dispatch(genTempUserPool(userReducer.preference));
+                /* update other user */
+                dispatch(genTempUser(userReducer.preference));
             }
         }, 3000);
         return interval;
@@ -102,22 +103,18 @@ const Index = () => {
         }
     }, [userReducer]);
 
-    /* Run this only once */
-    useEffect(() => {
-        if (userReducer.preference && userReducer.preference.length > 0) {
-            dispatch(genTempUserPool(userReducer.preference));
-        }
-    }, [userReducer.preference]);
-
     /* Find someone to call in the user pool at random */
     useEffect(() => {
+        console.log("###", otherUserReducer);
+        console.log("This ran again");
         connectUserRef.current = connectUser();
         return () => clearInterval(connectUserRef.current);
-    }, [tempUserPoolReducer, stream]);
+    }, [otherUserReducer, stream]);
 
     useEffect(() => {
         /* Call has been done to user and automatically answer call */
         if (call && call.isReceivedCall && !callAccepted) {
+            console.log("call has been answered");
             answerCall(
                 stream,
                 call,
@@ -142,12 +139,17 @@ const Index = () => {
         </div>
     );
 
+    /* No interval is working after skipping */
+    /* Bug where skipping does not kill the peer connection */
     const skipHandler = () => {
+        console.log("skipped pressed");
+        connectionRef.current.destroy();
         setCall({});
         setCallAccepted(false);
-        connectionRef.current.destroy();
-        dispatch(updateStatus(tempUserStatus.WAITING));
-        connectUserRef.current = connectUser();
+        // setTimeout(() => {
+        //     dispatch(updateStatus(tempUserStatus.WAITING));
+        //     dispatch(clearState());
+        // }, 3000)
     };
 
     return !userReducer.username ? (

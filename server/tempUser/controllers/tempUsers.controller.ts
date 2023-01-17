@@ -20,8 +20,10 @@ class TempUsersController {
         //If preference contains at least one value from preferenceArr
         const tempUsers = await tempUsersDao.getTempUsers({
             filter: { "_id": { $ne: userID }, preference: { $in: preferenceArr }, status: tempUserStatus.WAITING }
-        })
-        res.status(200).send(tempUsers);
+        });
+        const randomIndex = Math.floor(Math.random() * (tempUsers.length));
+        const tempUser = tempUsers[randomIndex];
+        res.status(200).send(tempUser);
     }
 
     async getTempUserByID(req: Request, res: Response) {

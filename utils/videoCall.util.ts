@@ -1,5 +1,5 @@
 import { MutableRefObject } from "react";
-import { apiTempUser } from "../services/modules/tempUserPoolSlice";
+import { apiTempUser } from "../services/modules/otherUserSlice";
 import Peer from "simple-peer";
 import socket from "../config/Socket";
 import { socketEmitters } from "../constants/emitters";
@@ -14,13 +14,6 @@ export const setupMediaStream = async (setStream) => {
         setStream(ms);
     } catch (e) {
         alert("Camera is disabled");
-    }
-};
-
-export const genTempUserFromPool = (userArray: Array<apiTempUser>): void | apiTempUser => {
-    if (userArray && userArray.length > 0) {
-        const randomIndex = Math.floor(Math.random() * (userArray.length));
-        return userArray[randomIndex];
     }
 };
 
