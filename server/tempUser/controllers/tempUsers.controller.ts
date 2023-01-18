@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import tempUsersDao from "../daos/tempUsers.dao";
 import { tempUserStatus } from "../dto/create.tempUser.dto";
+import avatarSimple from "../../config/avatar";
 
 type preferences = Array<string>;
 
@@ -32,7 +33,12 @@ class TempUsersController {
     }
 
     async createUser(req: Request, res: Response) {
-        const tempUser = await tempUsersDao.addTempUser(req.body)
+        /* Generate a random avatar */
+        const avatar = {
+            bg: avatarSimple.bg[Math.floor(Math.random() * avatarSimple.bg.length)],
+            display: avatarSimple.display[Math.floor(Math.random() * avatarSimple.display.length)],
+        }
+        const tempUser = await tempUsersDao.addTempUser({ ...req.body, avatar })
         res.status(201).send(tempUser);
     }
 

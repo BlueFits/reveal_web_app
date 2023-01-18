@@ -19,6 +19,10 @@ export interface IUserReducer {
     status: tempUserStatus.WAITING;
     _id?: string;
     __v?: number;
+    avatar: {
+        bg: string;
+        display: string;
+    }
 }
 
 const initialState: IUserReducer = {
@@ -27,6 +31,10 @@ const initialState: IUserReducer = {
     socketID: null,
     preference: null,
     status: null,
+    avatar: {
+        bg: null,
+        display: null,
+    }
 };
 
 //Thunks
@@ -100,12 +108,14 @@ const userSlice = createSlice({
             //If possible fix the socket duplication in the future
             if (action.payload.err === apiErrors.socketIdExsists) return;
             console.log("setting temp user reducer to", action.payload);
-            const { username, preference, socketID, _id, status } = action.payload;
+            const { username, preference, socketID, _id, status, avatar } = action.payload;
             state.username = username;
             state.preference = preference;
             state.socketID = socketID;
             state.id = _id;
             state.status = status;
+            state.avatar.bg = avatar.bg;
+            state.avatar.display = avatar.display;
         });
         builder.addCase(updateStatus.fulfilled, (state, action: { payload: IMongoTempUser }) => {
             console.log("setting new status of user to:", action.payload.status);

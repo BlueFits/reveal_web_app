@@ -121,10 +121,10 @@ const Index = () => {
     }, [userReducer]);
 
     /* Find someone to call in the user pool at random */
-    // useEffect(() => {
-    //     connectUserRef.current = connectUser();
-    //     return () => clearInterval(connectUserRef.current);
-    // }, [otherUserReducer, stream]);
+    useEffect(() => {
+        connectUserRef.current = connectUser();
+        return () => clearInterval(connectUserRef.current);
+    }, [otherUserReducer, stream]);
 
     useEffect(() => {
         if (callAccepted) {
@@ -161,7 +161,9 @@ const Index = () => {
     };
 
     const revealHandler = () => {
-        // setShowAvatar(false);
+        myVid.current.play();
+        userVideo.current.play();
+        setShowAvatar(false);
     };
 
     return !userReducer.username ? (
@@ -173,15 +175,15 @@ const Index = () => {
                     <VideoPreview
                         isMuted={false}
                         videoRef={userVideo}
-                        username={otherUserReducer.username}
-                    // showAvatar={showAvatar}
+                        user={otherUserReducer}
+                        showAvatar={showAvatar}
                     /> :
                     <LoadingVideo />
             }
             <VideoPreview
                 videoRef={myVid}
-                username={userReducer.username}
-            // showAvatar={showAvatar}
+                user={userReducer}
+                showAvatar={showAvatar}
             />
             <Container className="absolute flex flex-col bottom-5">
                 <ButtonContainer>

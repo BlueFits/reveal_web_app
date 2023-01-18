@@ -10,6 +10,10 @@ class TempUsersDao {
         username: String,
         socketID: { type: String, required: true },
         status: { type: String, default: tempUserStatus.WAITING },
+        avatar: {
+            bg: { type: String },
+            display: { type: String },
+        }
     });
 
     TempUser = mongooseService.mongoose.model('TempUsers', this.tempUserSchema);
@@ -17,6 +21,7 @@ class TempUsersDao {
     constructor() { console.log("Initializing TempUser") }
 
     async addTempUser(userFields: CreateTempUserDTO) {
+        console.log(userFields);
         const tempUser = new this.TempUser({
             ...userFields,
             "expireAt": { type: Date, expires: "12h" },

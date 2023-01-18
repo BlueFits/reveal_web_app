@@ -1,5 +1,5 @@
 export enum tempUserStatus {
-    WAITING =  "waiting",
+    WAITING = "waiting",
     IN_CALL = "incall",
 }
 
@@ -8,4 +8,8 @@ export interface CreateTempUserDTO {
     username: string,
     socketID: string,
     status: tempUserStatus,
+    avatar: {
+        bg: string,
+        display: string,
+    }
 }

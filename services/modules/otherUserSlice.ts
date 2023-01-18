@@ -9,6 +9,10 @@ export interface apiTempUser {
     username: string;
     socketID: string;
     __V: number
+    avatar: {
+        bg: string;
+        display: string;
+    }
 }
 
 const initialState: apiTempUser = {
@@ -17,6 +21,10 @@ const initialState: apiTempUser = {
     username: null,
     socketID: null,
     __V: null,
+    avatar: {
+        bg: null,
+        display: null,
+    }
 };
 
 export const genTempUser: any = createAsyncThunk("user/gen25TempUserPool", async (data: any, { getState }) => {
@@ -74,6 +82,8 @@ const otherUserSlice = createSlice({
                 state.preference = action.payload.preference;
                 state.socketID = action.payload.socketID;
                 state.username = action.payload.username;
+                state.avatar.bg = action.payload.avatar.bg;
+                state.avatar.display = action.payload.avatar.display;
             }
         });
     }
