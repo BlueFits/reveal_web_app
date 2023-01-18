@@ -36,6 +36,10 @@ const Index = () => {
     const connectionRef: Peer = useRef();
     const connectUserRef: { current: NodeJS.Timer | undefined } = useRef();
 
+    //Functionality
+    const [revealTimer, setRevealTimer] = useState(5);
+    const [showAvatar, setShowAvatar] = useState(true);
+
     //Camera Setup
     useEffect(() => {
         const setupWebCam = async () => {
@@ -111,16 +115,16 @@ const Index = () => {
     useEffect(() => {
         if (!userReducer.username || !userReducer.preference) {
             console.log("Going back", userReducer);
-            router.push("/");
+            window.location.href = "/";
             return;
         }
     }, [userReducer]);
 
     /* Find someone to call in the user pool at random */
-    useEffect(() => {
-        connectUserRef.current = connectUser();
-        return () => clearInterval(connectUserRef.current);
-    }, [otherUserReducer, stream]);
+    // useEffect(() => {
+    //     connectUserRef.current = connectUser();
+    //     return () => clearInterval(connectUserRef.current);
+    // }, [otherUserReducer, stream]);
 
     useEffect(() => {
         if (callAccepted) {
@@ -128,6 +132,16 @@ const Index = () => {
             dispatch(updateStatus(tempUserStatus.IN_CALL));
         }
     }, [callAccepted])
+
+    useEffect(() => {
+        if (revealTimer !== 0) {
+            const timer = setTimeout(() => {
+                const newTime = revealTimer - 1;
+                setRevealTimer(newTime);
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [revealTimer]);
 
     const ButtonContainer = ({ children }) => (
         <div className="mb-8 flex justify-end">
@@ -146,6 +160,10 @@ const Index = () => {
         }, 3000)
     };
 
+    const revealHandler = () => {
+        // setShowAvatar(false);
+    };
+
     return !userReducer.username ? (
         <Typography>Invalid Page Redirecting...</Typography>
     ) : (
@@ -156,19 +174,45 @@ const Index = () => {
                         isMuted={false}
                         videoRef={userVideo}
                         username={otherUserReducer.username}
+                    // showAvatar={showAvatar}
                     /> :
                     <LoadingVideo />
             }
             <VideoPreview
                 videoRef={myVid}
                 username={userReducer.username}
+            // showAvatar={showAvatar}
             />
             <Container className="absolute flex flex-col bottom-5">
                 <ButtonContainer>
-                    <Button style={{ backgroundColor: "green", color: "#fff", width: 100, borderRadius: 9999 }} size="large" variant="contained">Match</Button>
+                    <Button
+                        style={{
+                            backgroundColor: "green",
+                            color: "#fff",
+                            width: 100,
+                            borderRadius: 9999
+                        }}
+                        size="large"
+                        variant="contained"
+                    >
+                        Match
+                    </Button>
                 </ButtonContainer>
                 <ButtonContainer>
-                    <Button style={{ backgroundColor: "#0971f1", color: "#fff", width: 100, borderRadius: 9999 }} size="large" variant="contained">Reveal</Button>
+                    <Button
+                        onClick={revealHandler}
+                        disabled={revealTimer !== 0}
+                        style={{
+                            backgroundColor: revealTimer !== 0 ? "inherit" : "#0971f1",
+                            color: "#fff",
+                            width: 100,
+                            borderRadius: 9999
+                        }}
+                        size="large"
+                        variant="contained"
+                    >
+                        {revealTimer !== 0 ? revealTimer : "Reveal"}
+                    </Button>
                 </ButtonContainer>
                 <div className="flex justify-between">
                     <Button sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
