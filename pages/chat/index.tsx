@@ -21,7 +21,6 @@ export interface ICallObject {
 }
 
 const Index = () => {
-    const router = useRouter();
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const otherUserReducer: apiTempUser = useSelector((state: IReducer) => state.otherUser);
@@ -133,16 +132,6 @@ const Index = () => {
         }
     }, [callAccepted])
 
-    useEffect(() => {
-        if (revealTimer !== 0) {
-            const timer = setTimeout(() => {
-                const newTime = revealTimer - 1;
-                setRevealTimer(newTime);
-            }, 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [revealTimer]);
-
     const ButtonContainer = ({ children }) => (
         <div className="mb-8 flex justify-end">
             {children}
@@ -186,7 +175,7 @@ const Index = () => {
                 showAvatar={showAvatar}
             />
             <Container className="absolute flex flex-col bottom-5">
-                <ButtonContainer>
+                {/* <ButtonContainer>
                     <Button
                         style={{
                             backgroundColor: "green",
@@ -199,7 +188,7 @@ const Index = () => {
                     >
                         Match
                     </Button>
-                </ButtonContainer>
+                </ButtonContainer> */}
                 <ButtonContainer>
                     <Button
                         onClick={revealHandler}
