@@ -86,7 +86,7 @@ const Index = () => {
             } else {
                 console.log("User not found retrying...");
                 /* update other user */
-                dispatch(genTempUser(userReducer.preference));
+                await dispatch(genTempUser(userReducer.preference));
             }
         }, 3000);
         return interval;
@@ -136,14 +136,14 @@ const Index = () => {
     );
 
     /* No interval is working after skipping */
-    const skipHandler = () => {
+    const skipHandler = async () => {
         connectionRef.current.destroy();
         setCall({});
         setCallAccepted(false);
-        dispatch(updateStatus(tempUserStatus.WAITING));
-        // setTimeout(() => {
-        dispatch(clearState());
-        // }, 3000)
+        await dispatch(updateStatus(tempUserStatus.WAITING));
+        setTimeout(() => {
+            dispatch(clearState());
+        }, 3000)
     };
 
     return !userReducer.username ? (
