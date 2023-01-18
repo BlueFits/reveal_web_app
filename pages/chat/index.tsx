@@ -11,6 +11,7 @@ import { socketEmitters } from "../../constants/emitters";
 import { setupMediaStream, callUser, answerCall } from "../../utils/videoCall.util";
 import socket from "../../config/Socket";
 import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
+import LoadingVideo from "../../components/LoadingVideo/LoadingVideo";
 
 export interface ICallObject {
     isReceivedCall: boolean,
@@ -71,9 +72,6 @@ const Index = () => {
     const connectUser: () => NodeJS.Timer = () => {
         const interval = setInterval(async () => {
             await dispatch(genTempUser(userReducer.preference));
-            // console.log("my log", data);
-            //Make sure the stream exists first before attempting to call USER
-            // console.log("condition", otherUserReducer);
             if (otherUserReducer.socketID && stream && !callAccepted) {
                 callUser(
                     otherUserReducer.socketID,
@@ -94,23 +92,6 @@ const Index = () => {
         return interval;
     };
 
-    /* Initial Sanity Check for for proper redux setup, and if preference exist generate the temp user pool */
-    useEffect(() => {
-        if (!userReducer.username || !userReducer.preference) {
-            console.log("Going back", userReducer);
-            router.push("/");
-            return;
-        }
-    }, [userReducer]);
-
-    /* Find someone to call in the user pool at random */
-    useEffect(() => {
-        console.log("###", otherUserReducer);
-        console.log("This ran again");
-        connectUserRef.current = connectUser();
-        return () => clearInterval(connectUserRef.current);
-    }, [otherUserReducer, stream]);
-
     useEffect(() => {
         /* Call has been done to user and automatically answer call */
         if (call && call.isReceivedCall && !callAccepted) {
@@ -126,6 +107,21 @@ const Index = () => {
         }
     }, [call]);
 
+    /* Initial Sanity Check for for proper redux setup, and if preference exist generate the temp user pool */
+    useEffect(() => {
+        if (!userReducer.username || !userReducer.preference) {
+            console.log("Going back", userReducer);
+            router.push("/");
+            return;
+        }
+    }, [userReducer]);
+
+    /* Find someone to call in the user pool at random */
+    useEffect(() => {
+        connectUserRef.current = connectUser();
+        return () => clearInterval(connectUserRef.current);
+    }, [otherUserReducer, stream]);
+
     useEffect(() => {
         if (callAccepted) {
             console.log("updating call status to incall for ", userReducer.username);
@@ -140,15 +136,13 @@ const Index = () => {
     );
 
     /* No interval is working after skipping */
-    /* Bug where skipping does not kill the peer connection */
     const skipHandler = () => {
-        console.log("skipped pressed");
         connectionRef.current.destroy();
         setCall({});
         setCallAccepted(false);
+        dispatch(updateStatus(tempUserStatus.WAITING));
         // setTimeout(() => {
-        //     dispatch(updateStatus(tempUserStatus.WAITING));
-        //     dispatch(clearState());
+        dispatch(clearState());
         // }, 3000)
     };
 
@@ -157,12 +151,13 @@ const Index = () => {
     ) : (
         <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
             {
-                callAccepted &&
-                <VideoPreview
-                    isMuted={false}
-                    videoRef={userVideo}
-                    username={"test"}
-                />
+                callAccepted ?
+                    <VideoPreview
+                        isMuted={false}
+                        videoRef={userVideo}
+                        username={otherUserReducer.username}
+                    /> :
+                    <LoadingVideo />
             }
             <VideoPreview
                 videoRef={myVid}

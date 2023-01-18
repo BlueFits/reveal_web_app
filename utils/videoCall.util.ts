@@ -1,5 +1,4 @@
 import { MutableRefObject } from "react";
-import { apiTempUser } from "../services/modules/otherUserSlice";
 import Peer from "simple-peer";
 import socket from "../config/Socket";
 import { socketEmitters } from "../constants/emitters";
@@ -32,23 +31,18 @@ export const callUser = (
         trickle: false,
         stream,
     });
-
     peer.on("signal", (data) => {
         socket.emit(socketEmitters.CALLUSER, { userToCall: idToCall, signalData: data, from: userSocketID, name: userName });
     });
-
     peer.on("stream", (currStream) => {
-        console.log("setting userVideoStrream after sending");
         userVideo.current.srcObject = currStream;
     });
-
     socket.on(socketEmitters.CALLACCEPTED, (signal) => {
         setCallAccepted(true);
         peer.signal(signal);
+        connectionRef.current = peer;
         socket.off(socketEmitters.CALLACCEPTED);
     });
-
-    connectionRef.current = peer;
 };
 
 export const answerCall = (
@@ -59,24 +53,17 @@ export const answerCall = (
     setCallAccepted: Function
 ) => {
     setCallAccepted(true);
-
     const peer = new Peer({
         initiator: false,
         trickle: false,
         stream
     });
-
     peer.on("signal", (data) => {
-        console.log("sending connection after answering");
         socket.emit(socketEmitters.ANSWER_CALL, { signal: data, to: call.from });
     });
-
     peer.on("stream", (currStream) => {
-        console.log("setting userVideoStrream after receiving");
         userVideo.current.srcObject = currStream;
     });
-
     peer.signal(call.signal);
-
     connectionRef.current = peer;
 };
