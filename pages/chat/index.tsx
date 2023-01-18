@@ -220,6 +220,7 @@ const Index = () => {
                     showMatch ? 
                     <ButtonContainer>
                         <Button
+                            onClick={() => alert("Will be implemented in a future release")}
                             style={{
                                 backgroundColor: "green",
                                 color: "#fff",
@@ -250,7 +251,7 @@ const Index = () => {
                     </ButtonContainer>
                 }
                 <div className="flex justify-between">
-                    <Button sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
+                    <Button onClick={() => window.location.href = "/"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
                     <Button disabled={!callAccepted ? true : false} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </div>
             </Container>
