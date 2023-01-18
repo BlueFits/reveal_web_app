@@ -5,14 +5,12 @@ import { IReducer } from "../../services/store";
 import { IUserReducer, createTempUser, updateStatus } from "../../services/modules/userSlice";
 import { genTempUser, apiTempUser, clearState } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
-import { useRouter } from "next/router";
 import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
 import { setupMediaStream, callUser, answerCall } from "../../utils/videoCall.util";
 import socket from "../../config/Socket";
 import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
 import LoadingVideo from "../../components/LoadingVideo/LoadingVideo";
-import e from "express";
 
 export interface ICallObject {
     isReceivedCall: boolean,
@@ -39,6 +37,7 @@ const Index = () => {
     //Functionality
     const [revealLabel, setRevealLabel] = useState<string>("Reveal");
     const [revealTimer, setRevealTimer] = useState(5);
+    const [showMatch, setShowMatch] = useState(false);
     const [showAvatar, setShowAvatar] = useState(true);
 
     //Camera Setup
@@ -156,10 +155,10 @@ const Index = () => {
     const skipHandler = async () => {
         connectionRef.current.destroy();
 
-        //pause video
-        myVid.current.pause()
-        userVideo.current.pause()
         setShowAvatar(true);
+        setRevealTimer(5);
+        setRevealLabel("Reveal");
+        setShowMatch(false);
 
         setCall({});
         setCallAccepted(false);
@@ -175,24 +174,22 @@ const Index = () => {
         /* both user press reveal -> allow reveal */
 
         const reveal = () => {
-            myVid.current.play();
-            userVideo.current.play();
             setShowAvatar(false);
+            setShowMatch(true);
         };
-
 
         if (revealLabel === "Accept Reveal") {
             socket.emit(socketEmitters.ACCEPT_REVEAL, { to: otherUserReducer.socketID });
             reveal();
         } else {
             /* initiate reveal; */
+            setRevealLabel("Sent Reveal")
             socket.emit(socketEmitters.REVEAL_INIT, { 
                 userToReveal: otherUserReducer.socketID, 
                 fromSocket: userReducer.socketID, 
                 fromUsername: userReducer.username 
             });
-
-            socket.on(socketEmitters.REAVEAL_ACCEPT, (signal) => {
+            socket.on(socketEmitters.REAVEAL_ACCEPT, () => {
                 reveal();
                 socket.off(socketEmitters.REAVEAL_ACCEPT);
             });
@@ -219,36 +216,39 @@ const Index = () => {
                 showAvatar={showAvatar}
             />
             <Container className="absolute flex flex-col bottom-5">
-                {/* <ButtonContainer>
-                    <Button
-                        style={{
-                            backgroundColor: "green",
-                            color: "#fff",
-                            width: 100,
-                            borderRadius: 9999
-                        }}
-                        size="large"
-                        variant="contained"
-                    >
-                        Match
-                    </Button>
-                </ButtonContainer> */}
-                <ButtonContainer>
-                    <Button
-                        onClick={revealHandler}
-                        disabled={revealTimer !== 0}
-                        style={{
-                            backgroundColor: revealTimer !== 0 ? "inherit" : "#0971f1",
-                            color: "#fff",
-                            width: 100,
-                            borderRadius: 9999
-                        }}
-                        size="large"
-                        variant="contained"
-                    >
-                        {revealTimer !== 0 ? revealTimer : revealLabel}
-                    </Button>
-                </ButtonContainer>
+                {
+                    showMatch ? 
+                    <ButtonContainer>
+                        <Button
+                            style={{
+                                backgroundColor: "green",
+                                color: "#fff",
+                                width: 100,
+                                borderRadius: 9999
+                            }}
+                            size="large"
+                            variant="contained"
+                        >
+                            Match
+                        </Button>
+                    </ButtonContainer> :
+                    <ButtonContainer>
+                        <Button
+                            onClick={revealHandler}
+                            disabled={revealTimer !== 0 || (revealLabel === "Sent Reveal")}
+                            style={{
+                                backgroundColor: revealTimer !== 0 ? "inherit" : "#0971f1",
+                                color: "#fff",
+                                width: 100,
+                                borderRadius: 9999
+                            }}
+                            size="large"
+                            variant="contained"
+                        >
+                            {revealTimer !== 0 ? revealTimer : revealLabel}
+                        </Button>
+                    </ButtonContainer>
+                }
                 <div className="flex justify-between">
                     <Button sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
                     <Button disabled={!callAccepted ? true : false} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>

@@ -35,7 +35,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({ user, videoRef = null, isMuted 
                 style={{ background: "black", height: "100%", width: "100%", objectFit: "cover" }}
                 playsInline
                 muted={isMuted}
-                // autoPlay
+                autoPlay
                 ref={localRef}
             />
         </Container>
