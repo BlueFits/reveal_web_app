@@ -28,6 +28,16 @@ export default class SocketInit {
                 console.log("User answer call");
                 io.to(data.to).emit(socketEmitters.CALLACCEPTED, data.signal);
             });
+
+            socket.on(socketEmitters.REVEAL_INIT, (data) => {
+                console.log(`user ${data.fromUsername} asks to reveal ${data.userToReveal}`);
+                io.to(data.userToReveal).emit(socketEmitters.REVEAL_INIT, { fromSocket: data.fromSocket, fromUsername: data.fromUsername });
+            })
+
+            socket.on(socketEmitters.ACCEPT_REVEAL, (data) => {
+                console.log("User accept reveal")
+                io.to(data.to).emit(socketEmitters.REAVEAL_ACCEPT);
+            })
         });
     }
 };

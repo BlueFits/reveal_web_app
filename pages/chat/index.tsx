@@ -12,6 +12,7 @@ import { setupMediaStream, callUser, answerCall } from "../../utils/videoCall.ut
 import socket from "../../config/Socket";
 import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
 import LoadingVideo from "../../components/LoadingVideo/LoadingVideo";
+import e from "express";
 
 export interface ICallObject {
     isReceivedCall: boolean,
@@ -36,6 +37,7 @@ const Index = () => {
     const connectUserRef: { current: NodeJS.Timer | undefined } = useRef();
 
     //Functionality
+    const [revealLabel, setRevealLabel] = useState<string>("Reveal");
     const [revealTimer, setRevealTimer] = useState(5);
     const [showAvatar, setShowAvatar] = useState(true);
 
@@ -69,6 +71,9 @@ const Index = () => {
         socket.on(socketEmitters.CALLUSER, ({ from, name, signal }) => {
             console.log("Receving a call", from, name);
             setCall({ isReceivedCall: true, from, name, signal });
+        });
+        socket.on(socketEmitters.REVEAL_INIT, ({ fromSocket, fromUsername }) => {
+            setRevealLabel(`Accept Reveal`)
         });
     }, []);
 
@@ -128,9 +133,18 @@ const Index = () => {
     useEffect(() => {
         if (callAccepted) {
             console.log("updating call status to incall for ", userReducer.username);
-            dispatch(updateStatus(tempUserStatus.IN_CALL));
+            dispatch(updateStatus(tempUserStatus.IN_CALL));   
         }
     }, [callAccepted])
+
+
+    useEffect(() => {
+        if (callAccepted && revealTimer !== 0) {
+            setTimeout(() => {
+                setRevealTimer(revealTimer - 1);
+            }, 1000);
+        }
+    }, [callAccepted, revealTimer]);
 
     const ButtonContainer = ({ children }) => (
         <div className="mb-8 flex justify-end">
@@ -141,6 +155,12 @@ const Index = () => {
     /* No interval is working after skipping */
     const skipHandler = async () => {
         connectionRef.current.destroy();
+
+        //pause video
+        myVid.current.pause()
+        userVideo.current.pause()
+        setShowAvatar(true);
+
         setCall({});
         setCallAccepted(false);
         await dispatch(updateStatus(tempUserStatus.WAITING));
@@ -149,10 +169,34 @@ const Index = () => {
         }, 3000)
     };
 
+    /* Not a true hide change this to addStream instead  */
     const revealHandler = () => {
-        myVid.current.play();
-        userVideo.current.play();
-        setShowAvatar(false);
+        /* When user press reveal -> await other user */
+        /* both user press reveal -> allow reveal */
+
+        const reveal = () => {
+            myVid.current.play();
+            userVideo.current.play();
+            setShowAvatar(false);
+        };
+
+
+        if (revealLabel === "Accept Reveal") {
+            socket.emit(socketEmitters.ACCEPT_REVEAL, { to: otherUserReducer.socketID });
+            reveal();
+        } else {
+            /* initiate reveal; */
+            socket.emit(socketEmitters.REVEAL_INIT, { 
+                userToReveal: otherUserReducer.socketID, 
+                fromSocket: userReducer.socketID, 
+                fromUsername: userReducer.username 
+            });
+
+            socket.on(socketEmitters.REAVEAL_ACCEPT, (signal) => {
+                reveal();
+                socket.off(socketEmitters.REAVEAL_ACCEPT);
+            });
+        }
     };
 
     return !userReducer.username ? (
@@ -202,7 +246,7 @@ const Index = () => {
                         size="large"
                         variant="contained"
                     >
-                        {revealTimer !== 0 ? revealTimer : "Reveal"}
+                        {revealTimer !== 0 ? revealTimer : revealLabel}
                     </Button>
                 </ButtonContainer>
                 <div className="flex justify-between">
