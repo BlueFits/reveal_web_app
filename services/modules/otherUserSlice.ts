@@ -65,6 +65,10 @@ const otherUserSlice = createSlice({
             state.preference = null;
             state.socketID = null;
             state.username = null;
+            state.avatar = {
+                bg: null,
+                display: null,
+            }
         },
     },
     extraReducers: (builder) => {
@@ -76,6 +80,8 @@ const otherUserSlice = createSlice({
                 state.preference = null;
                 state.socketID = null;
                 state.username = null;
+                state.avatar.bg = null;
+                state.avatar.display = null;
             } else {
                 state.__V = action.payload.__V;
                 state._id = action.payload._id;

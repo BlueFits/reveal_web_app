@@ -37,6 +37,10 @@ export const callUser = (
     peer.on("stream", (currStream) => {
         userVideo.current.srcObject = currStream;
     });
+    peer.on("close", () => {
+        peer.destroy();
+        console.log("User 2 Disconnected ");
+    });
     socket.on(socketEmitters.CALLACCEPTED, (signal) => {
         setCallAccepted(true);
         peer.signal(signal);
@@ -63,6 +67,10 @@ export const answerCall = (
     });
     peer.on("stream", (currStream) => {
         userVideo.current.srcObject = currStream;
+    });
+    peer.on("close", () => {
+        peer.destroy();
+        console.log("User 1 Disconnected");
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
