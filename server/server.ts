@@ -8,7 +8,7 @@ import { Server } from "socket.io";
 import SocketInstance from './utils/socketInstance';
 
 //Router
-import TempUserRoutes from "./tempUser/tempUsers.routes.config";
+// import TempUserRoutes from "./tempUser/tempUsers.routes.config";
 
 
 const port = parseInt(process.env.PORT || '3000', 10);
@@ -19,7 +19,7 @@ const server: express.Application = express();
 const httpServer = createServer(server);
 const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"] } });
 // const ml5Router = new Ml5Routes("Ml5Routes").getRouter;
-const tempUserRouter = new TempUserRoutes("TempUserRoutes").getRouter;
+// const tempUserRouter = new TempUserRoutes("TempUserRoutes").getRouter;
 
 
 app.prepare().then(() => {
@@ -31,7 +31,7 @@ app.prepare().then(() => {
 	server.use(cors());
 	server.use(cookieParser());
 
-	server.use("/api/temp_user", tempUserRouter);
+	// server.use("/api/temp_user", tempUserRouter);
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);

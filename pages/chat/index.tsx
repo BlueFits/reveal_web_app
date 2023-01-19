@@ -57,96 +57,6 @@ const Index = () => {
         setupWebCam();
     }, [stream]);
 
-    /* Initialize socket listeners */
-    useEffect(() => {
-        socket.emit("send_id");
-        socket.on(socketEmitters.ME, (id) => {
-            dispatch(createTempUser({
-                username: userReducer.username,
-                socketID: id,
-                preference: userReducer.preference,
-            }));
-        });
-        socket.on(socketEmitters.CALLUSER, ({ from, name, signal }) => {
-            console.log("Receving a call", from, name);
-            setCall({ isReceivedCall: true, from, name, signal });
-        });
-        socket.on(socketEmitters.REVEAL_INIT, ({ fromSocket, fromUsername }) => {
-            setRevealLabel(`Accept Reveal`)
-        });
-    }, []);
-
-    const connectUser: () => NodeJS.Timer = () => {
-        const interval = setInterval(async () => {
-            await dispatch(genTempUser(userReducer.preference));
-            if (otherUserReducer.socketID && stream && !callAccepted) {
-                callUser(
-                    otherUserReducer.socketID,
-                    stream,
-                    userReducer.socketID,
-                    userReducer.username,
-                    userVideo,
-                    setCallAccepted,
-                    connectionRef
-                );
-                clearInterval(interval);
-            } else {
-                console.log("User not found retrying...");
-                /* update other user */
-                await dispatch(genTempUser(userReducer.preference));
-            }
-        }, 3000);
-        return interval;
-    };
-
-    useEffect(() => {
-        /* Call has been done to user and automatically answer call */
-        if (call && call.isReceivedCall && !callAccepted) {
-            console.log("call has been answered");
-            answerCall(
-                stream,
-                call,
-                userVideo,
-                connectionRef,
-                setCallAccepted
-            );
-            clearInterval(connectUserRef.current);
-        }
-    }, [call]);
-
-    /* Initial Sanity Check for for proper redux setup, and if preference exist generate the temp user pool */
-    useEffect(() => {
-        if (!userReducer.username || !userReducer.preference) {
-            console.log("Going back", userReducer);
-            window.location.href = "/";
-            return;
-        }
-    }, [userReducer]);
-
-    /* Find someone to call in the user pool at random */
-    useEffect(() => {
-        if (Object.keys(call).length === 0) {
-            connectUserRef.current = connectUser();
-            return () => clearInterval(connectUserRef.current);
-        }
-    }, [otherUserReducer, stream, call]);
-
-    useEffect(() => {
-        if (callAccepted) {
-            console.log("updating call status to incall for ", userReducer.username);
-            dispatch(updateStatus(tempUserStatus.IN_CALL));
-        }
-    }, [callAccepted])
-
-
-    useEffect(() => {
-        if (callAccepted && revealTimer !== 0) {
-            setTimeout(() => {
-                setRevealTimer(revealTimer - 1);
-            }, 1000);
-        }
-    }, [callAccepted, revealTimer]);
-
     const ButtonContainer = ({ children }) => (
         <div className="mb-8 flex justify-end">
             {children}
@@ -155,45 +65,12 @@ const Index = () => {
 
     /* No interval is working after skipping */
     const skipHandler = async () => {
-        connectionRef.current.destroy();
 
-        setShowAvatar(true);
-        setRevealTimer(5);
-        setRevealLabel("Reveal");
-        setShowMatch(false);
-
-        setCall({});
-        setCallAccepted(false);
-        await dispatch(updateStatus(tempUserStatus.WAITING));
-        dispatch(clearState());
     };
 
     /* Not a true hide change this to addStream instead  */
     const revealHandler = () => {
-        /* When user press reveal -> await other user */
-        /* both user press reveal -> allow reveal */
 
-        const reveal = () => {
-            setShowAvatar(false);
-            setShowMatch(true);
-        };
-
-        if (revealLabel === "Accept Reveal") {
-            socket.emit(socketEmitters.ACCEPT_REVEAL, { to: otherUserReducer.socketID });
-            reveal();
-        } else {
-            /* initiate reveal; */
-            setRevealLabel("Sent Reveal")
-            socket.emit(socketEmitters.REVEAL_INIT, {
-                userToReveal: otherUserReducer.socketID,
-                fromSocket: userReducer.socketID,
-                fromUsername: userReducer.username
-            });
-            socket.on(socketEmitters.REAVEAL_ACCEPT, () => {
-                reveal();
-                socket.off(socketEmitters.REAVEAL_ACCEPT);
-            });
-        }
     };
 
     return !userReducer.username ? (
