@@ -10,7 +10,6 @@ import { socketEmitters } from "../../constants/emitters";
 import { setupMediaStream, callUser, answerCall } from "../../utils/videoCall.util";
 import socket from "../../config/Socket";
 import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
-import LoadingVideo from "../../components/LoadingVideo/LoadingVideo";
 
 export interface ICallObject {
     isReceivedCall: boolean,
@@ -39,6 +38,7 @@ const Index = () => {
     const [revealTimer, setRevealTimer] = useState(5);
     const [showMatch, setShowMatch] = useState(false);
     const [showAvatar, setShowAvatar] = useState(true);
+    const [connectUserSuccess, setConnectUserSuccess] = useState(false);
 
     //Camera Setup
     useEffect(() => {
@@ -74,6 +74,12 @@ const Index = () => {
         socket.on(socketEmitters.REVEAL_INIT, ({ fromSocket, fromUsername }) => {
             setRevealLabel(`Accept Reveal`)
         });
+        /* 
+            if call is rejected ->
+            retry another user
+
+            will get rid of interval
+        */
     }, []);
 
     const connectUser: () => NodeJS.Timer = () => {
@@ -87,9 +93,9 @@ const Index = () => {
                     userReducer.username,
                     userVideo,
                     setCallAccepted,
-                    connectionRef
+                    connectionRef,
+                    setConnectUserSuccess
                 );
-                clearInterval(interval);
             } else {
                 console.log("User not found retrying...");
                 /* update other user */
@@ -100,8 +106,20 @@ const Index = () => {
     };
 
     useEffect(() => {
+        if (connectUserSuccess) {
+            console.log("This ran");
+            clearInterval(connectUserRef.current);
+        }
+    }, [connectUserSuccess]);
+
+    useEffect(() => {
         /* Call has been done to user and automatically answer call */
+        /* have to set other user reducer here */
         if (call && call.isReceivedCall && !callAccepted) {
+            if (connectionRef.current) {
+                console.log("Has an ongoing connectionRef");
+                connectionRef.current.destroy();
+            }
             console.log("call has been answered");
             answerCall(
                 stream,
@@ -124,6 +142,7 @@ const Index = () => {
     }, [userReducer]);
 
     /* Find someone to call in the user pool at random */
+    /* Bug where it generates an arbitrary user's information through otherUserReducer genTempUser */
     useEffect(() => {
         if (Object.keys(call).length === 0) {
             connectUserRef.current = connectUser();
@@ -131,12 +150,12 @@ const Index = () => {
         }
     }, [otherUserReducer, stream, call]);
 
-    useEffect(() => {
-        if (callAccepted) {
-            console.log("updating call status to incall for ", userReducer.username);
-            dispatch(updateStatus(tempUserStatus.IN_CALL));
-        }
-    }, [callAccepted])
+    // useEffect(() => {
+    //     if (callAccepted) {
+    //         console.log("updating call status to incall for ", userReducer.username);
+    //         dispatch(updateStatus(tempUserStatus.IN_CALL));
+    //     }
+    // }, [callAccepted])
 
 
     useEffect(() => {
@@ -164,7 +183,7 @@ const Index = () => {
 
         setCall({});
         setCallAccepted(false);
-        await dispatch(updateStatus(tempUserStatus.WAITING));
+        // await dispatch(updateStatus(tempUserStatus.WAITING));
         dispatch(clearState());
     };
 
@@ -200,20 +219,16 @@ const Index = () => {
         <Typography>Invalid Page Redirecting...</Typography>
     ) : (
         <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
-            {
-                callAccepted ?
-                    <VideoPreview
-                        isMuted={false}
-                        videoRef={userVideo}
-                        user={otherUserReducer}
-                        showAvatar={showAvatar}
-                    /> :
-                    <LoadingVideo />
-            }
+            <VideoPreview
+                isMuted={false}
+                videoRef={userVideo}
+                user={otherUserReducer}
+                showAvatar={false}
+            />
             <VideoPreview
                 videoRef={myVid}
                 user={userReducer}
-                showAvatar={showAvatar}
+                showAvatar={false}
             />
             <Container className="absolute flex flex-col bottom-5">
                 {

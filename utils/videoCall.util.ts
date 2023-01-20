@@ -24,13 +24,17 @@ export const callUser = (
     userName: string,
     userVideo: MutableRefObject<HTMLVideoElement>,
     setCallAccepted: Function,
-    connectionRef: Peer
+    connectionRef: Peer,
+    setConnectUserSuccess: Function
 ) => {
     const peer = new Peer({
         initiator: true,
         trickle: false,
         stream,
     });
+
+    connectionRef.current = peer;
+
     peer.on("signal", (data) => {
         socket.emit(socketEmitters.CALLUSER, { userToCall: idToCall, signalData: data, from: userSocketID, name: userName });
     });
@@ -42,11 +46,14 @@ export const callUser = (
         console.log("User 2 Disconnected ");
     });
     socket.on(socketEmitters.CALLACCEPTED, (signal) => {
+        console.log("my peer", peer);
         setCallAccepted(true);
         peer.signal(signal);
         connectionRef.current = peer;
         socket.off(socketEmitters.CALLACCEPTED);
     });
+
+    setConnectUserSuccess(true);
 };
 
 export const answerCall = (
@@ -68,10 +75,16 @@ export const answerCall = (
     peer.on("stream", (currStream) => {
         userVideo.current.srcObject = currStream;
     });
-    peer.on("close", () => {
+    peer.on("close", (err) => {
         peer.destroy();
         console.log("User 1 Disconnected");
     });
+    peer.on("error", (err) => {
+        console.log("Connection error", err);
+        setCallAccepted(false);
+        connectionRef.current = null;
+        userVideo.current = null;
+    })
     peer.signal(call.signal);
     connectionRef.current = peer;
 };

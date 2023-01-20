@@ -70,6 +70,15 @@ const otherUserSlice = createSlice({
                 display: null,
             }
         },
+        setOtherUser: (state, action: { payload: apiTempUser }) => {
+            state.__V = action.payload.__V;
+            state._id = action.payload._id;
+            state.preference = action.payload.preference;
+            state.socketID = action.payload.socketID;
+            state.username = action.payload.username;
+            state.avatar.bg = action.payload.avatar.bg;
+            state.avatar.display = action.payload.avatar.display;
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(genTempUser.fulfilled, (state, action: { payload: apiTempUser }) => {
