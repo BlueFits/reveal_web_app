@@ -1,11 +1,20 @@
 import { socketEmitters } from "../../constants/emitters";
+import { IUserReducer } from "../../services/modules/userSlice";
 import tempUsersDao from "../tempUser/daos/tempUsers.dao";
-import { tempUserStatus } from "../tempUser/dto/create.tempUser.dto";
+import { CreateTempUserDTO, tempUserStatus } from "../tempUser/dto/create.tempUser.dto";
 
 export default class SocketInit {
     constructor(io: any) {
         io.on('connection', (socket) => {
             console.log('Connection established for: ', socket.id);
+
+            socket.on(socketEmitters.JOIN_ROOM, (roomID, userID) => {
+                socket.join(roomID);
+                socket.broadcast.to(roomID).emit(socketEmitters.USER_CONNECTED, userID)
+                socket.on(socketEmitters.DISCONNECT, () => {
+                    socket.broadcast.to(roomID).emit(socketEmitters.USER_DISCONNECTED, userID)
+                });
+            });
 
             /* Client emits send_id and we respond with sending them socket ID */
             socket.on("send_id", () => {
@@ -19,14 +28,33 @@ export default class SocketInit {
                 socket.broadcast.emit(socketEmitters.CALLENDED);
             })
             /* when user calls we emit calluser to the client receiving the call */
-            socket.on(socketEmitters.CALLUSER, ({ userToCall, signalData, from, name }) => {
-                console.log(`User ${name} is calling ${userToCall}`);
-                io.to(userToCall).emit(socketEmitters.CALLUSER, { signal: signalData, from, name });
+            socket.on(socketEmitters.CALLUSER, async ({ userToCallSocket, signalData, from }: { userToCallSocket: string; signalData: any; from: IUserReducer }) => {
+                console.log(`User ${from.username} is calling ${userToCallSocket}`);
+                /* set caller to incall */
+                await tempUsersDao.updateTempUserByID(from._id, { status: tempUserStatus.IN_CALL });
+                io.to(userToCallSocket).emit(socketEmitters.CALLUSER, { signal: signalData, from });
             });
 
-            socket.on(socketEmitters.ANSWER_CALL, (data) => {
+            socket.on(socketEmitters.ANSWER_CALL, async (data: { signal: any, to: IUserReducer }) => {
                 console.log("User answer call");
-                io.to(data.to).emit(socketEmitters.CALLACCEPTED, data.signal);
+                /* Check if data.to is already incall */
+                /* 
+                    if in call -> 
+                    return data.from and terminate call socket.emit(reject_call)
+                */
+                console.log("answering call from " + data.to.username);
+                const user = await tempUsersDao.getTempUserBySocketID(data.to.socketID);
+                console.log("status " + user.status);
+                if (user.status === tempUserStatus.IN_CALL) {
+                    await tempUsersDao.updateTempUserByID(data.to._id, { status: tempUserStatus.WAITING });
+                    io.to(data.to).emit(socketEmitters.REJECT_CALL)
+                } else {
+                    io.to(data.to).emit(socketEmitters.CALLACCEPTED, { signal: data.signal });
+                }
+                /* 
+                    if user is waiting -> 
+                    socket.emit(callAccepted)
+                */
             });
 
             socket.on(socketEmitters.REVEAL_INIT, (data) => {

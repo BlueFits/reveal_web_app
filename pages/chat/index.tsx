@@ -1,4 +1,4 @@
-import { useEffect, useState, MutableRefObject, useRef } from "react";
+import { useEffect, useState, MutableRefObject, useRef, useCallback } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
@@ -13,8 +13,7 @@ import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
 
 export interface ICallObject {
     isReceivedCall: boolean,
-    from: string,
-    name: string,
+    from: IUserReducer,
     signal: any
 }
 
@@ -31,14 +30,14 @@ const Index = () => {
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
-    const connectUserRef: { current: NodeJS.Timer | undefined } = useRef();
+    const intervalRef: MutableRefObject<NodeJS.Timer | null> = useRef(null);
 
     //Functionality
     const [revealLabel, setRevealLabel] = useState<string>("Reveal");
     const [revealTimer, setRevealTimer] = useState(5);
     const [showMatch, setShowMatch] = useState(false);
     const [showAvatar, setShowAvatar] = useState(true);
-    const [connectUserSuccess, setConnectUserSuccess] = useState(false);
+    const [connectUserRan, setConnectUserRan] = useState(false);
 
     //Camera Setup
     useEffect(() => {
@@ -67,9 +66,14 @@ const Index = () => {
                 preference: userReducer.preference,
             }));
         });
-        socket.on(socketEmitters.CALLUSER, ({ from, name, signal }) => {
-            console.log("Receving a call", from, name);
-            setCall({ isReceivedCall: true, from, name, signal });
+        socket.on(socketEmitters.CALLUSER, ({ from, signal }: { from: IUserReducer, signal: any }) => {
+            console.log("Receving a call", from.username);
+            setCall({ isReceivedCall: true, from, signal });
+        });
+        socket.on(socketEmitters.REJECT_CALL, async () => {
+            console.log("call rejected attempting connect...");
+            dispatch(clearState());
+            // connectUser();
         });
         socket.on(socketEmitters.REVEAL_INIT, ({ fromSocket, fromUsername }) => {
             setRevealLabel(`Accept Reveal`)
@@ -82,35 +86,43 @@ const Index = () => {
         */
     }, []);
 
-    const connectUser: () => NodeJS.Timer = () => {
-        const interval = setInterval(async () => {
-            await dispatch(genTempUser(userReducer.preference));
-            if (otherUserReducer.socketID && stream && !callAccepted) {
-                callUser(
-                    otherUserReducer.socketID,
-                    stream,
-                    userReducer.socketID,
-                    userReducer.username,
-                    userVideo,
-                    setCallAccepted,
-                    connectionRef,
-                    setConnectUserSuccess
-                );
-            } else {
-                console.log("User not found retrying...");
-                /* update other user */
-                await dispatch(genTempUser(userReducer.preference));
-            }
-        }, 3000);
-        return interval;
-    };
+    // const connectUser: () => void = async () => {
+    //     console.log("Finding User...");
+    //     const data = await dispatch(genTempUser(userReducer.preference));
+    //     console.log("my log", data.payload);
+    //     console.log("condition Stream", stream);
+    //     console.log("condition callAccepted", !callAccepted);
+    //     if (data && data.payload && data.payload.socketID && stream && !callAccepted) {
+    //         console.log("Calling user");
+    //         callUser(
+    //             otherUserReducer.socketID,
+    //             stream,
+    //             userReducer,
+    //             userVideo,
+    //             setCallAccepted,
+    //             connectionRef,
+    //         );
+    //     }
+    // };
 
-    useEffect(() => {
-        if (connectUserSuccess) {
-            console.log("This ran");
-            clearInterval(connectUserRef.current);
-        }
-    }, [connectUserSuccess]);
+    // const connectUserCallBack = useCallback(async () => {
+    //     console.log("Finding User...");
+    //     const data = await dispatch(genTempUser(userReducer.preference));
+    //     console.log("my log", data.payload);
+    //     console.log("condition Stream", stream);
+    //     console.log("condition callAccepted", !callAccepted);
+    //     if (data && data.payload && data.payload.socketID && stream && !callAccepted) {
+    //         console.log("Calling user");
+    //         callUser(
+    //             otherUserReducer.socketID,
+    //             stream,
+    //             userReducer,
+    //             userVideo,
+    //             setCallAccepted,
+    //             connectionRef,
+    //         );
+    //     }
+    // }, [stream]);
 
     useEffect(() => {
         /* Call has been done to user and automatically answer call */
@@ -128,7 +140,6 @@ const Index = () => {
                 connectionRef,
                 setCallAccepted
             );
-            clearInterval(connectUserRef.current);
         }
     }, [call]);
 
@@ -144,11 +155,31 @@ const Index = () => {
     /* Find someone to call in the user pool at random */
     /* Bug where it generates an arbitrary user's information through otherUserReducer genTempUser */
     useEffect(() => {
-        if (Object.keys(call).length === 0) {
-            connectUserRef.current = connectUser();
-            return () => clearInterval(connectUserRef.current);
-        }
-    }, [otherUserReducer, stream, call]);
+        // if (Object.keys(call).length === 0) {
+
+        // }
+        const connectUser: () => void = async () => {
+            console.log("Finding User...");
+            if (otherUserReducer.socketID && stream && !callAccepted) {
+                if (intervalRef.current) clearInterval(intervalRef.current);
+                console.log("Calling user");
+                // callUser(
+                //     otherUserReducer.socketID,
+                //     stream,
+                //     userReducer,
+                //     userVideo,
+                //     setCallAccepted,
+                //     connectionRef,
+                // );
+            } else {
+                intervalRef.current = setInterval(async () => {
+                    console.log("Finding User");
+                    await dispatch(genTempUser(userReducer.preference));
+                }, 3000);
+            }
+        };
+        connectUser();
+    }, [otherUserReducer]);
 
     // useEffect(() => {
     //     if (callAccepted) {

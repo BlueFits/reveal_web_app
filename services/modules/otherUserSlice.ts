@@ -27,7 +27,7 @@ const initialState: apiTempUser = {
     }
 };
 
-export const genTempUser: any = createAsyncThunk("user/gen25TempUserPool", async (data: any, { getState }) => {
+export const genTempUser: any = createAsyncThunk("user/genTempUser", async (data: any, { getState }) => {
     try {
         const state: IUserReducer = (getState()! as IReducer).user;
         const tempUsers = await fetch(serverURL + `/api/temp_user/${state.id}/preference_match`, {
@@ -42,7 +42,6 @@ export const genTempUser: any = createAsyncThunk("user/gen25TempUserPool", async
         });
         if (!tempUsers.ok) {
             console.error("genTempUserPool api error");
-            return initialState;
         } else {
             const resData = await tempUsers.json();
             console.log("recevied", resData);
@@ -84,6 +83,7 @@ const otherUserSlice = createSlice({
         builder.addCase(genTempUser.fulfilled, (state, action: { payload: apiTempUser }) => {
             console.log("setting other user to:", action.payload);
             if (!action.payload) {
+                console.log("setting state to null");
                 state.__V = null;
                 state._id = null;
                 state.preference = null;

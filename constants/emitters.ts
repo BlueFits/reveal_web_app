@@ -5,7 +5,11 @@ export enum socketEmitters {
     ME = "me",
     DISCONNECT = "disconnect",
     ANSWER_CALL = "answercall",
+    REJECT_CALL = "rejectcall",
     REVEAL_INIT = "revealinit",
     REAVEAL_ACCEPT = "revealaccept",
     ACCEPT_REVEAL = "acceptreveal",
+    JOIN_ROOM = "join_room",
+    USER_CONNECTED = "user-connected",
+    USER_DISCONNECTED = "user-disconnected",
 } 

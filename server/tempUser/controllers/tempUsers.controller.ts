@@ -17,13 +17,14 @@ class TempUsersController {
     async getTempUserWithSamePref(req: Request, res: Response) {
         const preferenceArr: preferences = req.body.preference;
         const userID = req.body.id;
-        console.log(preferenceArr, userID);
+        if (!userID) res.status(400).send("No ID found")
+        console.log("preference log", preferenceArr, userID);
         //If preference contains at least one value from preferenceArr
-        const tempUsers = await tempUsersDao.getTempUsers({
+        const tempUser = await tempUsersDao.getTempUsers({
             filter: { "_id": { $ne: userID }, preference: { $in: preferenceArr }, status: tempUserStatus.WAITING }
         });
-        const randomIndex = Math.floor(Math.random() * (tempUsers.length));
-        const tempUser = tempUsers[randomIndex];
+        // const randomIndex = Math.floor(Math.random() * (tempUsers.length));
+        // const tempUser = tempUsers[0];
         res.status(200).send(tempUser);
     }
 

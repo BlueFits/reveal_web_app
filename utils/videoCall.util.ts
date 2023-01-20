@@ -3,6 +3,7 @@ import Peer from "simple-peer";
 import socket from "../config/Socket";
 import { socketEmitters } from "../constants/emitters";
 import { ICallObject } from "../pages/chat";
+import { IUserReducer } from "../services/modules/userSlice";
 
 export const setupMediaStream = async (setStream) => {
     try {
@@ -20,12 +21,10 @@ export const setupMediaStream = async (setStream) => {
 export const callUser = (
     idToCall: string,
     stream: MediaProvider,
-    userSocketID: string,
-    userName: string,
+    user: IUserReducer,
     userVideo: MutableRefObject<HTMLVideoElement>,
     setCallAccepted: Function,
     connectionRef: Peer,
-    setConnectUserSuccess: Function
 ) => {
     const peer = new Peer({
         initiator: true,
@@ -36,7 +35,8 @@ export const callUser = (
     connectionRef.current = peer;
 
     peer.on("signal", (data) => {
-        socket.emit(socketEmitters.CALLUSER, { userToCall: idToCall, signalData: data, from: userSocketID, name: userName });
+        console.log("Emitting call user");
+        socket.emit(socketEmitters.CALLUSER, { userToCall: idToCall, signalData: data, from: user });
     });
     peer.on("stream", (currStream) => {
         userVideo.current.srcObject = currStream;
@@ -45,15 +45,12 @@ export const callUser = (
         peer.destroy();
         console.log("User 2 Disconnected ");
     });
-    socket.on(socketEmitters.CALLACCEPTED, (signal) => {
-        console.log("my peer", peer);
+    socket.on(socketEmitters.CALLACCEPTED, ({ signal }) => {
         setCallAccepted(true);
         peer.signal(signal);
         connectionRef.current = peer;
         socket.off(socketEmitters.CALLACCEPTED);
     });
-
-    setConnectUserSuccess(true);
 };
 
 export const answerCall = (

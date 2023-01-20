@@ -35,17 +35,15 @@ class TempUsersDao {
     }
 
     async getTempUsers({
-        limit = 25,
-        page = 0,
         filter = {}
     }: {
         limit?: number,
         page?: number,
         filter?: any,
     }) {
-        return this.TempUser.find(filter)
-            .limit(limit)
-            .skip(limit * page)
+        return this.TempUser.findOne(filter)
+            // .limit(limit)
+            // .skip(limit * page)
             .exec();
     }
 
