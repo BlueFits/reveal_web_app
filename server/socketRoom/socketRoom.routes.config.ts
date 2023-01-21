@@ -32,6 +32,5 @@ export default class SocketRoom extends CommonRoutesConfig {
         this.router.route("/:roomID")
             .all(socketRoomMiddleware.validateIDExists)
             .delete(socketRoomController.removeRoom)
-
     }
 };

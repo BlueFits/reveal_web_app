@@ -25,7 +25,7 @@ class SocketRoomController {
         const room = await socketRoomDao.getRooms({
             filter: { preference: { $in: preferenceArr } }
         });
-        res.status(200).send(room);
+        res.status(200).send(room[0]);
     }
 
 };

@@ -20,7 +20,7 @@ const httpServer = createServer(server);
 const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"] } });
 // const ml5Router = new Ml5Routes("Ml5Routes").getRouter;
 // const tempUserRouter = new TempUserRoutes("TempUserRoutes").getRouter;
-const socketRoomRouter = new SocketRoom("SocketRoomRoutes").getRouter;
+const availableSocketRoomRouter = new SocketRoom("SocketRoomRoutes").getRouter;
 
 
 app.prepare().then(() => {
@@ -33,7 +33,7 @@ app.prepare().then(() => {
 	server.use(cookieParser());
 
 	// server.use("/api/temp_user", tempUserRouter);
-	server.use("/api/socket_room", socketRoomRouter);
+	server.use("/api/socket_room", availableSocketRoomRouter);
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);

@@ -12,12 +12,10 @@ interface IMongoTempUser extends Partial<IUserReducer> {
 }
 
 export interface IUserReducer {
-    id: string;
+    socketID: string,
     username: string,
-    socketID: string;
     preference: Array<string>;
-    status: tempUserStatus.WAITING;
-    _id?: string;
+    _id: string;
     __v?: number;
     avatar: {
         bg: string;
@@ -26,11 +24,10 @@ export interface IUserReducer {
 }
 
 const initialState: IUserReducer = {
-    id: null,
-    username: null,
+    _id: null,
     socketID: null,
+    username: null,
     preference: null,
-    status: null,
     avatar: {
         bg: null,
         display: null,
@@ -64,31 +61,6 @@ export const createTempUser: any = createAsyncThunk("user/createTemp", async (da
     }
 });
 
-export const updateStatus: any = createAsyncThunk("user/update", async (data: any, { getState }) => {
-    try {
-        const state: IUserReducer = (getState()! as IReducer).user;
-        const response = await fetch(serverURL + `/api/temp_user/${state.id}`, {
-            method: "PATCH",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                status: data,
-            }),
-        });
-        if (!response.ok) {
-            const errData = await response.json();
-            return { err: errData.error };
-        } else {
-            const resData = await response.json();
-            return resData;
-        }
-    } catch (err) {
-        throw err;
-    }
-});
-
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -101,25 +73,19 @@ const userSlice = createSlice({
         },
         setSocketID: (state, action: { payload: string }) => {
             state.socketID = action.payload;
-        },
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(createTempUser.fulfilled, (state, action: { payload: IMongoTempUser }) => {
             //If possible fix the socket duplication in the future
             if (action.payload.err === apiErrors.socketIdExsists) return;
             console.log("setting temp user reducer to", action.payload);
-            const { username, preference, socketID, _id, status, avatar } = action.payload;
+            const { username, preference, _id, avatar } = action.payload;
             state.username = username;
             state.preference = preference;
-            state.socketID = socketID;
-            state.id = _id;
-            state.status = status;
             state.avatar.bg = avatar.bg;
             state.avatar.display = avatar.display;
-        });
-        builder.addCase(updateStatus.fulfilled, (state, action: { payload: IMongoTempUser }) => {
-            console.log("setting new status of user to:", action.payload.status);
-            state.status = action.payload.status;
+            state._id = _id
         });
     }
 })

@@ -2,7 +2,6 @@ import { MutableRefObject } from "react";
 import Peer from "simple-peer";
 import socket from "../config/Socket";
 import { socketEmitters } from "../constants/emitters";
-import { ICallObject } from "../pages/chat";
 import { IUserReducer } from "../services/modules/userSlice";
 
 export const setupMediaStream = async (setStream) => {
@@ -55,7 +54,7 @@ export const callUser = (
 
 export const answerCall = (
     stream: MediaProvider,
-    call: Partial<ICallObject>,
+    call: Partial<any>,
     userVideo: MutableRefObject<HTMLVideoElement>,
     connectionRef: Peer,
     setCallAccepted: Function
@@ -85,3 +84,8 @@ export const answerCall = (
     peer.signal(call.signal);
     connectionRef.current = peer;
 };
+
+
+export const joinRoom = (roomID: string, userID: string) => {
+    socket.emit(socketEmitters.JOIN_ROOM, { roomID, userID });
+}
