@@ -1,3 +1,4 @@
+import { callUserData } from "../../constants/callTypes";
 import { socketEmitters } from "../../constants/emitters";
 
 export default class SocketInit {
@@ -22,6 +23,15 @@ export default class SocketInit {
                     });
                 }
             });
+
+            socket.on(socketEmitters.CALLUSER, ({ toCallID, signal, user }: callUserData) => {
+                console.log("Delivering signal to ", toCallID);
+                io.to(toCallID).emit(socketEmitters.CALLUSER, { signal, user });
+            })
+
+            socket.on(socketEmitters.ANSWER_CALL, ({ signal, socketID }) => {
+                io.to(socketID).emit(socketEmitters.CALLACCEPTED, { signal });
+            })
         });
     }
 };

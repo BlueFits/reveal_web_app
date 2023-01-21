@@ -60,6 +60,25 @@ export const createRoom: any = createAsyncThunk("room/create", async (data: any)
     }
 });
 
+export const removeRoom: any = createAsyncThunk("room/remove", async (data: any) => {
+    try {
+        console.log(`sending to api ${serverURL}${API}/${data}`);
+        const response = await fetch(`${serverURL}${API}/${data}`, {
+            method: "DELETE",
+        });
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error("error in room/delete", errData);
+            throw errData;
+        } else {
+            const resData = await response.json();
+            return resData;
+        }
+    } catch (err) {
+        throw err;
+    }
+});
+
 const roomSlice = createSlice({
     name: 'room',
     initialState,
@@ -76,6 +95,11 @@ const roomSlice = createSlice({
             state._id = action.payload._id;
             state.preference = action.payload.preference;
         })
+        builder.addCase(removeRoom.fulfilled, (state) => {
+            console.log("Remoing available room info");
+            state._id = null;
+            state.preference = null;
+        });
     }
 })
 
