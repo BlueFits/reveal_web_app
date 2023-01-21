@@ -20,6 +20,12 @@ const Index = () => {
     const otherUserReducer: apiTempUser = useSelector((state: IReducer) => state.otherUser);
     const roomReducer: IRoomReducer = useSelector((state: IReducer) => state.room);
 
+    const ButtonContainer = ({ children }) => (
+        <div className="mb-8 flex justify-end">
+            {children}
+        </div>
+    );
+
     //Video Call Shtuff
     const [stream, setStream] = useState<MediaProvider>();
     const [userStream, setUserStream] = useState(null);
@@ -34,21 +40,21 @@ const Index = () => {
     const peerAnswer: Peer = useRef();
 
     //Camera Setup
-    useEffect(() => {
-        const setupWebCam = async () => {
-            if (!stream) {
-                await setupMediaStream(setStream);
-            } else {
-                const videoCurr = myVid.current;
-                if (!videoCurr) return;
-                const video = videoCurr;
-                if (!video.srcObject) {
-                    video.srcObject = stream;
-                }
-            }
-        }
-        setupWebCam();
-    }, [stream]);
+    // useEffect(() => {
+    //     const setupWebCam = async () => {
+    //         if (!stream) {
+    //             await setupMediaStream(setStream);
+    //         } else {
+    //             const videoCurr = myVid.current;
+    //             if (!videoCurr) return;
+    //             const video = videoCurr;
+    //             if (!video.srcObject) {
+    //                 video.srcObject = stream;
+    //             }
+    //         }
+    //     }
+    //     setupWebCam();
+    // }, [stream]);
 
     /* Check for existing rooms */
 
@@ -56,13 +62,13 @@ const Index = () => {
         const roomData = await dispatch(createRoom(userReducer.preference));
         console.log("Created room id ", roomData.payload._id);
         joinRoom(roomData.payload._id, userReducer.socketID);
-        socket.on(socketEmitters.USER_CONNECTED, (userID) => {
+        socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
             console.log("New user connected ", userID);
+            await dispatch(removeRoom(roomData.payload._id));
 
             const peer1 = new Peer({
                 initiator: true,
                 trickle: false,
-                stream
             });
 
             peerCall.current = peer1;
@@ -82,15 +88,14 @@ const Index = () => {
             })
             socket.on(socketEmitters.CALLACCEPTED, ({ signal }) => {
                 peer1.signal(signal);
-                socket.off(socketEmitters.CALLACCEPTED);
+                // socket.off(socketEmitters.CALLACCEPTED);
             });
-
             socket.off(socketEmitters.USER_CONNECTED)
         });
     }
 
     useEffect(() => {
-        if (!initSetupRan && stream) {
+        if (!initSetupRan) {
             const findRoomThunk = async () => {
                 console.log("user pref: ", userReducer.preference);
                 const roomData: { payload: IRoomReducer } = await dispatch(findRoom(userReducer.preference));
@@ -105,41 +110,37 @@ const Index = () => {
             findRoomThunk();
             setInitSetupRan(true);
         }
-    }, [initSetupRan, stream]);
+    }, [initSetupRan]);
 
     useEffect(() => {
-        if (stream) {
-            socket.on(socketEmitters.ROOM_FULL, () => {
-                /* room trying to join has reached max capacity */
-                console.log("Room is full creating a new room");
-                createRoomExec();
-            })
+        socket.on(socketEmitters.ROOM_FULL, () => {
+            /* room trying to join has reached max capacity */
+            console.log("Room is full creating a new room");
+            createRoomExec();
+        })
 
-            socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
-                console.log("getting a connection from", user);
-                const peer2 = new Peer({
-                    trickle: false,
-                    initiator: false,
-                    stream,
-                });
-                peer2.on("signal", async (signal) => {
-                    console.log("Sending delete request", roomReducer);
-                    // await dispatch(removeRoom(roomReducer._id));
-                    socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID })
-                })
-                peer2.on("stream", (currStream) => {
-                    console.log("Picked up a stream");
-                    console.log("Curr stream", currStream);
-                    console.log(userVideo);
-                    setUserStream(currStream);
-                })
-                peer2.on("error", (err) => {
-                    console.log("Connection error", err);
-                })
-                peer2.signal(signal);
+        socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
+            console.log("getting a connection from", user);
+            const peer2 = new Peer({
+                trickle: false,
+                initiator: false,
             });
-        }
-    }, [stream]);
+            peer2.on("signal", async (signal) => {
+                socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID })
+            })
+            peer2.on("stream", (currStream) => {
+                console.log("Picked up a stream");
+                console.log("Curr stream", currStream);
+                console.log(userVideo);
+                setUserStream(currStream);
+                userVideo.current.srcObject = currStream;
+            })
+            peer2.on("error", (err) => {
+                console.log("Connection error", err);
+            })
+            peer2.signal(signal);
+        });
+    }, []);
 
     useEffect(() => {
         if (!userReducer.username || !userReducer.preference) {
@@ -147,21 +148,16 @@ const Index = () => {
         }
     }, [userReducer]);
 
-    useEffect(() => {
-        userVideo.current.srcObject = userStream;
-    }, [userStream, userVideo]);
+    // useEffect(() => {
+    //     userVideo.current.srcObject = userStream;
+    // }, [userStream, userVideo]);
 
     const addMedia = (stream) => {
+        console.log(peerCall);
         console.log("My stream ", stream);
         myVid.current.srcObject = stream;
         peerCall.current.addStream(stream);
     };
-
-    const ButtonContainer = ({ children }) => (
-        <div className="mb-8 flex justify-end">
-            {children}
-        </div>
-    );
 
     const revealHandler = () => {
         navigator.mediaDevices.getUserMedia({
@@ -220,6 +216,13 @@ const Index = () => {
                             </Button>
                         </ButtonContainer>
                 }
+                <Button onClick={() => {
+                    console.log(userStream);
+                    console.log(userVideo);
+                    userVideo.current.srcObject = userStream
+                }}>
+                    setStream
+                </Button>
                 <div className="flex justify-between">
                     <Button onClick={() => window.location.href = "/"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
                     <Button disabled={true} onClick={() => console.log("Not set")} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>

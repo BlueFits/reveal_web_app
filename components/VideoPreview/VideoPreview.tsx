@@ -15,9 +15,9 @@ const VideoPreview: React.FC<IVideoPreview> = ({ user, videoRef = null, isMuted 
     const [localRef, setLocalRef] = useState(videoRef);
     const { username, avatar } = user;
     useEffect(() => {
-        console.log("Video ref changed");
+        console.log("Video ref changed", videoRef.current);
         setLocalRef(videoRef)
-    }, [videoRef]);
+    }, [videoRef.current]);
     return (
         <Container sx={{ backgroundColor: "#000" }} disableGutters className="flex-1 relative overflow-hidden">
             <div className="p-2 absolute bg-black/50 w-2/4 flex rounded-full items-center" style={{ top: 30, left: 10 }}>

@@ -1,5 +1,6 @@
 import { callUserData } from "../../constants/callTypes";
 import { socketEmitters } from "../../constants/emitters";
+import socketRoomDao from "../socketRoom/dao/socketRoom.dao";
 
 export default class SocketInit {
     constructor(io: any) {
@@ -18,7 +19,9 @@ export default class SocketInit {
                 } else {
                     socket.join(roomID);
                     socket.broadcast.to(roomID).emit(socketEmitters.USER_CONNECTED, userID)
-                    socket.on(socketEmitters.DISCONNECT, () => {
+                    socket.on(socketEmitters.DISCONNECT, async () => {
+                        const room = await socketRoomDao.getRoomByID(roomID);
+                        if (room) await socketRoomDao.removeRoomByID(roomID)
                         socket.broadcast.to(roomID).emit(socketEmitters.USER_DISCONNECTED, userID)
                     });
                 }

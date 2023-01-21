@@ -16,7 +16,6 @@ const API = "/api/socket_room";
 //Thunks
 export const findRoom: any = createAsyncThunk("room/findSim", async (data: any) => {
     try {
-        console.log("Un processed data: ", data);
         const response = await fetch(`${serverURL}${API}/preference_match`, {
             method: "POST",
             headers: {
