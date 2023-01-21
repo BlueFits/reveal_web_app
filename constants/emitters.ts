@@ -10,6 +10,7 @@ export enum socketEmitters {
     REAVEAL_ACCEPT = "revealaccept",
     ACCEPT_REVEAL = "acceptreveal",
     JOIN_ROOM = "join_room",
+    ROOM_FULL = "roomfull",
     USER_CONNECTED = "user-connected",
     USER_DISCONNECTED = "user-disconnected",
 } 

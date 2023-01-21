@@ -33,6 +33,7 @@ app.prepare().then(() => {
 	server.use(cookieParser());
 
 	// server.use("/api/temp_user", tempUserRouter);
+	server.use("/api/socket_room", socketRoomRouter);
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);
