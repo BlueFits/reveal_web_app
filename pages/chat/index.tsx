@@ -301,4 +301,9 @@ const Index = () => {
     );
 };
 
+// Index.getInitialProps = async () => {
+//     console.log("This ran");
+//     return {};
+// }
+
 export default Index;
