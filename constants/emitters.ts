@@ -14,4 +14,5 @@ export enum socketEmitters {
     ROOM_FULL = "roomfull",
     USER_CONNECTED = "user-connected",
     USER_DISCONNECTED = "user-disconnected",
+    ROOM_LEAVE = "roomleave",
 } 

@@ -13,22 +13,31 @@ export default class SocketInit {
             })
 
             socket.on(socketEmitters.JOIN_ROOM, ({ roomID, userID }) => {
+
+                const disconnect = async () => {
+                    const room = await socketRoomDao.getRoomByID(roomID);
+                    if (room) await socketRoomDao.removeRoomByID(roomID);
+                    socket.broadcast.to(roomID).emit(socketEmitters.USER_DISCONNECTED, userID);
+                };
+
                 console.log("User ", userID, "is joining", roomID);
                 if (io.sockets.adapter.rooms.get(roomID) && io.sockets.adapter.rooms.get(roomID).size === 2) {
                     io.to(userID).emit(socketEmitters.ROOM_FULL);
                 } else {
                     socket.join(roomID);
                     socket.broadcast.to(roomID).emit(socketEmitters.USER_CONNECTED, userID)
-                    socket.on("roomleave", () => {
+                    socket.on("roomleave", async () => {
                         console.log("Socket leaving ", roomID);
-                        socket.leave(roomID);
+                        socket.leave(roomID)
+                        disconnect();
                     })
                     socket.on(socketEmitters.DISCONNECT, async () => {
                         console.log("User disconnected");
-                        const room = await socketRoomDao.getRoomByID(roomID);
-                        if (room) await socketRoomDao.removeRoomByID(roomID)
-                        socket.broadcast.to(roomID).emit(socketEmitters.USER_DISCONNECTED, userID)
+                        disconnect();
                     });
+                    socket.on("checkroom", () => {
+                        console.log(socket.rooms);
+                    })
                 }
             });
 

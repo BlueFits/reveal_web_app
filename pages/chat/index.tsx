@@ -3,7 +3,7 @@ import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
 import { IUserReducer } from "../../services/modules/userSlice";
-import { apiTempUser, setOtherUser } from "../../services/modules/otherUserSlice";
+import { apiTempUser, setOtherUser, clearState } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
@@ -32,6 +32,7 @@ const Index = () => {
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
+    const streamRef = useRef<MediaStream>();
 
     //MediaStream Setup
     useEffect(() => {
@@ -108,6 +109,9 @@ const Index = () => {
 
     useEffect(() => {
         if (!initSetupRan && stream) {
+            socket.on(socketEmitters.USER_DISCONNECTED, () => {
+                console.log("User has disconnected in socket");
+            })
             findRoomThunk();
             setInitSetupRan(true);
         }
@@ -150,6 +154,7 @@ const Index = () => {
                         console.log("Connection error", err);
                     })
                 } else {
+                    console.log("Peer already set");
                     peer2 = connectionRef.current;
                 }
                 peer2.signal(signal);
@@ -163,30 +168,37 @@ const Index = () => {
         }
     }, [userReducer]);
 
-    const addVideo = () => {
+    const addVideo = async () => {
         const addMedia = (stream) => {
             console.log("My stream ", stream);
             myVid.current.srcObject = stream;
             connectionRef.current.addStream(stream);
         };
-
-        navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
-        }).then(addMedia).catch(() => { })
+        })
+        addMedia(stream)
+        streamRef.current = stream;
     }
 
     const revealHandler = () => {
         addVideo();
+        // socket.emit("checkroom")
     };
 
     const skipHandler = () => {
+        socket.emit(socketEmitters.ROOM_LEAVE)
+        dispatch(clearState())
         if (connectionRef.current) {
             connectionRef.current.destroy()
             connectionRef.current = null;
         };
-        socket.emit("roomleave")
-        findRoomThunk();
+        if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop())
+        console.log("skipping...");
+        setTimeout(() => {
+            findRoomThunk();
+        }, 1000);
     };
 
     return !userReducer.username ? (
