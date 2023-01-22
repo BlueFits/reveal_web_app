@@ -180,7 +180,10 @@ const Index = () => {
     };
 
     const skipHandler = () => {
-        if (connectionRef.current) connectionRef.current.destroy();
+        if (connectionRef.current) {
+            connectionRef.current.destroy()
+            connectionRef.current = null;
+        };
         findRoomThunk();
     };
 
