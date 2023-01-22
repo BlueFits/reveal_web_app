@@ -8,7 +8,7 @@ export enum socketEmitters {
     ANSWER_CALL = "answercall",
     REJECT_CALL = "rejectcall",
     REVEAL_INIT = "revealinit",
-    REAVEAL_ACCEPT = "revealaccept",
+    REVEAL_ACCEPT = "revealaccept",
     ACCEPT_REVEAL = "acceptreveal",
     JOIN_ROOM = "join_room",
     ROOM_FULL = "roomfull",

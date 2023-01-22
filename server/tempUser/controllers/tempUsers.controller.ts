@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import tempUsersDao from "../daos/tempUsers.dao";
 import { tempUserStatus } from "../dto/create.tempUser.dto";
-import avatarSimple from "../../config/avatar";
+import avatarSimple from "../../../constants/avatar";
 
 type preferences = Array<string>;
 

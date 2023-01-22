@@ -13,6 +13,15 @@ import socket from "../../config/Socket";
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
 import { acceptCallData, callUserData } from "../../constants/callTypes";
 
+enum revealStatus {
+    WAITING = "WAITING",
+    ACCEPTED = "ACCEPTED",
+    STANDBY = "STANDBY",
+    CONFIRM = "CONFIRM",
+}
+
+const revealTimerNum = 5;
+
 const Index = () => {
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
@@ -28,6 +37,9 @@ const Index = () => {
     //Video Call Shtuff
     const [stream, setStream] = useState<MediaProvider>();
     const [initSetupRan, setInitSetupRan] = useState(false);
+    const [reveal, setReveal] = useState<revealStatus>(revealStatus.STANDBY);
+    const [revealTimer, setRevealTimer] = useState(revealTimerNum);
+    const [callAccepted, setCallAccepted] = useState(false);
 
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
@@ -62,6 +74,14 @@ const Index = () => {
             createRoomExec();
         }
     };
+
+    useEffect(() => {
+        if (callAccepted && revealTimer !== 0) {
+            setTimeout(() => {
+                setRevealTimer(revealTimer - 1);
+            }, 1000);
+        }
+    }, [revealTimer, callAccepted]);
 
     const createRoomExec = async () => {
         const roomData = await dispatch(createRoom(userReducer.preference));
@@ -102,6 +122,7 @@ const Index = () => {
                 peer1.signal(signal);
                 dispatch(setOtherUser(userAccepting));
                 // socket.off(socketEmitters.CALLACCEPTED);
+                setCallAccepted(true);
             });
             socket.off(socketEmitters.USER_CONNECTED)
         });
@@ -111,6 +132,9 @@ const Index = () => {
         if (!initSetupRan && stream) {
             socket.on(socketEmitters.USER_DISCONNECTED, () => {
                 console.log("User has disconnected in socket");
+            })
+            socket.on(socketEmitters.REVEAL_INIT, () => {
+                setReveal(revealStatus.CONFIRM);
             })
             findRoomThunk();
             setInitSetupRan(true);
@@ -139,7 +163,8 @@ const Index = () => {
                     });
                     connectionRef.current = peer2;
                     peer2.on("signal", async (signal) => {
-                        socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID, userAccepting: userReducer })
+                        socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID, userAccepting: userReducer });
+                        setCallAccepted(true);
                     })
                     peer2.on("stream", (currStream) => {
                         console.log("Picked up a stream");
@@ -183,11 +208,26 @@ const Index = () => {
     }
 
     const revealHandler = () => {
-        addVideo();
+        if (reveal === revealStatus.CONFIRM) {
+            setReveal(revealStatus.ACCEPTED);
+            socket.emit(socketEmitters.ACCEPT_REVEAL, { to: otherUserReducer });
+            addVideo();
+        } else {
+            socket.emit(socketEmitters.REVEAL_INIT, { from: userReducer, to: otherUserReducer });
+            socket.on(socketEmitters.REVEAL_ACCEPT, () => {
+                addVideo();
+                socket.off(socketEmitters.REVEAL_ACCEPT);
+                setReveal(revealStatus.ACCEPTED);
+            })
+            setReveal(revealStatus.WAITING);
+        }
         // socket.emit("checkroom")
     };
 
     const skipHandler = () => {
+        setCallAccepted(false);
+        setRevealTimer(revealTimerNum);
+        setReveal(revealStatus.STANDBY);
         socket.emit(socketEmitters.ROOM_LEAVE)
         dispatch(clearState())
         if (connectionRef.current) {
@@ -209,12 +249,12 @@ const Index = () => {
                 isMuted={false}
                 videoRef={userVideo}
                 user={otherUserReducer}
-                showAvatar={false}
+                showAvatar={reveal !== revealStatus.ACCEPTED}
             />
             <VideoPreview
                 videoRef={myVid}
                 user={userReducer}
-                showAvatar={false}
+                showAvatar={reveal !== revealStatus.ACCEPTED}
             />
             <Container className="absolute flex flex-col bottom-5">
                 {
@@ -237,9 +277,9 @@ const Index = () => {
                         <ButtonContainer>
                             <Button
                                 onClick={revealHandler}
-                                disabled={false}
+                                disabled={!callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING || reveal === revealStatus.ACCEPTED)}
                                 style={{
-                                    backgroundColor: true ? "inherit" : "#0971f1",
+                                    backgroundColor: revealTimer !== 0 || reveal === revealStatus.WAITING || reveal === revealStatus.ACCEPTED ? "inherit" : "#0971f1",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999
@@ -247,7 +287,7 @@ const Index = () => {
                                 size="large"
                                 variant="contained"
                             >
-                                {"reveal"}
+                                {revealTimer !== 0 ? revealTimer : reveal}
                             </Button>
                         </ButtonContainer>
                 }

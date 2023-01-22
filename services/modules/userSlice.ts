@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serverURL } from "../../config/Server";
-import { tempUserStatus } from '../../server/tempUser/dto/create.tempUser.dto';
-import { IReducer } from "../store";
+import avatarSimple from '../../constants/avatar';
 
 enum apiErrors {
     socketIdExsists = "SocketID already exists",
@@ -73,6 +72,14 @@ const userSlice = createSlice({
         },
         setSocketID: (state, action: { payload: string }) => {
             state.socketID = action.payload;
+        },
+        setAvatar: (state) => {
+            const avatar = {
+                bg: avatarSimple.bg[Math.floor(Math.random() * avatarSimple.bg.length)],
+                display: avatarSimple.display[Math.floor(Math.random() * avatarSimple.display.length)],
+            }
+            console.log("my avater", avatar);
+            state.avatar = avatar;
         }
     },
     extraReducers: (builder) => {
@@ -94,6 +101,7 @@ export const {
     setPreference,
     setUsername,
     setSocketID,
+    setAvatar,
 } = userSlice.actions;
 
 export default userSlice;

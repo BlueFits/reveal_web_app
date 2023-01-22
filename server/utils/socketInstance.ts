@@ -1,5 +1,6 @@
 import { acceptCallData, callUserData } from "../../constants/callTypes";
 import { socketEmitters } from "../../constants/emitters";
+import { IUserReducer } from "../../services/modules/userSlice";
 import socketRoomDao from "../socketRoom/dao/socketRoom.dao";
 
 export default class SocketInit {
@@ -21,6 +22,7 @@ export default class SocketInit {
                 };
 
                 console.log("User ", userID, "is joining", roomID);
+
                 if (io.sockets.adapter.rooms.get(roomID) && io.sockets.adapter.rooms.get(roomID).size === 2) {
                     io.to(userID).emit(socketEmitters.ROOM_FULL);
                 } else {
@@ -37,6 +39,16 @@ export default class SocketInit {
                     });
                     socket.on("checkroom", () => {
                         console.log(socket.rooms);
+                    })
+
+                    socket.on(socketEmitters.REVEAL_INIT, ({ from, to }: { from: IUserReducer, to: IUserReducer }) => {
+                        console.log(`user ${from.username} asks to reveal ${to.username}`);
+                        io.to(to.socketID).emit(socketEmitters.REVEAL_INIT, { from });
+                    })
+
+                    socket.on(socketEmitters.ACCEPT_REVEAL, ({ to }: { to: IUserReducer }) => {
+                        console.log("User accept reveal")
+                        io.to(to.socketID).emit(socketEmitters.REVEAL_ACCEPT);
                     })
                 }
             });

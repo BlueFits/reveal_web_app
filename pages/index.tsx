@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, TextField, Button, Alert } from "@mui/material"
 import { useDispatch } from "react-redux";
-import { setUsername, setPreference, setSocketID } from "../services/modules/userSlice";
+import { setUsername, setPreference, setSocketID, setAvatar } from "../services/modules/userSlice";
 import { useRouter } from "next/router";
 import socket from "../config/Socket";
 import { socketEmitters } from "../constants/emitters";
@@ -31,6 +31,7 @@ export default () => {
 		const preferenceArr: Array<string> = preference.replace(/ /g, '').split(",");
 		dispatch(setUsername(username));
 		dispatch(setPreference(preferenceArr));
+		dispatch(setAvatar());
 		router.push("/chat");
 	};
 
