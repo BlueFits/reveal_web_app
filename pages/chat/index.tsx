@@ -75,6 +75,7 @@ const Index = () => {
         }
     };
 
+    /* Reveal timer countdown */
     useEffect(() => {
         if (callAccepted && revealTimer !== 0) {
             setTimeout(() => {
