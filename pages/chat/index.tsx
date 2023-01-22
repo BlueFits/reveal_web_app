@@ -1,24 +1,22 @@
-import { useEffect, useState, MutableRefObject, useRef, useCallback } from "react";
+import { useEffect, useState, MutableRefObject, useRef } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
-import { IUserReducer, createTempUser } from "../../services/modules/userSlice";
-import { genTempUser, apiTempUser, clearState } from "../../services/modules/otherUserSlice";
+import { IUserReducer } from "../../services/modules/userSlice";
+import { apiTempUser, setOtherUser } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
 import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
 import socket from "../../config/Socket";
-import { tempUserStatus } from "../../server/tempUser/dto/create.tempUser.dto";
 
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
-import { callUserData } from "../../constants/callTypes";
+import { acceptCallData, callUserData } from "../../constants/callTypes";
 
 const Index = () => {
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const otherUserReducer: apiTempUser = useSelector((state: IReducer) => state.otherUser);
-    const roomReducer: IRoomReducer = useSelector((state: IReducer) => state.room);
 
     const ButtonContainer = ({ children }) => (
         <div className="mb-8 flex justify-end">
@@ -28,16 +26,12 @@ const Index = () => {
 
     //Video Call Shtuff
     const [stream, setStream] = useState<MediaProvider>();
-    const [userStream, setUserStream] = useState(null);
 
     const [initSetupRan, setInitSetupRan] = useState(false);
 
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
-
-    const peerCall: Peer = useRef();
-    const peerAnswer: Peer = useRef();
 
     //Camera Setup
     useEffect(() => {
@@ -87,8 +81,9 @@ const Index = () => {
             peer1.on("error", (err) => {
                 console.log("Connection error", err);
             })
-            socket.on(socketEmitters.CALLACCEPTED, ({ signal }) => {
+            socket.on(socketEmitters.CALLACCEPTED, ({ signal, userAccepting }: Partial<acceptCallData>) => {
                 peer1.signal(signal);
+                dispatch(setOtherUser(userAccepting));
                 // socket.off(socketEmitters.CALLACCEPTED);
             });
             socket.off(socketEmitters.USER_CONNECTED)
@@ -123,6 +118,7 @@ const Index = () => {
 
             socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
                 console.log("getting a connection from", user);
+                dispatch(setOtherUser(user))
                 let peer2 = null;
                 if (!connectionRef.current) {
                     peer2 = new Peer({
@@ -132,7 +128,7 @@ const Index = () => {
                     });
                     connectionRef.current = peer2;
                     peer2.on("signal", async (signal) => {
-                        socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID })
+                        socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID, userAccepting: userReducer })
                     })
                     peer2.on("stream", (currStream) => {
                         console.log("Picked up a stream");

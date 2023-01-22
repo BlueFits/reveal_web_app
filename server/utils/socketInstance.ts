@@ -1,4 +1,4 @@
-import { callUserData } from "../../constants/callTypes";
+import { acceptCallData, callUserData } from "../../constants/callTypes";
 import { socketEmitters } from "../../constants/emitters";
 import socketRoomDao from "../socketRoom/dao/socketRoom.dao";
 
@@ -32,8 +32,8 @@ export default class SocketInit {
                 io.to(toCallID).emit(socketEmitters.CALLUSER, { signal, user });
             })
 
-            socket.on(socketEmitters.ANSWER_CALL, ({ signal, socketID }) => {
-                io.to(socketID).emit(socketEmitters.CALLACCEPTED, { signal });
+            socket.on(socketEmitters.ANSWER_CALL, ({ signal, socketID, userAccepting }: acceptCallData) => {
+                io.to(socketID).emit(socketEmitters.CALLACCEPTED, { signal, userAccepting });
             })
         });
     }

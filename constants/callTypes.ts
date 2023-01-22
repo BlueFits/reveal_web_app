@@ -5,3 +5,9 @@ export interface callUserData {
     signal: any,
     user: IUserReducer
 }
+
+export interface acceptCallData {
+    userAccepting: IUserReducer,
+    signal: any,
+    socketID: string;
+}
