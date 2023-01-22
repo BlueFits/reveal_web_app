@@ -26,14 +26,13 @@ const Index = () => {
 
     //Video Call Shtuff
     const [stream, setStream] = useState<MediaProvider>();
-
     const [initSetupRan, setInitSetupRan] = useState(false);
 
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
 
-    //Camera Setup
+    //MediaStream Setup
     useEffect(() => {
         const setupWebCam = async () => {
             if (!stream) {
@@ -50,7 +49,17 @@ const Index = () => {
         setupWebCam();
     }, [stream]);
 
-    /* Check for existing rooms */
+    const findRoomThunk = async () => {
+        console.log("user pref: ", userReducer.preference);
+        const roomData: { payload: IRoomReducer } = await dispatch(findRoom(userReducer.preference));
+        console.log("Joining ", roomData);
+        if (roomData.payload && roomData.payload._id) {
+            joinRoom(roomData.payload._id, userReducer.socketID);
+        } else {
+            /* no available rooms for database */
+            createRoomExec();
+        }
+    };
 
     const createRoomExec = async () => {
         const roomData = await dispatch(createRoom(userReducer.preference));
@@ -78,6 +87,12 @@ const Index = () => {
                 console.log("peer 1 picked up a stream");
                 userVideo.current.srcObject = currStream;
             });
+            peer1.on("close", (err) => {
+                peer1.destroy();
+                console.log("User 2 Disconnected");
+                socket.off(socketEmitters.CALLACCEPTED)
+                connectionRef.current = null;
+            });
             peer1.on("error", (err) => {
                 console.log("Connection error", err);
             })
@@ -92,17 +107,6 @@ const Index = () => {
 
     useEffect(() => {
         if (!initSetupRan && stream) {
-            const findRoomThunk = async () => {
-                console.log("user pref: ", userReducer.preference);
-                const roomData: { payload: IRoomReducer } = await dispatch(findRoom(userReducer.preference));
-                console.log("Joining ", roomData);
-                if (roomData.payload && roomData.payload._id) {
-                    joinRoom(roomData.payload._id, userReducer.socketID);
-                } else {
-                    /* no available rooms for database */
-                    createRoomExec();
-                }
-            };
             findRoomThunk();
             setInitSetupRan(true);
         }
@@ -120,7 +124,9 @@ const Index = () => {
                 console.log("getting a connection from", user);
                 dispatch(setOtherUser(user))
                 let peer2 = null;
+                console.log(connectionRef.current);
                 if (!connectionRef.current) {
+                    console.log("Creating a new peer");
                     peer2 = new Peer({
                         trickle: false,
                         initiator: false,
@@ -134,6 +140,11 @@ const Index = () => {
                         console.log("Picked up a stream");
                         userVideo.current.srcObject = currStream;
                     })
+                    peer2.on("close", (err) => {
+                        peer2.destroy();
+                        connectionRef.current = null;
+                        console.log("User 1 Disconnected");
+                    });
                     peer2.on("error", (err) => {
                         console.log("Connection error", err);
                     })
@@ -166,6 +177,11 @@ const Index = () => {
 
     const revealHandler = () => {
         addVideo();
+    };
+
+    const skipHandler = () => {
+        if (connectionRef.current) connectionRef.current.destroy();
+        findRoomThunk();
     };
 
     return !userReducer.username ? (
@@ -220,7 +236,7 @@ const Index = () => {
                 }
                 <div className="flex justify-between">
                     <Button onClick={() => window.location.href = "/"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
-                    <Button disabled={true} onClick={() => console.log("Not set")} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
+                    <Button disabled={false} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </div>
             </Container>
         </Container>
