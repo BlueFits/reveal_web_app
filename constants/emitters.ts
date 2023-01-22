@@ -1,6 +1,5 @@
 export enum socketEmitters {
     REQUEST_ID = "requestid",
-    CALLENDED = "callended",
     CALLUSER = "calluser",
     CALLACCEPTED = "callaccepted",
     ME = "me",
