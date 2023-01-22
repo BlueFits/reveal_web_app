@@ -22,10 +22,15 @@ class SocketRoomController {
 
     async getRoomWithSamePref(req: Request, res: Response) {
         const preferenceArr: preferences = req.body.preference;
+        const roomID = req.body.roomID;
         const room = await socketRoomDao.getRooms({
-            filter: { preference: { $in: preferenceArr } }
+            filter: { "_id": { $ne: roomID }, preference: { $in: preferenceArr } }
         });
-        res.status(200).send(room[0]);
+        if (room.length == 0) {
+            res.status(404).send(null);
+        } else {
+            res.status(200).send(room[0]);
+        }
     }
 
 };

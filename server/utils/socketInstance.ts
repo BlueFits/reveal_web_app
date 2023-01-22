@@ -19,7 +19,12 @@ export default class SocketInit {
                 } else {
                     socket.join(roomID);
                     socket.broadcast.to(roomID).emit(socketEmitters.USER_CONNECTED, userID)
+                    socket.on("roomleave", () => {
+                        console.log("Socket leaving ", roomID);
+                        socket.leave(roomID);
+                    })
                     socket.on(socketEmitters.DISCONNECT, async () => {
+                        console.log("User disconnected");
                         const room = await socketRoomDao.getRoomByID(roomID);
                         if (room) await socketRoomDao.removeRoomByID(roomID)
                         socket.broadcast.to(roomID).emit(socketEmitters.USER_DISCONNECTED, userID)

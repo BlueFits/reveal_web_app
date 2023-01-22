@@ -17,6 +17,7 @@ const Index = () => {
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const otherUserReducer: apiTempUser = useSelector((state: IReducer) => state.otherUser);
+    const roomReducer: IRoomReducer = useSelector((state: IReducer) => state.room);
 
     const ButtonContainer = ({ children }) => (
         <div className="mb-8 flex justify-end">
@@ -51,7 +52,7 @@ const Index = () => {
 
     const findRoomThunk = async () => {
         console.log("user pref: ", userReducer.preference);
-        const roomData: { payload: IRoomReducer } = await dispatch(findRoom(userReducer.preference));
+        const roomData: { payload: IRoomReducer } = await dispatch(findRoom({ preference: userReducer.preference, roomID: roomReducer._id || null }));
         console.log("Joining ", roomData);
         if (roomData.payload && roomData.payload._id) {
             joinRoom(roomData.payload._id, userReducer.socketID);
@@ -184,6 +185,7 @@ const Index = () => {
             connectionRef.current.destroy()
             connectionRef.current = null;
         };
+        socket.emit("roomleave")
         findRoomThunk();
     };
 

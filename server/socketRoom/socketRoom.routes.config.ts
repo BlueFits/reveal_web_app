@@ -23,6 +23,7 @@ export default class SocketRoom extends CommonRoutesConfig {
         this.router.route("/preference_match")
             .post(
                 body("preference").exists().isArray(),
+                body("roomID").optional(),
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
                 socketRoomController.getRoomWithSamePref
             );

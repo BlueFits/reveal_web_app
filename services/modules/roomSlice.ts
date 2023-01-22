@@ -14,7 +14,7 @@ const initialState: IRoomReducer = {
 const API = "/api/socket_room";
 
 //Thunks
-export const findRoom: any = createAsyncThunk("room/findSim", async (data: any) => {
+export const findRoom: any = createAsyncThunk("room/findSim", async (data: { preference: Array<string>, roomID?: string | null }) => {
     try {
         const response = await fetch(`${serverURL}${API}/preference_match`, {
             method: "POST",
@@ -23,7 +23,8 @@ export const findRoom: any = createAsyncThunk("room/findSim", async (data: any) 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                preference: data,
+                preference: data.preference,
+                roomID: data.roomID || null,
             }),
         });
         if (!response.ok) {
