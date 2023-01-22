@@ -75,15 +75,6 @@ const Index = () => {
         }
     };
 
-    /* Reveal timer countdown */
-    useEffect(() => {
-        if (callAccepted && revealTimer !== 0) {
-            setTimeout(() => {
-                setRevealTimer(revealTimer - 1);
-            }, 1000);
-        }
-    }, [revealTimer, callAccepted]);
-
     const createRoomExec = async () => {
         const roomData = await dispatch(createRoom(userReducer.preference));
         console.log("Created room id ", roomData.payload._id);
@@ -129,6 +120,8 @@ const Index = () => {
         });
     }
 
+    /* For call peer */
+
     useEffect(() => {
         if (!initSetupRan && stream) {
             socket.on(socketEmitters.USER_DISCONNECTED, () => {
@@ -141,6 +134,8 @@ const Index = () => {
             setInitSetupRan(true);
         }
     }, [initSetupRan, stream]);
+
+    /* For answer peer */
 
     useEffect(() => {
         if (stream) {
@@ -188,11 +183,24 @@ const Index = () => {
         }
     }, [stream]);
 
+    /* if redux is not set properly */
+
     useEffect(() => {
         if (!userReducer.username || !userReducer.preference) {
             window.location.href = "/";
         }
     }, [userReducer]);
+
+    /* Reveal timer countdown */
+    useEffect(() => {
+        if (callAccepted && revealTimer !== 0) {
+            setTimeout(() => {
+                setRevealTimer(revealTimer - 1);
+            }, 1000);
+        }
+    }, [revealTimer, callAccepted]);
+
+    /* Methods */
 
     const addVideo = async () => {
         const addMedia = (stream) => {
@@ -300,10 +308,5 @@ const Index = () => {
         </Container>
     );
 };
-
-// Index.getInitialProps = async () => {
-//     console.log("This ran");
-//     return {};
-// }
 
 export default Index;
