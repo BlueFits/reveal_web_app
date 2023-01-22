@@ -7,8 +7,8 @@ import { IUserReducer } from "../services/modules/userSlice";
 export const setupMediaStream = async (setStream) => {
     try {
         const ms = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true
+            video: false,
+            audio: true,
         });
         setStream(ms);
     } catch (e) {

@@ -40,21 +40,21 @@ const Index = () => {
     const peerAnswer: Peer = useRef();
 
     //Camera Setup
-    // useEffect(() => {
-    //     const setupWebCam = async () => {
-    //         if (!stream) {
-    //             await setupMediaStream(setStream);
-    //         } else {
-    //             const videoCurr = myVid.current;
-    //             if (!videoCurr) return;
-    //             const video = videoCurr;
-    //             if (!video.srcObject) {
-    //                 video.srcObject = stream;
-    //             }
-    //         }
-    //     }
-    //     setupWebCam();
-    // }, [stream]);
+    useEffect(() => {
+        const setupWebCam = async () => {
+            if (!stream) {
+                await setupMediaStream(setStream);
+            } else {
+                const videoCurr = myVid.current;
+                if (!videoCurr) return;
+                const video = videoCurr;
+                if (!video.srcObject) {
+                    video.srcObject = stream;
+                }
+            }
+        }
+        setupWebCam();
+    }, [stream]);
 
     /* Check for existing rooms */
 
@@ -69,9 +69,10 @@ const Index = () => {
             const peer1 = new Peer({
                 initiator: true,
                 trickle: false,
+                stream,
             });
 
-            peerCall.current = peer1;
+            connectionRef.current = peer1;
 
             peer1.on("signal", (signal) => {
                 console.log("Sending signal");
@@ -95,7 +96,7 @@ const Index = () => {
     }
 
     useEffect(() => {
-        if (!initSetupRan) {
+        if (!initSetupRan && stream) {
             const findRoomThunk = async () => {
                 console.log("user pref: ", userReducer.preference);
                 const roomData: { payload: IRoomReducer } = await dispatch(findRoom(userReducer.preference));
@@ -110,37 +111,43 @@ const Index = () => {
             findRoomThunk();
             setInitSetupRan(true);
         }
-    }, [initSetupRan]);
+    }, [initSetupRan, stream]);
 
     useEffect(() => {
-        socket.on(socketEmitters.ROOM_FULL, () => {
-            /* room trying to join has reached max capacity */
-            console.log("Room is full creating a new room");
-            createRoomExec();
-        })
+        if (stream) {
+            socket.on(socketEmitters.ROOM_FULL, () => {
+                /* room trying to join has reached max capacity */
+                console.log("Room is full creating a new room");
+                createRoomExec();
+            })
 
-        socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
-            console.log("getting a connection from", user);
-            const peer2 = new Peer({
-                trickle: false,
-                initiator: false,
+            socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
+                console.log("getting a connection from", user);
+                let peer2 = null;
+                if (!connectionRef.current) {
+                    peer2 = new Peer({
+                        trickle: false,
+                        initiator: false,
+                        stream,
+                    });
+                    connectionRef.current = peer2;
+                    peer2.on("signal", async (signal) => {
+                        socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID })
+                    })
+                    peer2.on("stream", (currStream) => {
+                        console.log("Picked up a stream");
+                        userVideo.current.srcObject = currStream;
+                    })
+                    peer2.on("error", (err) => {
+                        console.log("Connection error", err);
+                    })
+                } else {
+                    peer2 = connectionRef.current;
+                }
+                peer2.signal(signal);
             });
-            peer2.on("signal", async (signal) => {
-                socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID })
-            })
-            peer2.on("stream", (currStream) => {
-                console.log("Picked up a stream");
-                console.log("Curr stream", currStream);
-                console.log(userVideo);
-                setUserStream(currStream);
-                userVideo.current.srcObject = currStream;
-            })
-            peer2.on("error", (err) => {
-                console.log("Connection error", err);
-            })
-            peer2.signal(signal);
-        });
-    }, []);
+        }
+    }, [stream]);
 
     useEffect(() => {
         if (!userReducer.username || !userReducer.preference) {
@@ -148,22 +155,21 @@ const Index = () => {
         }
     }, [userReducer]);
 
-    // useEffect(() => {
-    //     userVideo.current.srcObject = userStream;
-    // }, [userStream, userVideo]);
+    const addVideo = () => {
+        const addMedia = (stream) => {
+            console.log("My stream ", stream);
+            myVid.current.srcObject = stream;
+            connectionRef.current.addStream(stream);
+        };
 
-    const addMedia = (stream) => {
-        console.log(peerCall);
-        console.log("My stream ", stream);
-        myVid.current.srcObject = stream;
-        peerCall.current.addStream(stream);
-    };
-
-    const revealHandler = () => {
         navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
         }).then(addMedia).catch(() => { })
+    }
+
+    const revealHandler = () => {
+        addVideo();
     };
 
     return !userReducer.username ? (
@@ -216,13 +222,6 @@ const Index = () => {
                             </Button>
                         </ButtonContainer>
                 }
-                <Button onClick={() => {
-                    console.log(userStream);
-                    console.log(userVideo);
-                    userVideo.current.srcObject = userStream
-                }}>
-                    setStream
-                </Button>
                 <div className="flex justify-between">
                     <Button onClick={() => window.location.href = "/"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
                     <Button disabled={true} onClick={() => console.log("Not set")} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
