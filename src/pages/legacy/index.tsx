@@ -3,7 +3,7 @@ import { Container, Typography, TextField, Button, Alert } from "@mui/material"
 import { useDispatch } from "react-redux";
 import { setUsername, setPreference, setSocketID, setAvatar } from "../../services/modules/userSlice";
 import { useRouter } from "next/router";
-import socket from "../../config/Socket";
+import socket from "../../../config/Socket";
 import { socketEmitters } from "../../constants/emitters";
 
 const Index = () => {
