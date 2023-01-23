@@ -8,7 +8,6 @@ import { Server } from "socket.io";
 import SocketInstance from './utils/socketInstance';
 
 //Router
-// import TempUserRoutes from "./tempUser/tempUsers.routes.config";
 import SocketRoom from './socketRoom/socketRoom.routes.config';
 
 const port = parseInt(process.env.PORT || '3000', 10);
