@@ -1,13 +1,50 @@
-import { Button } from "@mui/material";
+import { useState } from "react";
+import { Button, Typography, IconButton } from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
+import Header from "../components/Header/Header";
+import DrawerMenu from "../components/DrawerMenu/DrawerMenu";
 
 const Index = () => {
+
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
     return (
         <div>
-            <div className={"h-screen w-screen border-4 border-sky-500"}>
+            <div
+                style={{
+                    backgroundImage: "url('https://images.unsplash.com/photo-1611872687047-5e5cabc8e1bd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=986&q=80')"
+                }}
+                className={"bg-cover bg-no-repeat bg-center h-screen w-screen bg-green-400 flex flex-col justify-between"}
+            >
                 {/* Header */}
-                <div></div>
+                <Header
+                    headerButtonOnClick={() => setIsDrawerOpen(true)}
+                    icon={<MenuIcon fontSize="inherit" color="primary" />}
+                />
+                <DrawerMenu
+                    onClose={() => setIsDrawerOpen(false)}
+                    open={isDrawerOpen}
+                />
                 {/* Middle Text */}
-                <div></div>
+                <div className="flex items-center flex-col justify-center">
+                    <div className="w-4/6 text-center">
+                        <Typography fontWeight={"bold"} color="#fff" variant="h4">
+                            Start Chatting Now
+                        </Typography>
+                        <div className="mt-4">
+                            <Button
+                                style={{ border: "3px solid" }}
+                                size="large"
+                                disableElevation
+                                sx={{ borderRadius: 9999 }}
+                                fullWidth
+                                variant="outlined"
+                            >
+                                Chat now
+                            </Button>
+                        </div>
+                    </div>
+                </div>
                 {/* Button Container */}
                 <div></div>
             </div>
