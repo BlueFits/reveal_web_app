@@ -6,6 +6,10 @@ import morgan from "morgan";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import SocketInstance from './utils/socketInstance';
+import { auth, requiresAuth } from "express-openid-connect";
+
+//Config
+import Auth0Config from '../config/Auth0.config';
 
 //Router
 import SocketRoom from './socketRoom/socketRoom.routes.config';
@@ -28,8 +32,17 @@ app.prepare().then(() => {
 	server.use(express.json());
 	server.use(cors());
 	server.use(cookieParser());
+	server.use(auth(Auth0Config))
 
 	server.use("/api/socket_room", availableSocketRoomRouter);
+
+	// server.get("/", (req, res) => {
+	// 	res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+	// });
+
+	// server.get("/profile", requiresAuth(), (req, res) => {
+	// 	res.send(JSON.stringify(req.oidc.user));
+	// });
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);
