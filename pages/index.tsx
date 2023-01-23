@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Typography, IconButton } from "@mui/material";
+import { Button, Typography, IconButton, Link } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import Header from "../components/Header/Header";
 import DrawerMenu from "../components/DrawerMenu/DrawerMenu";
@@ -14,7 +14,7 @@ const Index = () => {
                 style={{
                     backgroundImage: "url('https://images.unsplash.com/photo-1611872687047-5e5cabc8e1bd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=986&q=80')"
                 }}
-                className={"bg-cover bg-no-repeat bg-center h-screen w-screen bg-green-400 flex flex-col justify-between"}
+                className={"bg-cover bg-no-repeat bg-center h-screen w-screen flex flex-col justify-between"}
             >
                 {/* Header */}
                 <Header
@@ -33,6 +33,7 @@ const Index = () => {
                         </Typography>
                         <div className="mt-4">
                             <Button
+                                href="/login"
                                 style={{ border: "3px solid" }}
                                 size="large"
                                 disableElevation
