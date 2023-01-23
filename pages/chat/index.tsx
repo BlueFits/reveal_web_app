@@ -302,7 +302,7 @@ const Index = () => {
                 }
                 <div className="flex justify-between">
                     <Button onClick={() => window.location.href = "/"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
-                    <Button disabled={false} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
+                    <Button disabled={!callAccepted} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </div>
             </Container>
         </Container>
