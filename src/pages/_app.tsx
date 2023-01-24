@@ -63,7 +63,7 @@ function MyApp({ Component, pageProps }) {
         domain={SPA.domain}
         clientId={SPA.clientID}
         authorizationParams={{
-          redirect_uri: serverURL,
+          redirect_uri: serverURL + "/dashboard",
         }}
       >
         <Head>
