@@ -3,9 +3,11 @@ import { Button, Typography, IconButton, Link } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import Header from "../components/Header/Header";
 import DrawerMenu from "../components/DrawerMenu/DrawerMenu";
+import { useAuth0 } from "@auth0/auth0-react";
+
 
 const Index = () => {
-
+    const { loginWithRedirect } = useAuth0();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     return (
@@ -33,7 +35,7 @@ const Index = () => {
                         </Typography>
                         <div className="mt-4">
                             <Button
-                                href="/login"
+                                onClick={() => loginWithRedirect()}
                                 style={{ border: "3px solid" }}
                                 size="large"
                                 disableElevation

@@ -9,4 +9,9 @@ const Auth0Config = {
     issuerBaseURL: 'https://dev-2hod9i-q.us.auth0.com'
 };
 
+export const SPA = {
+    clientID: "LkAXxUTyqS7OKcMurzWpAFZnzGQN8Z5e",
+    domain: "dev-2hod9i-q.us.auth0.com",
+}
+
 export default Auth0Config;

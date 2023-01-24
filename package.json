@@ -6,6 +6,7 @@
     "start": "cross-env NODE_ENV=production node dist/server/server.js"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.0.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.0",

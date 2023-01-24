@@ -40,9 +40,9 @@ app.prepare().then(() => {
 	// 	res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
 	// });
 
-	// server.get("/profile", requiresAuth(), (req, res) => {
-	// 	res.send(JSON.stringify(req.oidc.user));
-	// });
+	server.get("/profile", requiresAuth(), (req, res) => {
+		res.send(JSON.stringify(req.oidc.user));
+	});
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);
