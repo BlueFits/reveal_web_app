@@ -1,5 +1,5 @@
 import mongooseService from "../../common/services/mongoose.service";
-import { CreateUserDto, PatchUserDto, PutUserDto } from "../dto/user.dto";
+import { CreateUserDto, PatchUserDto, PutUserDto } from "../dto/users.dto";
 
 class UsersDao {
     Schema = mongooseService.mongoose.Schema;
@@ -10,38 +10,29 @@ class UsersDao {
         preference: { type: String, enum: ["m", "f", "o"] },
         picture: { type: String, required: false, default: "" },
         auth0: {
-            created_at: String,
-            email: String,
-            email_verified: Boolean,
-            identities: [
-                {
-                    connection: String,
-                    provider: String,
-                    user_id: String,
-                    isSocial: Boolean,
-                }
-            ],
             name: String,
+            email: String,
+            user_id: String,
             nickname: String,
             picture: String,
-            updated_at: String,
-            user_id: String,
-            last_ip: String,
-            last_login: String,
-            logins_count: Number,
         },
     });
+
 
     User = mongooseService.mongoose.model("Users", this.userSchema);
 
     constructor() { console.log("Initializing User Schema") }
 
     async addUser(userFields: CreateUserDto) {
-        const user = new this.User({
-            ...userFields,
-        });
-        const newUser = await user.save().catch(err => err);
-        return newUser._id;
+        try {
+            const user = new this.User({
+                ...userFields,
+            });
+            const newUser = await user.save().catch(err => err);
+            return newUser;
+        } catch (err) {
+            throw err;
+        }
     }
 
     async getUserByAuth0Email(email: string) {
