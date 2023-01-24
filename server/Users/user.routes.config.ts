@@ -19,5 +19,10 @@ export default class UserRoutes extends CommonRoutesConfig {
                 usersMiddleware.validateSameEmailDoesntExist,
                 usersController.createUser
             )
+
+        // this.router.route("/:email")
+        //         .get()
+
+
     }
 };
