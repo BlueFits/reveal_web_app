@@ -11,6 +11,7 @@ export interface CreateUserDto {
         user_id: string,
         nickname: string,
         picture: string,
+        email_verified: Boolean,
     }
 }
 
@@ -27,6 +28,7 @@ export interface PutUserDto {
         user_id: string,
         nickname: string,
         picture: string,
+        email_verified: Boolean,
     }
 }
 
