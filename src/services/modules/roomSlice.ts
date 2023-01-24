@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { serverURL } from "../../config/Server";
+import { serverURL } from "../../../config/Server";
 import { CreateSocketRoomDTO } from '../../server/socketRoom/dto/SocketRoom.dto';
 
 export interface IRoomReducer extends Partial<CreateSocketRoomDTO> {

@@ -6,10 +6,14 @@ import morgan from "morgan";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import SocketInstance from './utils/socketInstance';
+import { auth, requiresAuth } from "express-openid-connect";
+
+//Config
+import Auth0Config from '../config/Auth0.config';
 
 //Router
-// import TempUserRoutes from "./tempUser/tempUsers.routes.config";
 import SocketRoom from './socketRoom/socketRoom.routes.config';
+import UserRoutes from './Users/user.routes.config';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -19,6 +23,7 @@ const server: express.Application = express();
 const httpServer = createServer(server);
 const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"] } });
 const availableSocketRoomRouter = new SocketRoom("SocketRoomRoutes").getRouter;
+const usersRouter = new UserRoutes("UserRoutes").getRouter;
 
 
 app.prepare().then(() => {
@@ -29,8 +34,18 @@ app.prepare().then(() => {
 	server.use(express.json());
 	server.use(cors());
 	server.use(cookieParser());
+	server.use(auth(Auth0Config))
 
 	server.use("/api/socket_room", availableSocketRoomRouter);
+	server.use("/api/users", usersRouter);
+
+	// server.get("/", (req, res) => {
+	// 	res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+	// });
+
+	server.get("/profile", requiresAuth(), (req, res) => {
+		res.send(JSON.stringify(req.oidc.user));
+	});
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);

@@ -8,7 +8,7 @@ import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
 import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
-import socket from "../../config/Socket";
+import socket from "../../../config/Socket";
 
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
 import { acceptCallData, callUserData } from "../../constants/callTypes";

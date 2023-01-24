@@ -1,6 +1,6 @@
 import { MutableRefObject } from "react";
 import Peer from "simple-peer";
-import socket from "../config/Socket";
+import socket from "../../config/Socket";
 import { socketEmitters } from "../constants/emitters";
 import { IUserReducer } from "../services/modules/userSlice";
 

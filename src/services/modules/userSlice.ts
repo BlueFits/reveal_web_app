@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { serverURL } from "../../config/Server";
+import { serverURL } from "../../../config/Server";
 import avatarSimple from '../../constants/avatar';
 
 enum apiErrors {

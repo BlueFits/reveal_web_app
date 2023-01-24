@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, TextField, Button, Alert } from "@mui/material"
 import { useDispatch } from "react-redux";
-import { setUsername, setPreference, setSocketID, setAvatar } from "../services/modules/userSlice";
+import { setUsername, setPreference, setSocketID, setAvatar } from "../../services/modules/userSlice";
 import { useRouter } from "next/router";
-import socket from "../config/Socket";
-import { socketEmitters } from "../constants/emitters";
+import socket from "../../../config/Socket";
+import { socketEmitters } from "../../constants/emitters";
 
-export default () => {
+const Index = () => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
@@ -58,3 +58,5 @@ export default () => {
 		</Container>
 	)
 }
+
+export default Index;
