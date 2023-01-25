@@ -1,13 +1,14 @@
 import mongooseService from "../../common/services/mongoose.service";
-import { CreateUserDto, PatchUserDto, PutUserDto } from "../dto/users.dto";
+import { CreateUserDto, PatchUserDto, PutUserDto, gender } from "../dto/users.dto";
 
 class UsersDao {
     Schema = mongooseService.mongoose.Schema;
     userSchema = new this.Schema({
         username: String,
         birthday: { type: Date },
-        gender: { type: String, enum: ["m", "f", "o"] },
-        preference: { type: String, enum: ["m", "f", "o"] },
+        gender: { type: String, enum: [gender.Male, gender.Female, gender.Other] },
+        showMe: { type: String, enum: [gender.Male, gender.Female, gender.Other] },
+        preference: [String],
         picture: { type: String, required: false, default: "" },
         auth0: {
             name: String,
@@ -43,6 +44,10 @@ class UsersDao {
     async getUserById(userId: string) {
         // return this.User.findOne({ _id: userId }).populate('users').exec();
         return this.User.findOne({ _id: userId }).exec();
+    }
+
+    async getUserByAuth0ID(userId: string) {
+        return this.User.findOne({ "auth0.user_id": userId }).exec();
     }
 
     async getUsers(limit = 25, page = 0) {

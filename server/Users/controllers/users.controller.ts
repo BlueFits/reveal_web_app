@@ -18,6 +18,12 @@ class UsersController {
         const user = await userDao.getUserByAuth0Email(email);
         res.status(200).send(user);
     }
+
+    async getUserByAuth0ID(req: Request, res: Response) {
+        const id = req.body.id;
+        const user = await userDao.getUserByAuth0ID(id);
+        res.status(200).send(user);
+    }
 }
 
 export default new UsersController();

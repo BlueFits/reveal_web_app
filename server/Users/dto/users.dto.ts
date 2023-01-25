@@ -1,10 +1,17 @@
+export enum gender {
+    Male = "m",
+    Female = "f",
+    Other = "o",
+}
+
 export interface CreateUserDto {
     _id?: string;
-    username?: String,
-    birthday?: { type: Date },
-    gender?: { type: String, enum: ["m", "f", "o"] },
-    preference?: { type: String, enum: ["m", "f", "o"] },
-    picture?: { type: String, required: false, default: "" },
+    username?: string,
+    birthday?: string,
+    gender?: gender,
+    showMe?: gender,
+    preference?: Array<string>,
+    picture?: string,
     auth0: {
         name: string,
         email: string,
@@ -17,11 +24,12 @@ export interface CreateUserDto {
 
 export interface PutUserDto {
     _id: string;
-    username: String,
-    birthday: { type: Date },
-    gender: { type: String, enum: ["m", "f", "o"] },
-    preference: { type: String, enum: ["m", "f", "o"] },
-    picture: { type: String, required: false, default: "" },
+    username: string,
+    birthday: string,
+    gender: gender,
+    showMe: gender,
+    preference: Array<string>,
+    picture: string,
     auth0: {
         name: string,
         email: string,

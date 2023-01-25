@@ -4,6 +4,7 @@ import { body } from "express-validator";
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import usersController from "./controllers/users.controller";
 import usersMiddleware from "./middleware/users.middleware";
+import { auth, requiresAuth } from "express-openid-connect";
 
 export default class UserRoutes extends CommonRoutesConfig {
     constructor(name: string) {
@@ -20,9 +21,12 @@ export default class UserRoutes extends CommonRoutesConfig {
                 usersController.createUser
             )
 
-        // this.router.route("/:email")
-        //         .get()
+        this.router.param("userID", usersMiddleware.extractUserId);
 
+        this.router.route("/:userID")
+            .get(
+                usersController.getUserByAuth0ID
+            );
 
     }
 };
