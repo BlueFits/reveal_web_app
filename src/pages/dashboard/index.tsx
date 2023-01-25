@@ -11,27 +11,34 @@ const Index = () => {
     const { user, isAuthenticated, isLoading } = useAuth0();
 
     useEffect(() => {
+        console.log(isAuthenticated);
         if (user && user.sub) dispatch(getUserByAuthID(user.sub));
-    }, [user]);
+    }, [user, isAuthenticated]);
 
     useEffect(() => {
-        if (!userReducer.isAuthenticated) console.log("run setup for user");
+        if (!userReducer.isFirstTime) console.log("run setup for user");
     }, [userReducer]);
 
     if (isLoading) {
         return <div>Loading ...</div>;
     }
 
+    if (!isAuthenticated) window.location.href = "/";
+
     return (
-        isAuthenticated && userReducer.isAuthenticated ? (
-            <div>
-                <img src={user.picture} alt={user.name} />
-                <h2>{user.name}</h2>
-                <p>{user.email}</p>
-            </div>
-        ) : (
-            <InitialSetup />
-        )
+        isAuthenticated ?
+            (!userReducer.isFirstTime ? (
+                <div>
+                    <img src={user.picture} alt={user.name} />
+                    <h2>{user.name}</h2>
+                    <p>{user.email}</p>
+                </div>
+            ) : (
+                <InitialSetup />
+            )) :
+            (
+                <p>loading</p>
+            )
     );
 };
 

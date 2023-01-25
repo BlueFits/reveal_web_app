@@ -2,6 +2,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serverURL } from "../../../config/Server";
 import avatarSimple from '../../constants/avatar';
 import { CreateUserDto, PutUserDto } from '../../../server/Users/dto/users.dto';
+import { gender } from '../../../server/Users/dto/users.dto';
+
+interface IFormSet {
+    username: string;
+    birthday: number,
+    gender: gender,
+    showMe: gender
+}
 
 export interface IUserReducer extends PutUserDto {
     __v?: number;
@@ -10,7 +18,7 @@ export interface IUserReducer extends PutUserDto {
         bg: string;
         display: string;
     }
-    isAuthenticated: boolean;
+    isFirstTime: boolean;
 }
 
 
@@ -28,7 +36,7 @@ const initialState: IUserReducer = {
         display: null,
     },
     auth0: null,
-    isAuthenticated: false,
+    isFirstTime: true,
 };
 
 const API = "/api/users";
@@ -70,11 +78,18 @@ const userSlice = createSlice({
             }
             console.log("my avater", avatar);
             state.avatar = avatar;
+        },
+        formSet: (state, action: { payload: IFormSet }) => {
+            for (const prop in action.payload) {
+                if (state.hasOwnProperty(prop)) {
+                    state[prop] = action.payload[prop];
+                }
+            }
         }
     },
     extraReducers: (builder) => {
         builder.addCase(getUserByAuthID.fulfilled, (state, action: { payload: CreateUserDto }) => {
-            if (action.payload.gender) state.isAuthenticated = true;
+            if (action.payload.gender) state.isFirstTime = false;
             for (const prop in action.payload) {
                 if (state.hasOwnProperty(prop)) {
                     state[prop] = action.payload[prop];
@@ -89,6 +104,7 @@ export const {
     setUsername,
     setSocketID,
     setAvatar,
+    formSet,
 } = userSlice.actions;
 
 export default userSlice;

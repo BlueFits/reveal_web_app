@@ -25,7 +25,7 @@ export interface CreateUserDto {
 export interface PutUserDto {
     _id: string;
     username: string,
-    birthday: string,
+    birthday: number,
     gender: gender,
     showMe: gender,
     preference: Array<string>,
