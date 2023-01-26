@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import userSlice from './modules/userSlice';
+import userSlice from './modules/User/userSlice';
 import otherUserSlice from './modules/otherUserSlice';
 import roomSlice from "./modules/roomSlice";
 

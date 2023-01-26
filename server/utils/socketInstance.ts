@@ -1,6 +1,6 @@
 import { acceptCallData, callUserData } from "../../src/constants/callTypes";
 import { socketEmitters } from "../../src/constants/emitters";
-import { IUserReducer } from "../../src/services/modules/userSlice";
+import { IUserReducer } from "../../src/services/modules/User/userSlice";
 import socketRoomDao from "../socketRoom/dao/socketRoom.dao";
 
 export default class SocketInit {

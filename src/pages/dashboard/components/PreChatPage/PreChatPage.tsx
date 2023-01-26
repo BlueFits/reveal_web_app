@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, TextField, Button, Alert } from "@mui/material"
 import { useDispatch } from "react-redux";
-import { setUsername, setPreference, setSocketID, setAvatar } from "../../services/modules/userSlice";
+import { setUsername, setPreference, setSocketID, setAvatar, IUserReducer } from "../../../../services/modules/User/userSlice";
 import { useRouter } from "next/router";
-import socket from "../../../config/Socket";
-import { socketEmitters } from "../../constants/emitters";
+import socket from "../../../../../config/Socket";
+import { socketEmitters } from "../../../../constants/emitters";
 
-const Index = () => {
+interface IPreChatPage {
+	user: IUserReducer;
+}
+
+const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
@@ -24,12 +28,12 @@ const Index = () => {
 
 	const onStartHandler = async () => {
 		//Basic Sanitation
-		if (username.length <= 0 || preference.length <= 0) {
+		if (preference.length <= 0) {
 			setHasErrors(true);
 			return;
 		}
 		const preferenceArr: Array<string> = preference.replace(/ /g, '').split(",");
-		dispatch(setUsername(username));
+		dispatch(setUsername(user.username));
 		dispatch(setPreference(preferenceArr));
 		dispatch(setAvatar());
 		router.push("/chat");
@@ -43,14 +47,14 @@ const Index = () => {
 				alignItems: "center",
 				flexDirection: "coloumn"
 			}}
-			className="h-screen"
+			className="h-full"
 			maxWidth="lg"
 		>
 			<Container>
 				<Typography variant="h5" gutterBottom>
 					Enter a topic
 				</Typography>
-				<TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" />
+				{/* <TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" /> */}
 				<TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" />
 				<Button onClick={onStartHandler} color="secondary" sx={{ margin: "15px 0" }} variant="outlined">Start</Button>
 				{hasErrors && <Alert severity="error">Invalid Fields</Alert>}
@@ -59,4 +63,4 @@ const Index = () => {
 	)
 }
 
-export default Index;
+export default PreChatPage;

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { IUserReducer } from './userSlice';
+import { IUserReducer } from './User/userSlice';
 
 export interface apiTempUser extends Partial<IUserReducer> { }
 

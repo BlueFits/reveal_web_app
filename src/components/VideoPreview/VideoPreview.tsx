@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect, useState } from "react";
 import { Container, Avatar, Typography, CircularProgress } from "@mui/material"
-import { IUserReducer } from "../../services/modules/userSlice";
+import { IUserReducer } from "../../services/modules/User/userSlice";
 import { apiTempUser } from "../../services/modules/otherUserSlice";
 
 interface IVideoPreview {

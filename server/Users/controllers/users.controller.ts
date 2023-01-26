@@ -22,6 +22,7 @@ class UsersController {
 
     async getUserByAuth0ID(req: Request, res: Response) {
         const id = req.body.id;
+        console.log("the id:", id);
         const user = await userDao.getUserByAuth0ID(id);
         res.status(200).send(user);
     }

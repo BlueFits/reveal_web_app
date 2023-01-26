@@ -2,7 +2,7 @@ import { useEffect, useState, MutableRefObject, useRef } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
-import { IUserReducer } from "../../services/modules/userSlice";
+import { IUserReducer } from "../../services/modules/User/userSlice";
 import { apiTempUser, setOtherUser, clearState } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import Peer from "simple-peer";
@@ -301,7 +301,7 @@ const Index = () => {
                         </ButtonContainer>
                 }
                 <div className="flex justify-between">
-                    <Button onClick={() => window.location.href = "/"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
+                    <Button onClick={() => window.location.href = "/dashboard"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
                     <Button disabled={!callAccepted} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </div>
             </Container>

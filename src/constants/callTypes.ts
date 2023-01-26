@@ -1,4 +1,4 @@
-import { IUserReducer } from "../services/modules/userSlice";
+import { IUserReducer } from "../services/modules/User/userSlice";
 
 export interface callUserData {
     toCallID: string,
