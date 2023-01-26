@@ -23,12 +23,10 @@ const Index = () => {
     const [value, setValue] = useState<number>(0);
 
     useEffect(() => {
-        console.log(isLoading);
         const init = async () => {
             if (!user) router.push("/");
             if (user && user.sub) {
                 const response = await dispatch(getUserByAuthID(user.sub));
-                console.log(response);
                 if (response.payload && !response.payload.gender) router.push("/setup");
             }
         }

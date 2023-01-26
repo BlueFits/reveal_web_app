@@ -14,7 +14,6 @@ export interface IUpdateUserByForm {
 
 const UsersApi = {
     async getUserByAuthID(id: string): Promise<Response> {
-        console.log("givenid", id);
         return await fetch(`${serverURL}${API}/${id}`);
     },
     async updateUserByForm(data: IUpdateUserByForm): Promise<Response> {

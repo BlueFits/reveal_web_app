@@ -15,7 +15,6 @@ const VideoPreview: React.FC<IVideoPreview> = ({ user, videoRef = null, isMuted 
     const [localRef, setLocalRef] = useState(videoRef);
     const { username, avatar } = user;
     useEffect(() => {
-        console.log("Video ref changed", videoRef.current);
         setLocalRef(videoRef)
     }, [videoRef.current]);
     return (

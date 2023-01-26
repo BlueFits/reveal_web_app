@@ -92,7 +92,6 @@ const userSlice = createSlice({
                 bg: avatarSimple.bg[Math.floor(Math.random() * avatarSimple.bg.length)],
                 display: avatarSimple.display[Math.floor(Math.random() * avatarSimple.display.length)],
             }
-            console.log("my avater", avatar);
             state.avatar = avatar;
         },
         formSet: (state, action: { payload: IFormSet }) => {
@@ -113,7 +112,6 @@ const userSlice = createSlice({
             }
         });
         builder.addCase(updateUserByForm.fulfilled, (state, action: { payload: IUpdateUserByForm }) => {
-            console.log('updateUser Payload', action.payload);
             for (const prop in action.payload) {
                 if (state.hasOwnProperty(prop)) {
                     state[prop] = action.payload[prop];

@@ -62,7 +62,6 @@ export const createRoom: any = createAsyncThunk("room/create", async (data: any)
 
 export const removeRoom: any = createAsyncThunk("room/remove", async (data: any) => {
     try {
-        console.log(`sending to api ${serverURL}${API}/${data}`);
         const response = await fetch(`${serverURL}${API}/${data}`, {
             method: "DELETE",
         });
@@ -86,17 +85,14 @@ const roomSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(findRoom.fulfilled, (state, action: { payload: IRoomReducer }) => {
             //If possible fix the socket duplication in the future
-            console.log("setting roomSlice reducer to", action.payload);
             state._id = action.payload._id;
             state.preference = action.payload.preference;
         });
         builder.addCase(createRoom.fulfilled, (state, action: { payload: IRoomReducer }) => {
-            console.log("setting new created room reducer to", action.payload);
             state._id = action.payload._id;
             state.preference = action.payload.preference;
         })
         builder.addCase(removeRoom.fulfilled, (state) => {
-            console.log("Remoing available room info");
             state._id = null;
             state.preference = null;
         });

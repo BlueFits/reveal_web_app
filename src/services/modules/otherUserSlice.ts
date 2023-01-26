@@ -21,7 +21,6 @@ const otherUserSlice = createSlice({
     initialState,
     reducers: {
         clearState: (state) => {
-            console.log("cleared other user state");
             state.__v = null;
             state._id = null;
             state.preference = null;

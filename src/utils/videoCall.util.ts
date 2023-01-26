@@ -34,7 +34,6 @@ export const callUser = (
     connectionRef.current = peer;
 
     peer.on("signal", (data) => {
-        console.log("Emitting call user");
         socket.emit(socketEmitters.CALLUSER, { userToCall: idToCall, signalData: data, from: user });
     });
     peer.on("stream", (currStream) => {

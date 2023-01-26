@@ -14,7 +14,6 @@ class SocketRoom {
     /* CRUD  */
 
     async addRoom(userFields: CreateSocketRoomDTO) {
-        console.log(userFields);
         const socketRoom = new this.SocketRoom({
             ...userFields,
         });

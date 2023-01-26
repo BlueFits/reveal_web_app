@@ -64,9 +64,7 @@ const Index = () => {
     }, [stream]);
 
     const findRoomThunk = async () => {
-        console.log("user pref: ", userReducer.preference);
         const roomData: { payload: IRoomReducer } = await dispatch(findRoom({ preference: userReducer.preference, roomID: roomReducer._id || null }));
-        console.log("Joining ", roomData);
         if (roomData.payload && roomData.payload._id) {
             joinRoom(roomData.payload._id, userReducer.socketID);
         } else {
@@ -77,10 +75,8 @@ const Index = () => {
 
     const createRoomExec = async () => {
         const roomData = await dispatch(createRoom(userReducer.preference));
-        console.log("Created room id ", roomData.payload._id);
         joinRoom(roomData.payload._id, userReducer.socketID);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
-            console.log("New user connected ", userID);
             await dispatch(removeRoom(roomData.payload._id));
 
             const peer1 = new Peer({
@@ -92,18 +88,15 @@ const Index = () => {
             connectionRef.current = peer1;
 
             peer1.on("signal", (signal) => {
-                console.log("Sending signal");
                 const data: callUserData = { toCallID: userID, signal, user: userReducer };
                 socket.emit(socketEmitters.CALLUSER, data)
             })
 
             peer1.on("stream", (currStream) => {
-                console.log("peer 1 picked up a stream");
                 userVideo.current.srcObject = currStream;
             });
             peer1.on("close", (err) => {
                 peer1.destroy();
-                console.log("User 2 Disconnected");
                 socket.off(socketEmitters.CALLACCEPTED)
                 connectionRef.current = null;
             });
@@ -146,12 +139,9 @@ const Index = () => {
             })
 
             socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
-                console.log("getting a connection from", user);
                 dispatch(setOtherUser(user))
                 let peer2 = null;
-                console.log(connectionRef.current);
                 if (!connectionRef.current) {
-                    console.log("Creating a new peer");
                     peer2 = new Peer({
                         trickle: false,
                         initiator: false,
@@ -163,7 +153,6 @@ const Index = () => {
                         setCallAccepted(true);
                     })
                     peer2.on("stream", (currStream) => {
-                        console.log("Picked up a stream");
                         userVideo.current.srcObject = currStream;
                     })
                     peer2.on("close", (err) => {
@@ -204,7 +193,6 @@ const Index = () => {
 
     const addVideo = async () => {
         const addMedia = (stream) => {
-            console.log("My stream ", stream);
             myVid.current.srcObject = stream;
             connectionRef.current.addStream(stream);
         };
