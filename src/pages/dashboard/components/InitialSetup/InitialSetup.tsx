@@ -7,12 +7,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import dayjs, { Dayjs } from 'dayjs';
 import { gender } from "../../../../../server/Users/dto/users.dto";
 import { useDispatch, useSelector } from "react-redux";
-import { formSet, IUserReducer } from "../../../../services/modules/userSlice";
+import { IUserReducer, updateUserByForm } from "../../../../services/modules/userSlice";
 import { IReducer } from "../../../../services/store";
+import { useRouter } from "next/router";
 
 
 const InitialSetup = () => {
     const dispatch = useDispatch();
+    const router = useRouter();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const [username, setUsername] = useState<string>("");
     const [birthday, setBirthday] = useState<Dayjs | null>(dayjs('2014-08-18T21:11:54'));
@@ -35,13 +37,15 @@ const InitialSetup = () => {
         setShowMe(event.target.value as gender);
     };
 
-    const submitHandler = () => {
-        dispatch(formSet({
-            birthday: birthday.date(),
+    const submitHandler = async () => {
+        await dispatch(updateUserByForm({
+            id: userReducer._id,
+            birthday: birthday.toDate(),
             gender: genderSelection,
             showMe,
             username,
         }));
+        router.reload();
     }
 
     return (

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import usersDao from "../daos/users.dao";
 import userDao from "../daos/users.dao";
 
 class UsersController {
@@ -22,6 +23,13 @@ class UsersController {
     async getUserByAuth0ID(req: Request, res: Response) {
         const id = req.body.id;
         const user = await userDao.getUserByAuth0ID(id);
+        res.status(200).send(user);
+    }
+
+    async updateUserByID(req: Request, res: Response) {
+        console.log("my vals", req.body);
+        const id = req.body.id;
+        const user = await usersDao.updateUserById(id, req.body);
         res.status(200).send(user);
     }
 }

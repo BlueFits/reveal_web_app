@@ -1,5 +1,9 @@
 import express from 'express';
 import usersDao from '../daos/users.dao';
+import mongooseService from '../../common/services/mongoose.service';
+
+const ObjectID = mongooseService.mongoose.Types.ObjectId;
+
 
 class UsersMiddleware {
 
@@ -14,6 +18,18 @@ class UsersMiddleware {
             res.status(400).send({ error: `User email already exists` });
         } else {
             next();
+        }
+    }
+
+    async isIDValid(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) {
+        if (ObjectID.isValid(req.params.userID)) {
+            next();
+        } else {
+            res.status(400).send({ error: `Not a valid user ID` });
         }
     }
 

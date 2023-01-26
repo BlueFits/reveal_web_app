@@ -26,7 +26,16 @@ export default class UserRoutes extends CommonRoutesConfig {
         this.router.route("/:userID")
             .get(
                 usersController.getUserByAuth0ID
-            );
+            )
+            .patch(
+                body("username").isString(),
+                body("birthday").toDate(),
+                body("gender").isString(),
+                body("showMe").isString(),
+                BodyValidationMiddleware.verifyBodyFieldsErrors,
+                usersMiddleware.isIDValid,
+                usersController.updateUserByID,
+            )
 
     }
 };
