@@ -6,7 +6,7 @@ const ProfilePage = () => {
     const { logout } = useAuth0();
 
     return (
-        <div className="bg-orange-500 grow flex justify-center items-center">
+        <div className="bg-purple-500 grow flex justify-center items-center">
             <Button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>Logout</Button>
         </div>
     );

@@ -50,13 +50,24 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 			className="h-full"
 			maxWidth="lg"
 		>
-			<Container>
-				<Typography variant="h5" gutterBottom>
-					Enter a topic
+			<Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+				<Typography variant="h4" gutterBottom>
+					Start Chatting
 				</Typography>
 				{/* <TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" /> */}
 				{/* <TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" /> */}
-				<Button onClick={onStartHandler} color="secondary" sx={{ margin: "15px 0" }} variant="outlined">Start</Button>
+				<div className="w-3/4 lg:max-w-lg">
+					<Button
+						fullWidth
+						onClick={onStartHandler}
+						color="secondary"
+						style={{ borderRadius: 9999, borderWidth: 2, borderColor: "#9b59b6" }}
+						sx={{ color: "#9b59b6", margin: "15px 0" }}
+						variant="outlined"
+					>
+						Start
+					</Button>
+				</div>
 				{hasErrors && <Alert severity="error">Invalid Fields</Alert>}
 			</Container>
 		</Container>

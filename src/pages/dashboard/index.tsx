@@ -10,10 +10,11 @@ import { useRouter } from "next/router";
 import PreChatPage from "./components/PreChatPage/PreChatPage";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import VideoChatIcon from '@mui/icons-material/VideoChat';
+import Loading from "../../components/Loading/Loading";
 
 const MuiBottomNavigationAction = styled(BottomNavigationAction)(`
   &.Mui-selected {
-    color: #e67e22;
+    color: #9b59b6;
   }
 `);
 
@@ -37,7 +38,7 @@ const Index = () => {
         if (!isLoading) init();
     }, [user, isLoading]);
 
-    if (isLoading) return (<div>Loading ...</div>);
+    if (isLoading) return (<Loading />);
 
     return (
         isAuthenticated && !userReducer.isFirstTime ? (
@@ -72,7 +73,7 @@ const Index = () => {
                 </Box>
             </div>
         ) : (
-            <p>loading</p>
+            <Loading />
         )
     );
 };
