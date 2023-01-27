@@ -104,7 +104,8 @@ const InitialSetup = ({ referer }) => {
                         >
                             <MenuItem value={gender.Male}>Male</MenuItem>
                             <MenuItem value={gender.Female}>Female</MenuItem>
-                            <MenuItem value={gender.Other}>Other</MenuItem>
+                            <MenuItem value={gender.Gay}>Gay</MenuItem>
+                            <MenuItem value={gender.Lesbian}>Lesbian</MenuItem>
                         </Select>
                     </div>
                 </FormControl>
@@ -118,7 +119,8 @@ const InitialSetup = ({ referer }) => {
                         >
                             <MenuItem value={gender.Male}>Male</MenuItem>
                             <MenuItem value={gender.Female}>Female</MenuItem>
-                            <MenuItem value={gender.Other}>Other</MenuItem>
+                            <MenuItem value={gender.Gay}>Gay</MenuItem>
+                            <MenuItem value={gender.Lesbian}>Lesbian</MenuItem>
                         </Select>
                     </div>
                 </FormControl>
