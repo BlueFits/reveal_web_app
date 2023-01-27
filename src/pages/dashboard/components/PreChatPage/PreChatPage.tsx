@@ -14,8 +14,8 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
-	const [username, setLocalUsername] = useState<string>("");
-	const [preference, setLocalPreference] = useState<string>("");
+	// const [username, setLocalUsername] = useState<string>("");
+	// const [preference, setLocalPreference] = useState<string>("");
 	const [hasErrors, setHasErrors] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -28,13 +28,13 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 
 	const onStartHandler = async () => {
 		//Basic Sanitation
-		if (preference.length <= 0) {
-			setHasErrors(true);
-			return;
-		}
-		const preferenceArr: Array<string> = preference.replace(/ /g, '').split(",");
-		dispatch(setUsername(user.username));
-		dispatch(setPreference(preferenceArr));
+		// if (preference.length <= 0) {
+		// 	setHasErrors(true);
+		// 	return;
+		// }
+		// const preferenceArr: Array<string> = preference.replace(/ /g, '').split(",");
+		// dispatch(setUsername(user.username));
+		// dispatch(setPreference(preferenceArr));
 		dispatch(setAvatar());
 		router.push("/chat");
 	};
@@ -55,7 +55,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 					Enter a topic
 				</Typography>
 				{/* <TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" /> */}
-				<TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" />
+				{/* <TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" /> */}
 				<Button onClick={onStartHandler} color="secondary" sx={{ margin: "15px 0" }} variant="outlined">Start</Button>
 				{hasErrors && <Alert severity="error">Invalid Fields</Alert>}
 			</Container>

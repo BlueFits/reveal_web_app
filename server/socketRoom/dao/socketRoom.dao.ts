@@ -1,10 +1,12 @@
 import mongooseService from '../../common/services/mongoose.service';
 import { CreateSocketRoomDTO } from "../dto/SocketRoom.dto";
+import { gender } from '../../Users/dto/users.dto';
 
 class SocketRoom {
     Schema = mongooseService.mongoose.Schema;
     socketRoomSchema = new this.Schema({
-        preference: [String],
+        createdBy: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
+        showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         roomID: String,
     });
     SocketRoom = mongooseService.mongoose.model('SocketRooms', this.socketRoomSchema);
