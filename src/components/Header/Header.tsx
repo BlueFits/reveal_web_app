@@ -4,19 +4,23 @@ import { ReactNode } from "react";
 interface IHeader {
     icon: ReactNode,
     headerButtonOnClick: () => any;
+    disableIcon?: boolean;
 }
 
-const Header: React.FC<IHeader> = ({ icon, headerButtonOnClick }) => {
+const Header: React.FC<IHeader> = ({ icon, headerButtonOnClick, disableIcon = false }) => {
 
     return (
-        <div className="px-3 py-2 flex justify-between items-center bg-gradient-to-b from-black ">
+        <div className="px-4 py-4 flex justify-between items-center bg-gradient-to-b from-black ">
             <Typography fontWeight="bold" color="#fff" variant="h5">
                 Reveal
             </Typography>
 
-            <IconButton onClick={headerButtonOnClick} size="large">
-                {icon}
-            </IconButton>
+            {
+                !disableIcon &&
+                <IconButton onClick={headerButtonOnClick} size="large">
+                    {icon}
+                </IconButton>
+            }
         </div>
     );
 };

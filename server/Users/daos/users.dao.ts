@@ -6,8 +6,8 @@ class UsersDao {
     userSchema = new this.Schema({
         username: String,
         birthday: { type: Date },
-        gender: { type: String, enum: [gender.Male, gender.Female, gender.Other] },
-        showMe: { type: String, enum: [gender.Male, gender.Female, gender.Other] },
+        gender: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
+        showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         preference: [String],
         picture: { type: String, required: false, default: "" },
         auth0: {

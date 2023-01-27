@@ -40,8 +40,6 @@ const initialState: IUserReducer = {
     isFirstTime: true,
 };
 
-const API = "/api/users";
-
 export const getUserByAuthID: any = createAsyncThunk("user/getUserByAuthID", async (data: string) => {
     try {
         const response = await UsersApi.getUserByAuthID(data);

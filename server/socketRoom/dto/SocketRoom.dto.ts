@@ -1,3 +1,6 @@
+import { gender } from "../../Users/dto/users.dto";
+
 export interface CreateSocketRoomDTO {
-    preference: Array<string>;
+    showMe: gender;
+    createdBy: gender;
 }

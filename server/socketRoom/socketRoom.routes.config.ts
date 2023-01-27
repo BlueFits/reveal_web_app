@@ -15,14 +15,16 @@ export default class SocketRoom extends CommonRoutesConfig {
         this.router.route("/")
             .get(socketRoomController.listRooms)
             .post(
-                body("preference").exists().isArray(),
+                body("showMe").isString(),
+                body("gender").isString(),
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
                 socketRoomController.createUser
             );
 
         this.router.route("/preference_match")
             .post(
-                body("preference").exists().isArray(),
+                body("showMe").isString(),
+                body("gender").isString(),
                 body("roomID").optional(),
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
                 socketRoomController.getRoomWithSamePref

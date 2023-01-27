@@ -4,14 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserByAuthID, IUserReducer } from "../../services/modules/User/userSlice";
 import { IReducer } from "../../services/store";
 import { BottomNavigation, BottomNavigationAction, Box } from "@mui/material";
-import { Restore, Favorite, LocationOn } from "@mui/icons-material";
+import { Person } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import PreChatPage from "./components/PreChatPage/PreChatPage";
+import ProfilePage from "./components/ProfilePage/ProfilePage";
+import VideoChatIcon from '@mui/icons-material/VideoChat';
+import Loading from "../../components/Loading/Loading";
 
 const MuiBottomNavigationAction = styled(BottomNavigationAction)(`
   &.Mui-selected {
-    color: #e67e22;
+    color: #9b59b6;
   }
 `);
 
@@ -33,7 +36,7 @@ const Index = () => {
         if (!isLoading) init();
     }, [user, isLoading]);
 
-    if (isLoading) return (<div>Loading ...</div>);
+    if (isLoading) return (<Loading />);
 
     return (
         isAuthenticated && !userReducer.isFirstTime ? (
@@ -45,15 +48,13 @@ const Index = () => {
                         />
                     </div>
                 }
-                {value === 1 &&
+                {/* {value === 1 &&
                     <div className="bg-red-500 grow">
 
                     </div>
-                }
-                {value === 2 &&
-                    <div className="bg-orange-500 grow">
-
-                    </div>
+                } */}
+                {value === 1 &&
+                    <ProfilePage />
                 }
                 <Box sx={{ width: "100%" }}>
                     <BottomNavigation
@@ -63,14 +64,14 @@ const Index = () => {
                             setValue(newValue);
                         }}
                     >
-                        <MuiBottomNavigationAction label="Recents" icon={<Restore />} />
-                        <MuiBottomNavigationAction label="Favorites" icon={<Favorite />} />
-                        <MuiBottomNavigationAction label="Nearby" icon={<LocationOn />} />
+                        <MuiBottomNavigationAction label="Chat" icon={<VideoChatIcon />} />
+                        {/* <MuiBottomNavigationAction label="Favorites" icon={<Favorite />} /> */}
+                        <MuiBottomNavigationAction label="Profile" icon={<Person />} />
                     </BottomNavigation>
                 </Box>
             </div>
         ) : (
-            <p>loading</p>
+            <Loading />
         )
     );
 };

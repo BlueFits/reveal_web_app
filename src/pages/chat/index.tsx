@@ -9,6 +9,7 @@ import Peer from "simple-peer";
 import { socketEmitters } from "../../constants/emitters";
 import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
 import socket from "../../../config/Socket";
+import { useRouter } from "next/router";
 
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
 import { acceptCallData, callUserData } from "../../constants/callTypes";
@@ -23,6 +24,7 @@ enum revealStatus {
 const revealTimerNum = 5;
 
 const Index = () => {
+    const router = useRouter();
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const otherUserReducer: apiTempUser = useSelector((state: IReducer) => state.otherUser);
@@ -64,7 +66,13 @@ const Index = () => {
     }, [stream]);
 
     const findRoomThunk = async () => {
-        const roomData: { payload: IRoomReducer } = await dispatch(findRoom({ preference: userReducer.preference, roomID: roomReducer._id || null }));
+        console.log("user pref: ", userReducer.gender, userReducer.showMe);
+        const roomData: { payload: IRoomReducer } = await dispatch(findRoom({
+            showMe: userReducer.showMe,
+            gender: userReducer.gender,
+            roomID: roomReducer._id || null
+        }));
+        console.log("Joining ", roomData);
         if (roomData.payload && roomData.payload._id) {
             joinRoom(roomData.payload._id, userReducer.socketID);
         } else {
@@ -74,7 +82,11 @@ const Index = () => {
     };
 
     const createRoomExec = async () => {
-        const roomData = await dispatch(createRoom(userReducer.preference));
+        const roomData = await dispatch(createRoom({
+            showMe: userReducer.showMe,
+            gender: userReducer.gender,
+        }));
+        console.log("Created room id ", roomData.payload._id);
         joinRoom(roomData.payload._id, userReducer.socketID);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
             await dispatch(removeRoom(roomData.payload._id));
@@ -175,8 +187,8 @@ const Index = () => {
     /* if redux is not set properly */
 
     useEffect(() => {
-        if (!userReducer.username || !userReducer.preference) {
-            window.location.href = "/";
+        if (!userReducer.username || !userReducer.gender) {
+            router.push("/dashboard");
         }
     }, [userReducer]);
 
