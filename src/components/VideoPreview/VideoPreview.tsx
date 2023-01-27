@@ -32,7 +32,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({ user, videoRef = null, isMuted 
             {
                 showAvatar &&
                 <div style={{ backgroundColor: avatar.bg }} className={`h-full w-full flex items-center justify-center`}>
-                    <Typography variant="h1" color={"#fff"}>
+                    <Typography variant="h4" color={"#fff"}>
                         {avatar.display}
                     </Typography>
                 </div>
