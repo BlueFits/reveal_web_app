@@ -63,7 +63,7 @@ const Index = () => {
             <section className="py-6 px-4 flex justify-center items-center">
                 <div className="max-w-5xl">
                     {/* <Divider sx={{ margin: "10px 0" }} /> */}
-                    <Typography marginBottom={2} variant="h6">Coming soon to the App store!</Typography>
+                    <Typography marginBottom={2} variant="h6">Welcome to Reveal Alpha!</Typography>
                     <Typography variant="body2">
                         Ever wanted to go to a blind date? Now is your chance!.
                         With Reveal, get to know someone based on their personality and not for how

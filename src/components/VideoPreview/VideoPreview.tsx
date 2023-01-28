@@ -20,8 +20,8 @@ const VideoPreview: React.FC<IVideoPreview> = ({ user, videoRef = null, isMuted 
     return (
         <Container sx={{ backgroundColor: "#000" }} disableGutters className="flex-1 relative overflow-hidden">
             <div className="p-2 absolute bg-black/50 w-2/4 flex rounded-full items-center" style={{ top: 30, left: 10 }}>
-                <Avatar alt={`${username && username.toLocaleUpperCase()} avatar`} src="/static/images/avatar/1.jpg" sx={{ marginRight: 3 }} />
-                <p className="text-white">{username}</p>
+                <Avatar alt={`${!showAvatar ? username.toLocaleUpperCase() : "."} avatar`} src="/static/images/avatar/1.jpg" sx={{ marginRight: 3 }} />
+                <p className="text-white">{showAvatar ? "..." : username}</p>
             </div>
             {
                 !user.username &&
