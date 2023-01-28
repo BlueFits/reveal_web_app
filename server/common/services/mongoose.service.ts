@@ -4,8 +4,8 @@ import db_url from "../../config/db_url";
 class MongooseService {
     private count = 0;
     private mongooseOptions = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+        // useNewUrlParser: true,
+        // useUnifiedTopology: true,
         serverSelectionTimeoutMS: 5000,
     };
     private mongoDB = process.env.MONGODB_URI || db_url;

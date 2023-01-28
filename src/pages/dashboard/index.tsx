@@ -48,11 +48,6 @@ const Index = () => {
                         />
                     </div>
                 }
-                {/* {value === 1 &&
-                    <div className="bg-red-500 grow">
-
-                    </div>
-                } */}
                 {value === 1 &&
                     <ProfilePage />
                 }

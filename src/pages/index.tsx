@@ -15,7 +15,7 @@ const Index = () => {
             {children}
             {
                 !disableSlash &&
-                <Typography className="mx-2" variant="caption">/</Typography>
+                <Typography style={{ margin: "0 1rem" }} variant="caption">/</Typography>
             }
         </li>
     );
