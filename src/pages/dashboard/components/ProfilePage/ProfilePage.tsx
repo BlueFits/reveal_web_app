@@ -37,7 +37,7 @@ const ProfilePage = () => {
                                     <EmailIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Email" />
-                                <ListItemText primary={userReducer.auth0.email} />
+                                <ListItemText primary={userReducer && userReducer.auth0 && userReducer.auth0.email} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
