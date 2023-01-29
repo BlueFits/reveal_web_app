@@ -15,6 +15,7 @@ function TabPanel(props: TabPanelProps) {
 
     return (
         <div
+            className='h-full border-2'
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
@@ -22,9 +23,7 @@ function TabPanel(props: TabPanelProps) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
+                children
             )}
         </div>
     );
@@ -45,20 +44,22 @@ const MatchesPage = () => {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs variant='fullWidth' indicatorColor='secondary' textColor='secondary' value={value} onChange={handleChange} aria-label="basic tabs example">
-                    <Tab label="Matches" {...a11yProps(0)} />
-                    <Tab label="Messages" {...a11yProps(1)} />
-                </Tabs>
-            </Box>
-            <TabPanel value={value} index={0}>
-                Item One
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Item Two
-            </TabPanel>
-        </Box>
+        // <Box sx={{ width: '100%', height: "100%" }}>
+        //     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        //         <Tabs variant='fullWidth' indicatorColor='secondary' textColor='secondary' value={value} onChange={handleChange} aria-label="basic tabs example">
+        //             <Tab label="Matches" {...a11yProps(0)} />
+        //             <Tab label="Messages" {...a11yProps(1)} />
+        //         </Tabs>
+        //     </Box>
+        //     <TabPanel value={value} index={0}>
+        //         Item One
+        //     </TabPanel>
+        //     <TabPanel value={value} index={1}>
+        <div className='flex justify-center items-center h-full'>
+            <Typography variant='h4'>No Matches</Typography>
+        </div>
+        //     </TabPanel>
+        // </Box>
     );
 }
 

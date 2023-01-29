@@ -13,6 +13,7 @@ import VideoChatIcon from '@mui/icons-material/VideoChat';
 import Loading from "../../components/Loading/Loading";
 import ChatIcon from '@mui/icons-material/Chat';
 import MatchesPage from "./components/MatchesPage/MatchesPage";
+import Diversity1Icon from '@mui/icons-material/Diversity1';
 
 const MuiBottomNavigationAction = styled(BottomNavigationAction)(`
   &.Mui-selected {
@@ -61,7 +62,7 @@ const Index = () => {
                         }}
                     >
                         <MuiBottomNavigationAction label="Chat" icon={<VideoChatIcon />} />
-                        <MuiBottomNavigationAction label="Matches" icon={<ChatIcon />} />
+                        <MuiBottomNavigationAction label="Matches" icon={<Diversity1Icon />} />
                         <MuiBottomNavigationAction label="Profile" icon={<Person />} />
                     </BottomNavigation>
                 </Box>
