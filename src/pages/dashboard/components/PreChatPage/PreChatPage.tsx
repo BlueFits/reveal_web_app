@@ -61,7 +61,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 						fullWidth
 						onClick={onStartHandler}
 						color="secondary"
-						style={{ borderRadius: 9999, borderWidth: 2, borderColor: "#9b59b6" }}
+						style={{ borderRadius: 9999, borderWidth: 2 }}
 						sx={{ color: "#9b59b6", margin: "15px 0" }}
 						variant="outlined"
 					>
