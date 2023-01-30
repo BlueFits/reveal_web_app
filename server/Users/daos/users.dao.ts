@@ -10,6 +10,7 @@ class UsersDao {
         showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         preference: [String],
         picture: { type: String, required: false, default: "" },
+        matches: [{ type: this.Schema.Types.ObjectId, ref: "Users" }],
         auth0: {
             name: String,
             email: String,
