@@ -32,6 +32,7 @@ const initialState: IUserReducer = {
     gender: null,
     picture: null,
     showMe: null,
+    matches: null,
     avatar: {
         bg: null,
         display: null,
