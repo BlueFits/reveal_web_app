@@ -48,7 +48,7 @@ class UsersDao {
     }
 
     async getUserByAuth0ID(userId: string) {
-        return this.User.findOne({ "auth0.user_id": userId }).exec();
+        return this.User.findOne({ "auth0.user_id": userId }).populate("matches").exec();
     }
 
     async getUsers(limit = 25, page = 0) {
@@ -67,6 +67,19 @@ class UsersDao {
             { $set: userFields },
             { new: true }
         ).exec();
+
+        return existingUser;
+    }
+
+    async removeDocFromArrayProp(
+        userId: string,
+        fieldToRemove: PatchUserDto
+    ) {
+        const existingUser = await this.User.findOneAndUpdate(
+            { _id: userId },
+            { $pull: fieldToRemove },
+            { new: true }
+        ).exec();    
 
         return existingUser;
     }

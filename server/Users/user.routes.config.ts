@@ -28,14 +28,20 @@ export default class UserRoutes extends CommonRoutesConfig {
                 usersController.getUserByAuth0ID
             )
             .patch(
-                body("username").isString(),
-                body("birthday").toDate(),
-                body("gender").isString(),
-                body("showMe").isString(),
+                body("username").isString().optional(),
+                body("birthday").toDate().optional(),
+                body("gender").isString().optional(),
+                body("showMe").isString().optional(),
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
                 usersMiddleware.isIDValid,
                 usersController.updateUserByID,
             )
+            .delete(
+                body("matches").optional(),
+                BodyValidationMiddleware.verifyBodyFieldsErrors,
+                usersMiddleware.isIDValid,
+                usersController.delete,
+            );
 
     }
 };
