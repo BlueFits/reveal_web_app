@@ -3,7 +3,7 @@ import { serverURL } from "../../../../config/Server";
 import avatarSimple from '../../../constants/avatar';
 import { CreateUserDto, PutUserDto } from '../../../../server/Users/dto/users.dto';
 import { gender } from '../../../../server/Users/dto/users.dto';
-import UsersApi, { IUpdateUserByForm } from './api';
+import UsersApi, { IUpdateUserByForm, IAddUserToMatches } from './api';
 
 interface IFormSet {
     username: string;
@@ -73,6 +73,22 @@ export const updateUserByForm: any = createAsyncThunk("user/updateUserByForm", a
     }
 });
 
+export const addUserToMatches: any = createAsyncThunk("user/addUserToMatches", async (data: IAddUserToMatches) => {
+    try {
+        const response = await UsersApi.addUserToMatches(data);
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error("my err", errData);
+            throw errData;
+        } else {
+            const resData = await response.json();
+            return resData;
+        }
+    } catch (err) {
+        throw err;
+    }
+});
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -102,20 +118,25 @@ const userSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
+
+        const addAllResultProp = (state, action): IUserReducer => {
+            for (const prop in action.payload) {
+                if (state.hasOwnProperty(prop)) {
+                    state[prop] = action.payload[prop];
+                }
+            }
+            return state;
+        };
+
         builder.addCase(getUserByAuthID.fulfilled, (state, action: { payload: CreateUserDto }) => {
             if (action.payload.gender) state.isFirstTime = false;
-            for (const prop in action.payload) {
-                if (state.hasOwnProperty(prop)) {
-                    state[prop] = action.payload[prop];
-                }
-            }
+            state = addAllResultProp(state, action);
         });
-        builder.addCase(updateUserByForm.fulfilled, (state, action: { payload: IUpdateUserByForm }) => {
-            for (const prop in action.payload) {
-                if (state.hasOwnProperty(prop)) {
-                    state[prop] = action.payload[prop];
-                }
-            }
+        builder.addCase(updateUserByForm.fulfilled, (state, action: { payload: CreateUserDto }) => {
+            state = addAllResultProp(state, action);
+        });
+        builder.addCase(addUserToMatches.fulfilled, (state, action: { payload: CreateUserDto }) => {
+            state = addAllResultProp(state, action);
         });
     }
 })

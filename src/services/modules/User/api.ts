@@ -12,6 +12,11 @@ export interface IUpdateUserByForm {
     username: string;
 }
 
+export interface IAddUserToMatches {
+    userIdToAdd: string;
+    _id: string;
+}
+
 const UsersApi = {
     async getUserByAuthID(id: string): Promise<Response> {
         return await fetch(`${serverURL}${API}/${id}`);
@@ -28,6 +33,18 @@ const UsersApi = {
                 gender: data.gender,
                 showMe: data.showMe,
                 birthday: data.birthday,
+            }),
+        });
+    },
+    async addUserToMatches(data: IAddUserToMatches) {
+        return await fetch(`${serverURL}${API}/${data._id}`, {
+            method: "PATCH",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                matches: data.userIdToAdd
             }),
         });
     }

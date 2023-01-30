@@ -71,6 +71,21 @@ class UsersDao {
         return existingUser;
     }
 
+    async addToMatches(
+        userId: string,
+        match: string
+    ) {
+        const existingUser = await this.User.findOneAndUpdate(
+            { _id: userId },
+            { $push: { matches: match } },
+            { new: true }
+        )
+            .populate("matches")
+            .exec();
+
+        return existingUser;
+    }
+
     async removeDocFromArrayProp(
         userId: string,
         fieldToRemove: PatchUserDto
@@ -79,7 +94,7 @@ class UsersDao {
             { _id: userId },
             { $pull: fieldToRemove },
             { new: true }
-        ).exec();    
+        ).exec();
 
         return existingUser;
     }

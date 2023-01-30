@@ -39,6 +39,10 @@ const Index = () => {
         if (!isLoading) init();
     }, [user, isLoading]);
 
+    // useEffect(() => {
+    //     console.log("my log", userReducer);
+    // }, [userReducer]);
+
     if (isLoading) return (<Loading />);
 
     return (
