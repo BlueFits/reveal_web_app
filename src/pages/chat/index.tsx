@@ -21,6 +21,13 @@ enum revealStatus {
     CONFIRM = "CONFIRM",
 }
 
+enum matchStatus {
+    WAITING = "WAITING",
+    ACCEPTED = "ACCEPTED",
+    STANDBY = "STANDBY",
+    CONFIRM = "CONFIRM",
+}
+
 const revealTimerNum = 5;
 
 const Index = () => {
@@ -40,6 +47,7 @@ const Index = () => {
     const [stream, setStream] = useState<MediaProvider>();
     const [initSetupRan, setInitSetupRan] = useState(false);
     const [reveal, setReveal] = useState<revealStatus>(revealStatus.STANDBY);
+    const [match, setMatch] = useState<matchStatus>(matchStatus.STANDBY);
     const [revealTimer, setRevealTimer] = useState(revealTimerNum);
     const [callAccepted, setCallAccepted] = useState(false);
 
@@ -134,6 +142,9 @@ const Index = () => {
             })
             socket.on(socketEmitters.REVEAL_INIT, () => {
                 setReveal(revealStatus.CONFIRM);
+            })
+            socket.on(socketEmitters.MATCH_INIT, () => {
+                setMatch(matchStatus.CONFIRM);
             })
             findRoomThunk();
             setInitSetupRan(true);
@@ -233,6 +244,26 @@ const Index = () => {
         // socket.emit("checkroom")
     };
 
+    const matchHandler = () => {
+        if (match === matchStatus.CONFIRM) {
+            setMatch(matchStatus.ACCEPTED);
+            socket.emit(socketEmitters.ACCEPT_MATCH, { to: otherUserReducer });
+            alert("Congratulations users matched!");
+            /* Add match logic here */
+            
+        } else {
+            socket.emit(socketEmitters.MATCH_INIT, { from: userReducer, to: otherUserReducer });
+            socket.on(socketEmitters.MATCH_ACCEPT, () => {
+                alert("Congratulations users matched!");
+                socket.off(socketEmitters.MATCH_ACCEPT);
+                setMatch(matchStatus.ACCEPTED);
+                /* Add match logic here */
+
+            })
+            setMatch(matchStatus.WAITING);
+        }
+    };
+
     const skipHandler = () => {
         setCallAccepted(false);
         setRevealTimer(revealTimerNum);
@@ -267,12 +298,12 @@ const Index = () => {
             />
             <Container className="absolute flex flex-col bottom-5">
                 {
-                    false ?
+                    reveal === revealStatus.ACCEPTED ?
                         <ButtonContainer>
                             <Button
-                                onClick={() => alert("Will be implemented in a future release")}
+                                onClick={matchHandler}
                                 style={{
-                                    backgroundColor: "green",
+                                    backgroundColor: "#2ecc71",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999
@@ -280,15 +311,15 @@ const Index = () => {
                                 size="large"
                                 variant="contained"
                             >
-                                Match
+                                { match }
                             </Button>
                         </ButtonContainer> :
                         <ButtonContainer>
                             <Button
                                 onClick={revealHandler}
-                                disabled={!callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING || reveal === revealStatus.ACCEPTED)}
+                                disabled={!callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING )}
                                 style={{
-                                    backgroundColor: revealTimer !== 0 || reveal === revealStatus.WAITING || reveal === revealStatus.ACCEPTED ? "inherit" : "#0971f1",
+                                    backgroundColor: revealTimer !== 0 || reveal === revealStatus.WAITING ? "inherit" : "#0971f1",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999

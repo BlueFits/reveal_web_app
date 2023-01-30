@@ -40,6 +40,14 @@ export default class SocketInit {
                     socket.on(socketEmitters.ACCEPT_REVEAL, ({ to }: { to: IUserReducer }) => {
                         io.to(to.socketID).emit(socketEmitters.REVEAL_ACCEPT);
                     })
+
+                    socket.on(socketEmitters.MATCH_INIT, ({ from, to }: { from: IUserReducer, to: IUserReducer }) => {
+                        io.to(to.socketID).emit(socketEmitters.MATCH_INIT, { from });
+                    });
+
+                    socket.on(socketEmitters.ACCEPT_MATCH, ({ to }: { to: IUserReducer }) => {
+                        io.to(to.socketID).emit(socketEmitters.MATCH_ACCEPT);
+                    })
                 }
             });
 

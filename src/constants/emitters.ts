@@ -14,4 +14,7 @@ export enum socketEmitters {
     USER_CONNECTED = "user-connected",
     USER_DISCONNECTED = "user-disconnected",
     ROOM_LEAVE = "roomleave",
+    MATCH_INIT = "matchinit",
+    MATCH_ACCEPT = "matchaccept",
+    ACCEPT_MATCH = "acceptmatch",
 } 
