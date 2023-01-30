@@ -21,9 +21,9 @@ const MatchesPage = () => {
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const [value, setValue] = useState(0);
 
-    useEffect(() => {
-        console.log("my reducer", userReducer);
-    }, [userReducer]);
+    // useEffect(() => {
+    //     console.log("my reducer", userReducer);
+    // }, [userReducer]);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
