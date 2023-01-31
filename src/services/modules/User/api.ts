@@ -2,6 +2,7 @@ import { serverURL } from "../../../../config/Server";
 import { gender } from "../../../../server/Users/dto/users.dto";
 
 const API = "/api/users";
+const MessagesAPI = "/api/messages"
 
 export interface IUpdateUserByForm {
     _id?: string;
@@ -15,6 +16,10 @@ export interface IUpdateUserByForm {
 export interface IAddUserToMatches {
     userIdToAdd: string;
     _id: string;
+}
+
+export interface IReloadMessages {
+    userID: string;
 }
 
 const UsersApi = {
@@ -47,7 +52,7 @@ const UsersApi = {
                 matches: data.userIdToAdd
             }),
         });
-    }
+    },
 };
 
 export default UsersApi;

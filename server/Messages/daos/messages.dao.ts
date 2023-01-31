@@ -33,7 +33,7 @@ class MessagesDao {
     async getMessages(filter: Object = {}) {
         return this.Message.find(filter).select({
             "messages": { "$slice": -1 }
-        }).exec();
+        }).populate("members").exec();
     }
 
     async addToMessage(messageID: string, senderID: string, message: string) {

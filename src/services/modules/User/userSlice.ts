@@ -3,7 +3,7 @@ import { serverURL } from "../../../../config/Server";
 import avatarSimple from '../../../constants/avatar';
 import { CreateUserDto, PutUserDto } from '../../../../server/Users/dto/users.dto';
 import { gender } from '../../../../server/Users/dto/users.dto';
-import UsersApi, { IUpdateUserByForm, IAddUserToMatches } from './api';
+import UsersApi, { IUpdateUserByForm, IAddUserToMatches, IReloadMessages } from './api';
 
 interface IFormSet {
     username: string;
@@ -20,6 +20,7 @@ export interface IUserReducer extends PutUserDto {
         display: string;
     }
     isFirstTime: boolean;
+    username: string;
 }
 
 
@@ -128,14 +129,15 @@ const userSlice = createSlice({
             return state;
         };
 
+        const defaultAddAll = (state, action: { payload: CreateUserDto }) => {
+            console.log("Action result", action.payload);
+            state = addAllResultProp(state, action);
+        };
+
+        builder.addCase(updateUserByForm.fulfilled, defaultAddAll);
+        builder.addCase(addUserToMatches.fulfilled, defaultAddAll);
         builder.addCase(getUserByAuthID.fulfilled, (state, action: { payload: CreateUserDto }) => {
             if (action.payload.gender) state.isFirstTime = false;
-            state = addAllResultProp(state, action);
-        });
-        builder.addCase(updateUserByForm.fulfilled, (state, action: { payload: CreateUserDto }) => {
-            state = addAllResultProp(state, action);
-        });
-        builder.addCase(addUserToMatches.fulfilled, (state, action: { payload: CreateUserDto }) => {
             state = addAllResultProp(state, action);
         });
     }
