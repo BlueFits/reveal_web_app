@@ -10,8 +10,10 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { useDispatch } from 'react-redux';
 import DrawerMessages from './components/DrawerMessages';
-import { CreateMessageDto } from '../../../../../server/Messages/dto/messages.dto';
+import { CreateMessageDto, IMessageSingle } from '../../../../../server/Messages/dto/messages.dto';
 import MessagesApi from '../../../../services/modules/Messages/api';
+import socket from '../../../../../config/Socket';
+import socketEmitters, { IJoinChatData } from '../../../../constants/emitters';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,7 +30,7 @@ const MatchesPage = () => {
     const messageReducer: IMessageReducer = useSelector((state: IReducer) => state.messages);
 
     const [isMessageOpen, setIsMessageOpen] = useState(false);
-    const [messageInfo, setMessageInfo] = useState<CreateMessageDto>(null);
+    const [messageInfo, setMessageInfo] = useState<CreateMessageDto>();
 
     useEffect(() => {
         const asyncInit = async () => {
@@ -37,17 +39,19 @@ const MatchesPage = () => {
         asyncInit();
     }, [userReducer]);
 
-    const pushToMessageInfo = (user: IUserReducer, msg: string) => {
+    useEffect(() => {
+        console.log(messageInfo);
+    }, [messageInfo]);
+
+    const pushToMessageInfo = (msg: IMessageSingle) => {
         const msgInstance = { ...messageInfo };
-        msgInstance.messages.push({
-            sender: user,
-            message: msg,
-        });
+        console.log("my instance", msgInstance);
+        msgInstance.messages = [...msgInstance.messages, msg];
+        console.log(msgInstance);
         setMessageInfo(msgInstance);
     }
 
     const messagesHandler = async (otherUser: IUserReducer) => {
-        //Insert thunk here
         try {
             const response = await MessagesApi.deepMessageReload(userReducer._id, otherUser._id);
             if (!response.ok) {
@@ -55,8 +59,12 @@ const MatchesPage = () => {
                 console.error("my err", errData);
                 throw errData;
             } else {
-                const resData = await response.json();
-                console.log(resData);
+                const resData: CreateMessageDto = await response.json();
+                const data: IJoinChatData = {
+                    messageRoomID: resData._id,
+                    userSocketID: userReducer.socketID,
+                };
+                socket.emit(socketEmitters.JOIN_CHAT, data)
                 setMessageInfo(resData);
                 setIsMessageOpen(true);
             }

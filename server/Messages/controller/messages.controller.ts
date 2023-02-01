@@ -6,10 +6,12 @@ class MessagesController {
     async listMessages(req: Request, res: Response) {
         if (req.query.with) {
             const messages = await messagesDao.getMessage({
-                members: [
-                    req.body.id,
-                    req.query.with,
-                ]
+                members: {
+                    $all: [
+                        req.body.id,
+                        req.query.with,
+                    ]
+                }
             });
             !messages ? res.status(404).send("No messages") : res.status(200).send(messages);
         } else {

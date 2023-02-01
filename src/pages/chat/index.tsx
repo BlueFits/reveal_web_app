@@ -6,7 +6,7 @@ import { IUserReducer, addUserToMatches } from "../../services/modules/User/user
 import { apiTempUser, setOtherUser, clearState } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import Peer from "simple-peer";
-import { socketEmitters } from "../../constants/emitters";
+import socketEmitters from "../../constants/emitters";
 import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
 import socket from "../../../config/Socket";
 import { useRouter } from "next/router";

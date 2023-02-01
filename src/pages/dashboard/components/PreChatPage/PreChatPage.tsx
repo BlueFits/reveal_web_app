@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { setUsername, setPreference, setSocketID, setAvatar, IUserReducer } from "../../../../services/modules/User/userSlice";
 import { useRouter } from "next/router";
 import socket from "../../../../../config/Socket";
-import { socketEmitters } from "../../../../constants/emitters";
+import socketEmitters from "../../../../constants/emitters";
 
 interface IPreChatPage {
 	user: IUserReducer;

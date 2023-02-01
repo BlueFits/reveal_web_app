@@ -11,7 +11,7 @@ const initialState: IMessageReducer = {
 };
 
 
-export const reloadMessages: any = createAsyncThunk("user/reloadMessages", async (userID: string) => {
+export const reloadMessages: any = createAsyncThunk("message/reloadMessages", async (userID: string) => {
     try {
         const response = await MessagesApi.reloadMessages(userID);
         if (!response.ok) {
@@ -26,6 +26,23 @@ export const reloadMessages: any = createAsyncThunk("user/reloadMessages", async
         throw err;
     }
 });
+
+export const deepMessageReload: any = createAsyncThunk("message/deepReload", async (data: { userID: string, otherUserID: string }) => {
+    try {
+        const response = await MessagesApi.deepMessageReload(data.userID, data.otherUserID);
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error("my err", errData);
+            throw errData;
+        } else {
+            const resData = await response.json();
+            return resData;
+        }
+    } catch (err) {
+        throw err;
+    }
+});
+
 
 const messageSlice = createSlice({
     name: 'message',
