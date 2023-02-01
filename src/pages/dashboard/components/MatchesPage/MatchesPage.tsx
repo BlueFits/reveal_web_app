@@ -9,6 +9,9 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { useDispatch } from 'react-redux';
+import DrawerMessages from './components/DrawerMessages';
+import { CreateMessageDto } from '../../../../../server/Messages/dto/messages.dto';
+import MessagesApi from '../../../../services/modules/Messages/api';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -23,7 +26,9 @@ const MatchesPage = () => {
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const messageReducer: IMessageReducer = useSelector((state: IReducer) => state.messages);
-    const [value, setValue] = useState(0);
+
+    const [isMessageOpen, setIsMessageOpen] = useState(false);
+    const [messageInfo, setMessageInfo] = useState<CreateMessageDto>(null);
 
     useEffect(() => {
         const asyncInit = async () => {
@@ -32,12 +37,45 @@ const MatchesPage = () => {
         asyncInit();
     }, [userReducer]);
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
+    const pushToMessageInfo = (user: IUserReducer, msg: string) => {
+        const msgInstance = { ...messageInfo };
+        msgInstance.messages.push({
+            sender: user,
+            message: msg,
+        });
+        setMessageInfo(msgInstance);
+    }
+
+    const messagesHandler = async (otherUser: IUserReducer) => {
+        //Insert thunk here
+        try {
+            const response = await MessagesApi.deepMessageReload(userReducer._id, otherUser._id);
+            if (!response.ok) {
+                const errData = await response.json();
+                console.error("my err", errData);
+                throw errData;
+            } else {
+                const resData = await response.json();
+                console.log(resData);
+                setMessageInfo(resData);
+                setIsMessageOpen(true);
+            }
+        } catch (err) {
+            throw err;
+        }
     };
+
 
     return userReducer.matches.length > 0 ? (
         <div className='flex items-center h-full flex-col w-full border-2 p-5'>
+            <DrawerMessages
+                open={isMessageOpen}
+                onClose={() => setIsMessageOpen(false)}
+                user={userReducer}
+                OtherUser={(messageInfo && messageInfo.members.find((user: IUserReducer) => user._id !== userReducer._id) as IUserReducer)}
+                messageInfo={messageInfo}
+                pushToMsg={pushToMessageInfo}
+            />
             <div className='w-full flex flex-col mb-5'>
                 <Typography variant='h6'>Matches</Typography>
                 <Stack
@@ -62,7 +100,7 @@ const MatchesPage = () => {
                         const otherUser = (message.members.find((user: IUserReducer) => user._id !== userReducer._id) as IUserReducer);
                         return (
                             <List key={`keyForList:${index}`}>
-                                <ListItemButton>
+                                <ListItemButton onClick={messagesHandler.bind(this, otherUser)}>
                                     <ListItemAvatar>
                                         <Avatar alt="Profile Picture" src={undefined} />
                                     </ListItemAvatar>
