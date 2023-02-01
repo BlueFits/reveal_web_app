@@ -45,7 +45,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             setReceiveMsg(data);
         });
     }, []);
-
+    /* Created due to pushMsg Callback issue */
     useEffect(() => {
         if (receiveMsg.sender) pushToMsg(receiveMsg);
     }, [receiveMsg]);
