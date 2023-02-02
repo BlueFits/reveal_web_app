@@ -39,15 +39,13 @@ const MatchesPage = () => {
         asyncInit();
     }, [userReducer]);
 
-    useEffect(() => {
-        console.log(messageInfo);
-    }, [messageInfo]);
+    // useEffect(() => {
+    //     console.log(messageInfo);
+    // }, [messageInfo]);
 
     const pushToMessageInfo = (msg: IMessageSingle) => {
         const msgInstance = { ...messageInfo };
-        console.log("my instance", msgInstance);
         msgInstance.messages = [...msgInstance.messages, msg];
-        console.log(msgInstance);
         setMessageInfo(msgInstance);
     }
 
@@ -92,7 +90,7 @@ const MatchesPage = () => {
                 >
                     {userReducer.matches.map((match, index) => {
                         return (
-                            <Item key={index + "matchesKey"}>
+                            <Item onClick={messagesHandler.bind(this, match)} key={index + "matchesKey"}>
                                 <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture} />
                                 <Typography marginTop={0.5} fontWeight={"bold"} variant='body2'>{match.username}</Typography>
                             </Item>

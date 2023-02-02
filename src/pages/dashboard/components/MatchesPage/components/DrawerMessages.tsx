@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { Drawer, List, ListItem, ListItemText, IconButton, Divider, Typography, TextField } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { CreateMessageDto, IMessageSingle } from "../../../../../../server/Messages/dto/messages.dto";
@@ -6,6 +6,8 @@ import { IUserReducer } from "../../../../../services/modules/User/userSlice";
 import SendIcon from '@mui/icons-material/Send';
 import socket from "../../../../../../config/Socket";
 import socketEmitters, { ISendIDChat, ISendMsgChat } from "../../../../../constants/emitters";
+import MessagesApi from "../../../../../services/modules/Messages/api";
+import Loading from "../../../../../components/Loading/Loading";
 
 
 interface IDrawerMenu {
@@ -19,16 +21,34 @@ interface IDrawerMenu {
 
 const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser, messageInfo, pushToMsg }) => {
 
+    const [isLoading, setIsLoading] = useState(true);
     const [msg, setMsg] = useState<string>("");
     const [otherSocketID, setOtherSocketID] = useState<string>("");
     const [receiveMsg, setReceiveMsg] = useState<IMessageSingle>({
         message: null,
         sender: null,
     });
+    const messagesEndRef = useRef(null)
+
+    const scrollToBottom = ({ instant = false }: { instant?: boolean; } = {}) => {
+        messagesEndRef.current?.scrollIntoView({ behavior: instant ? "auto" : "smooth" })
+    }
+
+    useEffect(() => {
+        if (messagesEndRef.current) scrollToBottom();
+    }, [messageInfo]);
+
+    useEffect(() => {
+        if (open) {
+            setTimeout(() => {
+                if (messagesEndRef.current) scrollToBottom({ instant: true });
+                setIsLoading(false);
+            }, 500);
+        }
+    }, [open]);
 
     useEffect(() => {
         socket.on(socketEmitters.USER_CONNECTED_ROOM, (otherSocketID: string) => {
-            console.log("setting ", otherSocketID);
             setOtherSocketID(otherSocketID);
             const data: ISendIDChat = {
                 userSocket: user.socketID,
@@ -37,34 +57,55 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             socket.emit(socketEmitters.SEND_ID_CHAT, data);
         });
         socket.on(socketEmitters.RECEIVE_ID_CHAT, (otherSocketID: string) => {
-            console.log("received ", otherSocketID);
             setOtherSocketID(otherSocketID);
         });
         socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: IMessageSingle) => {
-            console.log("received msg", data);
             setReceiveMsg(data);
         });
     }, []);
+
     /* Created due to pushMsg Callback issue */
     useEffect(() => {
         if (receiveMsg.sender) pushToMsg(receiveMsg);
     }, [receiveMsg]);
 
-    const sendHandler = () => {
+    const sendHandler = async () => {
+        try {
+            let response = null;
 
-        const data: ISendMsgChat = {
-            message: {
-                sender: user._id,
-                message: msg,
-            },
-            otherSocketID,
-        };
+            messageInfo.messages.length > 0 ?
+                response = await MessagesApi.sendMsg(messageInfo._id, user._id, msg) :
+                response = await MessagesApi.initiateMsg(user._id, OtherUser._id, msg);
 
-        socket.emit(socketEmitters.SEND_MSG_CHAT, data);
+            if (!response.ok) {
+                const errData = await response.json();
+                throw errData;
+            } else {
+                const resData: CreateMessageDto = await response.json();
+            }
 
-        pushToMsg(data.message);
-        setMsg("");
-    }
+            const data: ISendMsgChat = {
+                message: {
+                    sender: user._id,
+                    message: msg,
+                },
+                otherSocketID,
+            };
+
+            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
+
+            pushToMsg(data.message);
+            setMsg("");
+        } catch (err) {
+            throw err;
+        }
+    };
+
+    const closeHandler = () => {
+        setIsLoading(true);
+        socket.emit(socketEmitters.CHAT_LEAVE);
+        onClose();
+    };
 
     const BubbleContainer = ({ msg, orientation = "left" }: { msg: string; orientation: "left" | "right"; }) => {
         const classType = orientation === "left" ?
@@ -89,11 +130,11 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             }}
             anchor={"bottom"}
             open={open}
-            onClose={onClose}
+            onClose={closeHandler}
         >
             <List>
                 <ListItem>
-                    <IconButton sx={{ marginRight: 1 }} onClick={onClose} style={{ color: "grey" }}>
+                    <IconButton sx={{ marginRight: 1 }} onClick={closeHandler} style={{ color: "grey" }}>
                         <ArrowBack />
                     </IconButton>
                     <ListItemText>
@@ -104,7 +145,13 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 </ListItem>
             </List>
             <Divider />
-            <div className="h-full px-3">
+            {isLoading &&
+                <div className="bg-white h-screen w-screen absolute">
+                    <Loading />
+                </div>
+            }
+
+            <div className="h-full px-3 pb-5 overflow-y-auto">
                 {messageInfo && messageInfo.messages.map((msg, index) => {
                     return (msg.sender as string) === user._id ?
                         <BubbleContainer
@@ -119,6 +166,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                         />
 
                 })}
+                <div ref={messagesEndRef} />
             </div>
             <div className="flex">
                 <TextField fullWidth onChange={(e) => setMsg(e.target.value)} value={msg} label={"message"} variant="outlined" />

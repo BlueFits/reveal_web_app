@@ -14,6 +14,7 @@ export default class SocketInit {
             socket.on(socketEmitters.JOIN_CHAT, (data: IJoinChatData) => {
                 if (io.sockets.adapter.rooms.get(data.messageRoomID) && io.sockets.adapter.rooms.get(data.messageRoomID).size === 2) throw new Error("More than 2 people in room")
                 socket.join(data.messageRoomID);
+                // console.log(io.sockets.adapter.rooms);
                 socket.broadcast.to(data.messageRoomID).emit(socketEmitters.USER_CONNECTED_ROOM, data.userSocketID)
 
                 socket.on(socketEmitters.SEND_ID_CHAT, (data: ISendIDChat) => {
@@ -21,9 +22,14 @@ export default class SocketInit {
                 })
 
                 socket.on(socketEmitters.SEND_MSG_CHAT, ({ message, otherSocketID }: ISendMsgChat) => {
-                    console.log(message);
                     io.to(otherSocketID).emit(socketEmitters.RECEIVE_MSG_CHAT, message);
                 });
+                socket.on(socketEmitters.CHAT_LEAVE, () => {
+                    socket.leave(data.messageRoomID)
+                    // console.log("User left", data.messageRoomID);
+                    // console.log(io.sockets.adapter.rooms);
+                    socket.offAny();
+                })
             });
 
             socket.on(socketEmitters.JOIN_ROOM, ({ roomID, userID }) => {

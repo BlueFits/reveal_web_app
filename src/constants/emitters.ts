@@ -41,6 +41,7 @@ enum socketEmitters {
     RECEIVE_ID_CHAT = "RECEIVE_ID_CHAT",
     SEND_MSG_CHAT = "SEND_MSG_CHAT",
     RECEIVE_MSG_CHAT = "RECEIVE_MSG_CHAT",
+    CHAT_LEAVE = "CHAT_LEAVE",
 }
 
 export default socketEmitters;
