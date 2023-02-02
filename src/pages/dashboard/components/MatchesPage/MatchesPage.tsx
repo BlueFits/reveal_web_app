@@ -73,7 +73,7 @@ const MatchesPage = () => {
 
 
     return userReducer.matches.length > 0 ? (
-        <div className='flex items-center h-full flex-col w-full border-2 p-5'>
+        <div className='flex items-center h-full flex-col w-full p-5'>
             <DrawerMessages
                 open={isMessageOpen}
                 onClose={() => setIsMessageOpen(false)}
