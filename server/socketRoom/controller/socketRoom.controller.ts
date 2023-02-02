@@ -39,8 +39,6 @@ class SocketRoomController {
             createdBy = gender.Female;
         }
 
-        console.log(showMe, createdBy);
-
         const room = await socketRoomDao.getRooms({
             filter: { "_id": { $ne: roomID }, showMe, createdBy }
         });

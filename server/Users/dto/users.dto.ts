@@ -13,6 +13,7 @@ export interface CreateUserDto {
     showMe?: gender,
     preference?: Array<string>,
     picture?: string,
+    matches: [CreateUserDto],
     auth0: {
         name: string,
         email: string,
@@ -31,6 +32,7 @@ export interface PutUserDto {
     showMe: gender,
     preference: Array<string>,
     picture: string,
+    matches: [CreateUserDto],
     auth0: {
         name: string,
         email: string,

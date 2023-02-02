@@ -2,19 +2,27 @@ import { useEffect, useState, MutableRefObject, useRef } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
-import { IUserReducer } from "../../services/modules/User/userSlice";
+import { IUserReducer, addUserToMatches } from "../../services/modules/User/userSlice";
 import { apiTempUser, setOtherUser, clearState } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import Peer from "simple-peer";
-import { socketEmitters } from "../../constants/emitters";
+import socketEmitters from "../../constants/emitters";
 import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
 import socket from "../../../config/Socket";
 import { useRouter } from "next/router";
 
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
 import { acceptCallData, callUserData } from "../../constants/callTypes";
+import { IAddUserToMatches } from "../../services/modules/User/api";
 
 enum revealStatus {
+    WAITING = "WAITING",
+    ACCEPTED = "ACCEPTED",
+    STANDBY = "STANDBY",
+    CONFIRM = "CONFIRM",
+}
+
+enum matchStatus {
     WAITING = "WAITING",
     ACCEPTED = "ACCEPTED",
     STANDBY = "STANDBY",
@@ -40,6 +48,7 @@ const Index = () => {
     const [stream, setStream] = useState<MediaProvider>();
     const [initSetupRan, setInitSetupRan] = useState(false);
     const [reveal, setReveal] = useState<revealStatus>(revealStatus.STANDBY);
+    const [match, setMatch] = useState<matchStatus>(matchStatus.STANDBY);
     const [revealTimer, setRevealTimer] = useState(revealTimerNum);
     const [callAccepted, setCallAccepted] = useState(false);
 
@@ -134,6 +143,9 @@ const Index = () => {
             })
             socket.on(socketEmitters.REVEAL_INIT, () => {
                 setReveal(revealStatus.CONFIRM);
+            })
+            socket.on(socketEmitters.MATCH_INIT, () => {
+                setMatch(matchStatus.CONFIRM);
             })
             findRoomThunk();
             setInitSetupRan(true);
@@ -233,6 +245,33 @@ const Index = () => {
         // socket.emit("checkroom")
     };
 
+    const matchHandler = () => {
+
+        const addToMatches = async () => {
+            const data: IAddUserToMatches = { userIdToAdd: otherUserReducer._id, _id: userReducer._id };
+            const result = await dispatch(addUserToMatches(data)).payload;
+            return result;
+        }
+
+        if (match === matchStatus.CONFIRM) {
+            setMatch(matchStatus.ACCEPTED);
+            socket.emit(socketEmitters.ACCEPT_MATCH, { to: otherUserReducer });
+            alert("Congratulations users matched!");
+            /* Add match logic here */
+            addToMatches();
+        } else {
+            socket.emit(socketEmitters.MATCH_INIT, { from: userReducer, to: otherUserReducer });
+            socket.on(socketEmitters.MATCH_ACCEPT, () => {
+                alert("Congratulations users matched!");
+                socket.off(socketEmitters.MATCH_ACCEPT);
+                setMatch(matchStatus.ACCEPTED);
+                /* Add match logic here */
+                addToMatches();
+            })
+            setMatch(matchStatus.WAITING);
+        }
+    };
+
     const skipHandler = () => {
         setCallAccepted(false);
         setRevealTimer(revealTimerNum);
@@ -267,12 +306,13 @@ const Index = () => {
             />
             <Container className="absolute flex flex-col bottom-5">
                 {
-                    false ?
+                    reveal === revealStatus.ACCEPTED ?
                         <ButtonContainer>
                             <Button
-                                onClick={() => alert("Will be implemented in a future release")}
+                                onClick={matchHandler}
+                                disabled={match === matchStatus.ACCEPTED}
                                 style={{
-                                    backgroundColor: "green",
+                                    backgroundColor: match !== matchStatus.ACCEPTED ? "#2ecc71" : "inherit",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999
@@ -280,15 +320,15 @@ const Index = () => {
                                 size="large"
                                 variant="contained"
                             >
-                                Match
+                                {match}
                             </Button>
                         </ButtonContainer> :
                         <ButtonContainer>
                             <Button
                                 onClick={revealHandler}
-                                disabled={!callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING || reveal === revealStatus.ACCEPTED)}
+                                disabled={!callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING)}
                                 style={{
-                                    backgroundColor: revealTimer !== 0 || reveal === revealStatus.WAITING || reveal === revealStatus.ACCEPTED ? "inherit" : "#0971f1",
+                                    backgroundColor: revealTimer !== 0 || reveal === revealStatus.WAITING ? "inherit" : "#0971f1",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999

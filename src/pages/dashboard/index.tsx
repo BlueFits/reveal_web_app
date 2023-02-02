@@ -11,6 +11,9 @@ import PreChatPage from "./components/PreChatPage/PreChatPage";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import VideoChatIcon from '@mui/icons-material/VideoChat';
 import Loading from "../../components/Loading/Loading";
+import ChatIcon from '@mui/icons-material/Chat';
+import MatchesPage from "./components/MatchesPage/MatchesPage";
+import Diversity1Icon from '@mui/icons-material/Diversity1';
 
 const MuiBottomNavigationAction = styled(BottomNavigationAction)(`
   &.Mui-selected {
@@ -36,6 +39,10 @@ const Index = () => {
         if (!isLoading) init();
     }, [user, isLoading]);
 
+    // useEffect(() => {
+    //     console.log("my log", userReducer);
+    // }, [userReducer]);
+
     if (isLoading) return (<Loading />);
 
     return (
@@ -48,9 +55,8 @@ const Index = () => {
                         />
                     </div>
                 }
-                {value === 1 &&
-                    <ProfilePage />
-                }
+                {value === 1 && <MatchesPage />}
+                {value === 2 && <ProfilePage />}
                 <Box sx={{ width: "100%" }}>
                     <BottomNavigation
                         showLabels
@@ -60,7 +66,7 @@ const Index = () => {
                         }}
                     >
                         <MuiBottomNavigationAction label="Chat" icon={<VideoChatIcon />} />
-                        {/* <MuiBottomNavigationAction label="Favorites" icon={<Favorite />} /> */}
+                        <MuiBottomNavigationAction label="Matches" icon={<Diversity1Icon />} />
                         <MuiBottomNavigationAction label="Profile" icon={<Person />} />
                     </BottomNavigation>
                 </Box>

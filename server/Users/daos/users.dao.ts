@@ -10,6 +10,7 @@ class UsersDao {
         showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         preference: [String],
         picture: { type: String, required: false, default: "" },
+        matches: [{ type: this.Schema.Types.ObjectId, ref: "Users" }],
         auth0: {
             name: String,
             email: String,
@@ -47,7 +48,7 @@ class UsersDao {
     }
 
     async getUserByAuth0ID(userId: string) {
-        return this.User.findOne({ "auth0.user_id": userId }).exec();
+        return this.User.findOne({ "auth0.user_id": userId }).populate("matches").exec();
     }
 
     async getUsers(limit = 25, page = 0) {
@@ -64,6 +65,34 @@ class UsersDao {
         const existingUser = await this.User.findOneAndUpdate(
             { _id: userId },
             { $set: userFields },
+            { new: true }
+        ).exec();
+
+        return existingUser;
+    }
+
+    async addToMatches(
+        userId: string,
+        match: string
+    ) {
+        const existingUser = await this.User.findOneAndUpdate(
+            { _id: userId },
+            { $push: { matches: match } },
+            { new: true }
+        )
+            .populate("matches")
+            .exec();
+
+        return existingUser;
+    }
+
+    async removeDocFromArrayProp(
+        userId: string,
+        fieldToRemove: PatchUserDto
+    ) {
+        const existingUser = await this.User.findOneAndUpdate(
+            { _id: userId },
+            { $pull: fieldToRemove },
             { new: true }
         ).exec();
 

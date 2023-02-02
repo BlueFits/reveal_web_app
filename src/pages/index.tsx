@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button, Typography, IconButton, Link, Divider } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import Header from "../components/Header/Header";
-import DrawerMenu from "../components/DrawerMenu/DrawerMenu";
+import Header from "./_components/Header/Header";
+import DrawerMenu from "./_components/DrawerMenu/DrawerMenu";
 import { useAuth0 } from "@auth0/auth0-react";
 
 

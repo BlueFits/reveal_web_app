@@ -27,8 +27,26 @@ class UsersController {
 
     async updateUserByID(req: Request, res: Response) {
         const id = req.body.id;
-        const user = await usersDao.updateUserById(id, req.body);
+        let user = null;
+        if (req.body.matches) {
+            user = await usersDao.addToMatches(id, req.body.matches);
+        } else {
+            user = await usersDao.updateUserById(id, req.body);
+        }
         res.status(200).send(user);
+    }
+
+    async delete(req: Request, res: Response) {
+        const id = req.body.id;
+        if (req.body.delete) {
+            console.log("delted whole user", req.body);
+            const user = await userDao.removeUserById(id);
+            res.status(204).send(user);
+        } else {
+            console.log("delted prop");
+            const user = await userDao.removeDocFromArrayProp(id, req.body);
+            res.status(200).send(user);
+        }
     }
 }
 
