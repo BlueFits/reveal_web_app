@@ -17,7 +17,6 @@ export default class MessageRoutes extends CommonRoutesConfig {
             .post(
                 body("from").isString(),
                 body("to").isString(),
-                body("message").isString(),
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
                 messagesController.createMessage
             )

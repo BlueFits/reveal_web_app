@@ -46,7 +46,7 @@ class MessagesDao {
     }
 
     async getMessage(filter) {
-        return this.Message.findOne(filter).populate("members").exec();
+        return this.Message.findOne(filter).limit(25).populate("members").exec();
     }
 };
 

@@ -24,10 +24,7 @@ class MessagesController {
         const data: { from: string; to: string, message: string } = req.body;
         const message = await messagesDao.createMessage({
             members: [data.from, data.to],
-            messages: [{
-                sender: data.from,
-                message: data.message,
-            }],
+            messages: [],
         });
         res.status(201).send(message);
     }

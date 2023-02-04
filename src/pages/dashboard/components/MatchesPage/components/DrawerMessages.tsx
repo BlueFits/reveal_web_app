@@ -48,21 +48,26 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
     }, [open]);
 
     useEffect(() => {
-        socket.on(socketEmitters.USER_CONNECTED_ROOM, (otherSocketID: string) => {
-            setOtherSocketID(otherSocketID);
-            const data: ISendIDChat = {
-                userSocket: user.socketID,
-                otherUserSocket: otherSocketID,
-            };
-            socket.emit(socketEmitters.SEND_ID_CHAT, data);
-        });
-        socket.on(socketEmitters.RECEIVE_ID_CHAT, (otherSocketID: string) => {
-            setOtherSocketID(otherSocketID);
-        });
-        socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: IMessageSingle) => {
-            setReceiveMsg(data);
-        });
-    }, []);
+        if (open) {
+            socket.on(socketEmitters.USER_CONNECTED_ROOM, (otherSocketID: string) => {
+                setOtherSocketID(otherSocketID);
+                const data: ISendIDChat = {
+                    userSocket: user.socketID,
+                    otherUserSocket: otherSocketID,
+                };
+                socket.emit(socketEmitters.SEND_ID_CHAT, data);
+            });
+            socket.on(socketEmitters.RECEIVE_ID_CHAT, (otherSocketID: string) => {
+                setOtherSocketID(otherSocketID);
+            });
+            socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: IMessageSingle) => {
+                setReceiveMsg(data);
+            });
+            socket.on(socketEmitters.CHAT_DISCONNECT, () => {
+                console.log("Other user disonnected");
+            });
+        }
+    }, [open]);
 
     /* Created due to pushMsg Callback issue */
     useEffect(() => {
@@ -71,12 +76,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
     const sendHandler = async () => {
         try {
-            let response = null;
-
-            messageInfo.messages.length > 0 ?
-                response = await MessagesApi.sendMsg(messageInfo._id, user._id, msg) :
-                response = await MessagesApi.initiateMsg(user._id, OtherUser._id, msg);
-
+            const response = await MessagesApi.sendMsg(messageInfo._id, user._id, msg);
             if (!response.ok) {
                 const errData = await response.json();
                 throw errData;
@@ -91,9 +91,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 },
                 otherSocketID,
             };
-
             socket.emit(socketEmitters.SEND_MSG_CHAT, data);
-
             pushToMsg(data.message);
             setMsg("");
         } catch (err) {
@@ -103,7 +101,8 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
     const closeHandler = () => {
         setIsLoading(true);
-        socket.emit(socketEmitters.CHAT_LEAVE);
+        socket.emit(socketEmitters.CHAT_LEAVE, otherSocketID);
+        socket.removeAllListeners();
         onClose();
     };
 

@@ -40,8 +40,8 @@ const MatchesPage = () => {
     }, [userReducer]);
 
     // useEffect(() => {
-    //     console.log(messageInfo);
-    // }, [messageInfo]);
+    //     console.log(messageReducer);
+    // }, [messageReducer]);
 
     const pushToMessageInfo = (msg: IMessageSingle) => {
         const msgInstance = { ...messageInfo };
@@ -52,20 +52,36 @@ const MatchesPage = () => {
     const messagesHandler = async (otherUser: IUserReducer) => {
         try {
             const response = await MessagesApi.deepMessageReload(userReducer._id, otherUser._id);
+            let data: IJoinChatData | null = null;
             if (!response.ok) {
-                const errData = await response.json();
-                console.error("my err", errData);
-                throw errData;
+                const errData = await response;
+                console.log(errData.statusText);
+
+                const res = await MessagesApi.initiateMsg(userReducer._id, otherUser._id);
+
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw error;
+                } else {
+                    const initiateSuccess: CreateMessageDto = await res.json();
+                    console.log("my success", initiateSuccess);
+                    data = {
+                        messageRoomID: initiateSuccess._id,
+                        userSocketID: userReducer.socketID,
+                    };
+                    setMessageInfo(initiateSuccess);
+                }
             } else {
                 const resData: CreateMessageDto = await response.json();
-                const data: IJoinChatData = {
+                data = {
                     messageRoomID: resData._id,
                     userSocketID: userReducer.socketID,
                 };
-                socket.emit(socketEmitters.JOIN_CHAT, data)
                 setMessageInfo(resData);
-                setIsMessageOpen(true);
             }
+            console.log("Joining Chat");
+            socket.emit(socketEmitters.JOIN_CHAT, data)
+            setIsMessageOpen(true);
         } catch (err) {
             throw err;
         }
@@ -102,7 +118,8 @@ const MatchesPage = () => {
                 <Typography variant='h6'>Messages</Typography>
                 {messageReducer.messages.length > 0 ? (
                     messageReducer.messages.map((message, index) => {
-                        const latestSender = message.members.find((user: IUserReducer) => user._id === message.messages[0].sender) as IUserReducer;
+                        const msgExist = message.messages.length > 0;
+                        const latestSender = msgExist ? message.members.find((user: IUserReducer) => user._id === message.messages[0].sender) as IUserReducer : null;
                         const otherUser = (message.members.find((user: IUserReducer) => user._id !== userReducer._id) as IUserReducer);
                         return (
                             <List key={`keyForList:${index}`}>
@@ -112,7 +129,7 @@ const MatchesPage = () => {
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={otherUser.username}
-                                        secondary={`${userReducer.username === latestSender.username ? "You" : latestSender.username}: ${message.messages[0].message}`}
+                                        secondary={msgExist ? `${userReducer.username === latestSender.username ? "You" : latestSender.username}: ${message.messages[0].message}` : ""}
                                     />
                                 </ListItemButton>
                             </List>
