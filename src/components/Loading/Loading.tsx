@@ -1,8 +1,8 @@
 import { CircularProgress } from "@mui/material";
 
-const Loading = () => {
+const Loading = ({ responsive = false }) => {
     return (
-        <div className="w-scren h-screen flex justify-center items-center ">
+        <div className={`${responsive ? "w-full h-full" : "w-screen h-screen"} flex justify-center items-center`}>
             <CircularProgress color="secondary" />
         </div>
     );

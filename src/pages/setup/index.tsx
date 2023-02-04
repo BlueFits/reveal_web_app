@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Typography, Button, TextField, MenuItem, FormControl } from "@mui/material";
-import FormBlock from "./components/FormBlock";
+import FormBlock from "../../components/FormBlock/FormBlock";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import Select, { SelectChangeEvent } from '@mui/material/Select';

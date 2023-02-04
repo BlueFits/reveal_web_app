@@ -1,15 +1,14 @@
 import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { Drawer, List, ListItem, ListItemText, IconButton, Divider, Typography, TextField } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
 import { CreateMessageDto, IMessageSingle } from "../../../../../../server/Messages/dto/messages.dto";
 import { IUserReducer } from "../../../../../services/modules/User/userSlice";
 import SendIcon from '@mui/icons-material/Send';
 import socket from "../../../../../../config/Socket";
 import socketEmitters, { ISendIDChat, ISendMsgChat } from "../../../../../constants/emitters";
-import MessagesApi from "../../../../../services/modules/Messages/api";
 import Loading from "../../../../../components/Loading/Loading";
 import { useDispatch } from "react-redux";
 import { sendMessage, pushMsg } from "../../../../../services/modules/Messages/messagesSlice";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 interface IDrawerMenu {
     open: boolean;
@@ -134,7 +133,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             <List>
                 <ListItem>
                     <IconButton sx={{ marginRight: 1 }} onClick={closeHandler} style={{ color: "grey" }}>
-                        <ArrowBack />
+                        <ArrowBackIosIcon />
                     </IconButton>
                     <ListItemText>
                         <Typography fontWeight="bold" variant="h6">
