@@ -8,7 +8,8 @@ import socket from "../../../../../../config/Socket";
 import socketEmitters, { ISendIDChat, ISendMsgChat } from "../../../../../constants/emitters";
 import MessagesApi from "../../../../../services/modules/Messages/api";
 import Loading from "../../../../../components/Loading/Loading";
-
+import { useDispatch } from "react-redux";
+import { sendMessage, pushMsg } from "../../../../../services/modules/Messages/messagesSlice";
 
 interface IDrawerMenu {
     open: boolean;
@@ -20,7 +21,7 @@ interface IDrawerMenu {
 }
 
 const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser, messageInfo, pushToMsg }) => {
-
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     const [msg, setMsg] = useState<string>("");
     const [otherSocketID, setOtherSocketID] = useState<string>("");
@@ -48,41 +49,38 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
     }, [open]);
 
     useEffect(() => {
-        socket.on(socketEmitters.USER_CONNECTED_ROOM, (otherSocketID: string) => {
-            setOtherSocketID(otherSocketID);
-            const data: ISendIDChat = {
-                userSocket: user.socketID,
-                otherUserSocket: otherSocketID,
-            };
-            socket.emit(socketEmitters.SEND_ID_CHAT, data);
-        });
-        socket.on(socketEmitters.RECEIVE_ID_CHAT, (otherSocketID: string) => {
-            setOtherSocketID(otherSocketID);
-        });
-        socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: IMessageSingle) => {
-            setReceiveMsg(data);
-        });
-    }, []);
+        if (open) {
+            socket.on(socketEmitters.USER_CONNECTED_ROOM, (otherSocketID: string) => {
+                setOtherSocketID(otherSocketID);
+                const data: ISendIDChat = {
+                    userSocket: user.socketID,
+                    otherUserSocket: otherSocketID,
+                };
+                socket.emit(socketEmitters.SEND_ID_CHAT, data);
+            });
+            socket.on(socketEmitters.RECEIVE_ID_CHAT, (otherSocketID: string) => {
+                setOtherSocketID(otherSocketID);
+            });
+            socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: IMessageSingle) => {
+                setReceiveMsg(data);
+            });
+            socket.on(socketEmitters.CHAT_DISCONNECT, () => {
+                console.log("Other user disonnected");
+            });
+        }
+    }, [open]);
 
     /* Created due to pushMsg Callback issue */
     useEffect(() => {
-        if (receiveMsg.sender) pushToMsg(receiveMsg);
+        if (receiveMsg.sender) {
+            dispatch(pushMsg({ messageID: messageInfo._id, messageInstance: receiveMsg }));
+            pushToMsg(receiveMsg);
+        }
     }, [receiveMsg]);
 
     const sendHandler = async () => {
         try {
-            let response = null;
-
-            messageInfo.messages.length > 0 ?
-                response = await MessagesApi.sendMsg(messageInfo._id, user._id, msg) :
-                response = await MessagesApi.initiateMsg(user._id, OtherUser._id, msg);
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw errData;
-            } else {
-                const resData: CreateMessageDto = await response.json();
-            }
+            const response = (await dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg }))).payload;
 
             const data: ISendMsgChat = {
                 message: {
@@ -92,8 +90,8 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 otherSocketID,
             };
 
-            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
 
+            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
             pushToMsg(data.message);
             setMsg("");
         } catch (err) {
@@ -103,7 +101,8 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
     const closeHandler = () => {
         setIsLoading(true);
-        socket.emit(socketEmitters.CHAT_LEAVE);
+        socket.emit(socketEmitters.CHAT_LEAVE, otherSocketID);
+        socket.removeAllListeners();
         onClose();
     };
 
@@ -169,7 +168,14 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 <div ref={messagesEndRef} />
             </div>
             <div className="flex">
-                <TextField fullWidth onChange={(e) => setMsg(e.target.value)} value={msg} label={"message"} variant="outlined" />
+                <TextField
+                    autoComplete="off"
+                    fullWidth
+                    onChange={(e) => setMsg(e.target.value)}
+                    value={msg}
+                    label={"message"}
+                    variant="outlined"
+                />
                 <div className="flex justify-center items-center px-2">
                     <IconButton onClick={sendHandler} aria-label="send" color="secondary">
                         <SendIcon />

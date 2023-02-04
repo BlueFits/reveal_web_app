@@ -9,7 +9,7 @@ const MessagesApi = {
     async deepMessageReload(userID: string, otherUserID: string) {
         return await fetch(`${serverURL}${API}/${userID}/?with=${otherUserID}`);
     },
-    async initiateMsg(fromID: string, toID: string, message: string) {
+    async initiateMsg(fromID: string, toID: string) {
         return await fetch(`${serverURL}${API}`, {
             method: "POST",
             headers: {
@@ -19,7 +19,6 @@ const MessagesApi = {
             body: JSON.stringify({
                 from: fromID,
                 to: toID,
-                message
             }),
         });
     },

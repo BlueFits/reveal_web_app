@@ -9,7 +9,7 @@ export interface IMessageSingle {
 export interface CreateMessageDto {
     _id?: string;
     members: Array<IUserReducer | string>;
-    messages: Array<IMessageSingle>;
+    messages: Array<IMessageSingle> | [];
 }
 
 export interface PutMessageDto {

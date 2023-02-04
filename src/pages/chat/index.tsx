@@ -10,6 +10,7 @@ import socketEmitters from "../../constants/emitters";
 import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
 import socket from "../../../config/Socket";
 import { useRouter } from "next/router";
+import { currentENV, status } from "../../../config/Server";
 
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
 import { acceptCallData, callUserData } from "../../constants/callTypes";
@@ -18,18 +19,18 @@ import { IAddUserToMatches } from "../../services/modules/User/api";
 enum revealStatus {
     WAITING = "WAITING",
     ACCEPTED = "ACCEPTED",
-    STANDBY = "STANDBY",
+    STANDBY = "REVEAL",
     CONFIRM = "CONFIRM",
 }
 
 enum matchStatus {
     WAITING = "WAITING",
     ACCEPTED = "ACCEPTED",
-    STANDBY = "STANDBY",
+    STANDBY = "MATCH",
     CONFIRM = "CONFIRM",
 }
 
-const revealTimerNum = 5;
+const revealTimerNum = currentENV === status.development ? 5 : 120;
 
 const Index = () => {
     const router = useRouter();
@@ -75,7 +76,6 @@ const Index = () => {
     }, [stream]);
 
     const findRoomThunk = async () => {
-        console.log("user pref: ", userReducer.gender, userReducer.showMe);
         const roomData: { payload: IRoomReducer } = await dispatch(findRoom({
             showMe: userReducer.showMe,
             gender: userReducer.gender,
@@ -163,6 +163,7 @@ const Index = () => {
             })
 
             socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
+                console.log("This ran");
                 dispatch(setOtherUser(user))
                 let peer2 = null;
                 if (!connectionRef.current) {
@@ -310,9 +311,9 @@ const Index = () => {
                         <ButtonContainer>
                             <Button
                                 onClick={matchHandler}
-                                disabled={match === matchStatus.ACCEPTED}
+                                disabled={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
                                 style={{
-                                    backgroundColor: match !== matchStatus.ACCEPTED ? "#2ecc71" : "inherit",
+                                    backgroundColor: !(userReducer.matches.some(match => match._id === otherUserReducer._id)) && match !== matchStatus.ACCEPTED ? "#2ecc71" : "inherit",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999

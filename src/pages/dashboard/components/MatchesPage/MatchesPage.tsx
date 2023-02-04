@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
 import { IUserReducer } from '../../../../services/modules/User/userSlice';
-import { IMessageReducer, reloadMessages } from '../../../../services/modules/Messages/messagesSlice';
+import { IMessageReducer, reloadMessages, deepMessageReload, initiateMessage } from '../../../../services/modules/Messages/messagesSlice';
 import { IReducer } from '../../../../services/store';
 import { Avatar, List, ListItemButton, ListItemAvatar, ListItemText } from "@mui/material"
 import Stack from '@mui/material/Stack';
@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import { useDispatch } from 'react-redux';
 import DrawerMessages from './components/DrawerMessages';
 import { CreateMessageDto, IMessageSingle } from '../../../../../server/Messages/dto/messages.dto';
-import MessagesApi from '../../../../services/modules/Messages/api';
+import { ButtonBase } from '@mui/material';
 import socket from '../../../../../config/Socket';
 import socketEmitters, { IJoinChatData } from '../../../../constants/emitters';
 
@@ -40,8 +40,8 @@ const MatchesPage = () => {
     }, [userReducer]);
 
     // useEffect(() => {
-    //     console.log(messageInfo);
-    // }, [messageInfo]);
+    //     console.log("this change", messageReducer);
+    // }, [messageReducer]);
 
     const pushToMessageInfo = (msg: IMessageSingle) => {
         const msgInstance = { ...messageInfo };
@@ -51,21 +51,27 @@ const MatchesPage = () => {
 
     const messagesHandler = async (otherUser: IUserReducer) => {
         try {
-            const response = await MessagesApi.deepMessageReload(userReducer._id, otherUser._id);
-            if (!response.ok) {
-                const errData = await response.json();
-                console.error("my err", errData);
-                throw errData;
-            } else {
-                const resData: CreateMessageDto = await response.json();
-                const data: IJoinChatData = {
-                    messageRoomID: resData._id,
+            let data: IJoinChatData | null = null;
+            const response: CreateMessageDto = (await dispatch(deepMessageReload({ userID: userReducer._id, otherUserID: otherUser._id }))).payload;
+            if (!response) {
+                const initSuccess = await dispatch(initiateMessage({ userID: userReducer._id, otherUserID: otherUser._id }));
+                console.log(initSuccess);
+                data = {
+                    messageRoomID: initSuccess.payload._id,
                     userSocketID: userReducer.socketID,
                 };
-                socket.emit(socketEmitters.JOIN_CHAT, data)
-                setMessageInfo(resData);
-                setIsMessageOpen(true);
+                setMessageInfo(initSuccess.payload);
+            } else {
+                data = {
+                    messageRoomID: response._id,
+                    userSocketID: userReducer.socketID,
+                };
+                setMessageInfo(response);
             }
+
+            console.log("Joining Chat");
+            socket.emit(socketEmitters.JOIN_CHAT, data)
+            setIsMessageOpen(true);
         } catch (err) {
             throw err;
         }
@@ -90,8 +96,10 @@ const MatchesPage = () => {
                 >
                     {userReducer.matches.map((match, index) => {
                         return (
-                            <Item onClick={messagesHandler.bind(this, match)} key={index + "matchesKey"}>
-                                <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture} />
+                            <Item key={index + "matchesKey"}>
+                                <ButtonBase onClick={messagesHandler.bind(this, match)} style={{ borderRadius: 9999 }}>
+                                    <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture} />
+                                </ButtonBase>
                                 <Typography marginTop={0.5} fontWeight={"bold"} variant='body2'>{match.username}</Typography>
                             </Item>
                         );
@@ -102,7 +110,8 @@ const MatchesPage = () => {
                 <Typography variant='h6'>Messages</Typography>
                 {messageReducer.messages.length > 0 ? (
                     messageReducer.messages.map((message, index) => {
-                        const latestSender = message.members.find((user: IUserReducer) => user._id === message.messages[0].sender) as IUserReducer;
+                        const msgExist = message.messages.length > 0;
+                        const latestSender = msgExist ? message.members.find((user: IUserReducer) => user._id === message.messages[message.messages.length - 1].sender) as IUserReducer : null;
                         const otherUser = (message.members.find((user: IUserReducer) => user._id !== userReducer._id) as IUserReducer);
                         return (
                             <List key={`keyForList:${index}`}>
@@ -111,8 +120,8 @@ const MatchesPage = () => {
                                         <Avatar alt="Profile Picture" src={undefined} />
                                     </ListItemAvatar>
                                     <ListItemText
-                                        primary={otherUser.username}
-                                        secondary={`${userReducer.username === latestSender.username ? "You" : latestSender.username}: ${message.messages[0].message}`}
+                                        primary={otherUser && otherUser.username}
+                                        secondary={msgExist ? `${userReducer.username === latestSender.username ? "You" : latestSender.username}: ${message.messages[message.messages.length - 1].message}` : ""}
                                     />
                                 </ListItemButton>
                             </List>

@@ -41,12 +41,12 @@ class MessagesDao {
             { _id: messageID },
             { $push: { messages: [{ sender: senderID, message }] } },
             { new: true }
-        ).exec();
+        ).populate("members").exec();
         return existingMessage;
     }
 
     async getMessage(filter) {
-        return this.Message.findOne(filter).populate("members").exec();
+        return this.Message.findOne(filter).limit(25).populate("members").exec();
     }
 };
 
