@@ -75,7 +75,6 @@ const Index = () => {
     }, [stream]);
 
     const findRoomThunk = async () => {
-        console.log("user pref: ", userReducer.gender, userReducer.showMe);
         const roomData: { payload: IRoomReducer } = await dispatch(findRoom({
             showMe: userReducer.showMe,
             gender: userReducer.gender,
