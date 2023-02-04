@@ -32,13 +32,13 @@ export default class SocketInit {
                 };
 
                 const sendMsgHandler = ({ message, otherSocketID }: ISendMsgChat) => {
-                    console.log("listened to", socketEmitters.SEND_MSG_CHAT);
+                    // console.log("listened to", socketEmitters.SEND_MSG_CHAT);
                     io.to(otherSocketID).emit(socketEmitters.RECEIVE_MSG_CHAT, message);
                 };
 
                 const chatLeaveHandler = (otherSocketID: string) => {
                     socket.leave(data.messageRoomID)
-                    console.log("sending to ", otherSocketID);
+                    // console.log("sending to ", otherSocketID);
                     io.to(otherSocketID).emit(socketEmitters.CHAT_DISCONNECT);
                 };
 
@@ -91,9 +91,13 @@ export default class SocketInit {
                 }
             });
 
-            socket.on(socketEmitters.CALLUSER, ({ toCallID, signal, user }: callUserData) => {
+            //Methods
+
+            const callUserHandler = ({ toCallID, signal, user }: callUserData) => {
                 io.to(toCallID).emit(socketEmitters.CALLUSER, { signal, user });
-            })
+            };
+
+            socket.on(socketEmitters.CALLUSER, callUserHandler)
 
             socket.on(socketEmitters.ANSWER_CALL, ({ signal, socketID, userAccepting }: acceptCallData) => {
                 io.to(socketID).emit(socketEmitters.CALLACCEPTED, { signal, userAccepting });

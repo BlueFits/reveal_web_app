@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import { useDispatch } from 'react-redux';
 import DrawerMessages from './components/DrawerMessages';
 import { CreateMessageDto, IMessageSingle } from '../../../../../server/Messages/dto/messages.dto';
-import MessagesApi from '../../../../services/modules/Messages/api';
+import { ButtonBase } from '@mui/material';
 import socket from '../../../../../config/Socket';
 import socketEmitters, { IJoinChatData } from '../../../../constants/emitters';
 
@@ -95,8 +95,10 @@ const MatchesPage = () => {
                 >
                     {userReducer.matches.map((match, index) => {
                         return (
-                            <Item onClick={messagesHandler.bind(this, match)} key={index + "matchesKey"}>
-                                <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture} />
+                            <Item key={index + "matchesKey"}>
+                                <ButtonBase onClick={messagesHandler.bind(this, match)} style={{ borderRadius: 9999 }}>
+                                    <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture} />
+                                </ButtonBase>
                                 <Typography marginTop={0.5} fontWeight={"bold"} variant='body2'>{match.username}</Typography>
                             </Item>
                         );

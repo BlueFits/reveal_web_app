@@ -168,7 +168,14 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 <div ref={messagesEndRef} />
             </div>
             <div className="flex">
-                <TextField fullWidth onChange={(e) => setMsg(e.target.value)} value={msg} label={"message"} variant="outlined" />
+                <TextField
+                    autoComplete="off"
+                    fullWidth
+                    onChange={(e) => setMsg(e.target.value)}
+                    value={msg}
+                    label={"message"}
+                    variant="outlined"
+                />
                 <div className="flex justify-center items-center px-2">
                     <IconButton onClick={sendHandler} aria-label="send" color="secondary">
                         <SendIcon />
