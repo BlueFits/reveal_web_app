@@ -8,7 +8,8 @@ import socket from "../../../../../../config/Socket";
 import socketEmitters, { ISendIDChat, ISendMsgChat } from "../../../../../constants/emitters";
 import MessagesApi from "../../../../../services/modules/Messages/api";
 import Loading from "../../../../../components/Loading/Loading";
-
+import { useDispatch } from "react-redux";
+import { sendMessage, pushMsg } from "../../../../../services/modules/Messages/messagesSlice";
 
 interface IDrawerMenu {
     open: boolean;
@@ -20,7 +21,7 @@ interface IDrawerMenu {
 }
 
 const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser, messageInfo, pushToMsg }) => {
-
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     const [msg, setMsg] = useState<string>("");
     const [otherSocketID, setOtherSocketID] = useState<string>("");
@@ -71,18 +72,15 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
     /* Created due to pushMsg Callback issue */
     useEffect(() => {
-        if (receiveMsg.sender) pushToMsg(receiveMsg);
+        if (receiveMsg.sender) {
+            dispatch(pushMsg({ messageID: messageInfo._id, messageInstance: receiveMsg }));
+            pushToMsg(receiveMsg);
+        }
     }, [receiveMsg]);
 
     const sendHandler = async () => {
         try {
-            const response = await MessagesApi.sendMsg(messageInfo._id, user._id, msg);
-            if (!response.ok) {
-                const errData = await response.json();
-                throw errData;
-            } else {
-                const resData: CreateMessageDto = await response.json();
-            }
+            const response = (await dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg }))).payload;
 
             const data: ISendMsgChat = {
                 message: {
@@ -91,6 +89,8 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 },
                 otherSocketID,
             };
+
+
             socket.emit(socketEmitters.SEND_MSG_CHAT, data);
             pushToMsg(data.message);
             setMsg("");

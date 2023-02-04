@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
 import { IUserReducer } from '../../../../services/modules/User/userSlice';
-import { IMessageReducer, reloadMessages } from '../../../../services/modules/Messages/messagesSlice';
+import { IMessageReducer, reloadMessages, deepMessageReload, initiateMessage } from '../../../../services/modules/Messages/messagesSlice';
 import { IReducer } from '../../../../services/store';
 import { Avatar, List, ListItemButton, ListItemAvatar, ListItemText } from "@mui/material"
 import Stack from '@mui/material/Stack';
@@ -40,7 +40,7 @@ const MatchesPage = () => {
     }, [userReducer]);
 
     // useEffect(() => {
-    //     console.log(messageReducer);
+    //     console.log("this change", messageReducer);
     // }, [messageReducer]);
 
     const pushToMessageInfo = (msg: IMessageSingle) => {
@@ -51,32 +51,23 @@ const MatchesPage = () => {
 
     const messagesHandler = async (otherUser: IUserReducer) => {
         try {
-            const response = await MessagesApi.deepMessageReload(userReducer._id, otherUser._id);
             let data: IJoinChatData | null = null;
-            if (!response.ok) {
-                const errData = await response;
-                console.log(errData.statusText);
-                const res = await MessagesApi.initiateMsg(userReducer._id, otherUser._id);
-                if (!res.ok) {
-                    const error = await res.json();
-                    throw error;
-                } else {
-                    const initiateSuccess: CreateMessageDto = await res.json();
-                    console.log("my success", initiateSuccess);
-                    data = {
-                        messageRoomID: initiateSuccess._id,
-                        userSocketID: userReducer.socketID,
-                    };
-                    setMessageInfo(initiateSuccess);
-                }
-            } else {
-                const resData: CreateMessageDto = await response.json();
+            const response: CreateMessageDto = (await dispatch(deepMessageReload({ userID: userReducer._id, otherUserID: otherUser._id }))).payload;
+            if (!response) {
+                const initSuccess = await dispatch(initiateMessage(userReducer._id, otherUser._id));
                 data = {
-                    messageRoomID: resData._id,
+                    messageRoomID: initSuccess.payload._id,
                     userSocketID: userReducer.socketID,
                 };
-                setMessageInfo(resData);
+                setMessageInfo(initSuccess);
+            } else {
+                data = {
+                    messageRoomID: response._id,
+                    userSocketID: userReducer.socketID,
+                };
+                setMessageInfo(response);
             }
+
             console.log("Joining Chat");
             socket.emit(socketEmitters.JOIN_CHAT, data)
             setIsMessageOpen(true);
@@ -117,7 +108,7 @@ const MatchesPage = () => {
                 {messageReducer.messages.length > 0 ? (
                     messageReducer.messages.map((message, index) => {
                         const msgExist = message.messages.length > 0;
-                        const latestSender = msgExist ? message.members.find((user: IUserReducer) => user._id === message.messages[0].sender) as IUserReducer : null;
+                        const latestSender = msgExist ? message.members.find((user: IUserReducer) => user._id === message.messages[message.messages.length - 1].sender) as IUserReducer : null;
                         const otherUser = (message.members.find((user: IUserReducer) => user._id !== userReducer._id) as IUserReducer);
                         return (
                             <List key={`keyForList:${index}`}>
@@ -126,8 +117,8 @@ const MatchesPage = () => {
                                         <Avatar alt="Profile Picture" src={undefined} />
                                     </ListItemAvatar>
                                     <ListItemText
-                                        primary={otherUser.username}
-                                        secondary={msgExist ? `${userReducer.username === latestSender.username ? "You" : latestSender.username}: ${message.messages[0].message}` : ""}
+                                        primary={otherUser && otherUser.username}
+                                        secondary={msgExist ? `${userReducer.username === latestSender.username ? "You" : latestSender.username}: ${message.messages[message.messages.length - 1].message}` : ""}
                                     />
                                 </ListItemButton>
                             </List>

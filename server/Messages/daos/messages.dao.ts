@@ -41,7 +41,7 @@ class MessagesDao {
             { _id: messageID },
             { $push: { messages: [{ sender: senderID, message }] } },
             { new: true }
-        ).exec();
+        ).populate("members").exec();
         return existingMessage;
     }
 
