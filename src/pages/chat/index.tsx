@@ -30,9 +30,9 @@ enum matchStatus {
     CONFIRM = "CONFIRM",
 }
 
-const revealTimerNum = currentENV === status.development ? 5 : 120;
-
 const Index = () => {
+    const revealTimerNum = currentENV === status.development ? 5 : 120;
+    console.log("my curr env", currentENV);
     const router = useRouter();
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
