@@ -162,6 +162,7 @@ const Index = () => {
             })
 
             socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
+                console.log("This ran");
                 dispatch(setOtherUser(user))
                 let peer2 = null;
                 if (!connectionRef.current) {

@@ -54,12 +54,13 @@ const MatchesPage = () => {
             let data: IJoinChatData | null = null;
             const response: CreateMessageDto = (await dispatch(deepMessageReload({ userID: userReducer._id, otherUserID: otherUser._id }))).payload;
             if (!response) {
-                const initSuccess = await dispatch(initiateMessage(userReducer._id, otherUser._id));
+                const initSuccess = await dispatch(initiateMessage({ userID: userReducer._id, otherUserID: otherUser._id }));
+                console.log(initSuccess);
                 data = {
                     messageRoomID: initSuccess.payload._id,
                     userSocketID: userReducer.socketID,
                 };
-                setMessageInfo(initSuccess);
+                setMessageInfo(initSuccess.payload);
             } else {
                 data = {
                     messageRoomID: response._id,
