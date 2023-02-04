@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Typography, Button, TextField, MenuItem, FormControl } from "@mui/material";
 import FormBlock from "../../components/FormBlock/FormBlock";
+import FormShowMe from "../../components/FormShowMe/FormShowMe";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -110,19 +111,10 @@ const InitialSetup = ({ referer }) => {
                     </div>
                 </FormControl>
                 <FormControl>
-                    <div className="mb-4">
-                        <Typography marginBottom={2} variant="h5">{"Interested in"}</Typography>
-                        <Select
-                            fullWidth
-                            value={showMe}
-                            onChange={handleShowMeChange}
-                        >
-                            <MenuItem value={gender.Male}>Male</MenuItem>
-                            <MenuItem value={gender.Female}>Female</MenuItem>
-                            <MenuItem value={gender.Gay}>Gay</MenuItem>
-                            <MenuItem value={gender.Lesbian}>Lesbian</MenuItem>
-                        </Select>
-                    </div>
+                    <FormShowMe
+                        value={showMe}
+                        onChange={handleShowMeChange}
+                    />
                 </FormControl>
                 <Button
                     onClick={submitHandler}
