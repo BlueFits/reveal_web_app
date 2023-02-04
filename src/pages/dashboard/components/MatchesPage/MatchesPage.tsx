@@ -56,9 +56,7 @@ const MatchesPage = () => {
             if (!response.ok) {
                 const errData = await response;
                 console.log(errData.statusText);
-
                 const res = await MessagesApi.initiateMsg(userReducer._id, otherUser._id);
-
                 if (!res.ok) {
                     const error = await res.json();
                     throw error;
@@ -88,7 +86,7 @@ const MatchesPage = () => {
     };
 
 
-    return userReducer.matches.length > 0 ? (
+    return userReducer && userReducer.matches && userReducer.matches.length > 0 ? (
         <div className='flex items-center h-full flex-col w-full p-5'>
             <DrawerMessages
                 open={isMessageOpen}
