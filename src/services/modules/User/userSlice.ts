@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serverURL } from "../../../../config/Server";
 import avatarSimple from '../../../constants/avatar';
-import { CreateUserDto, PutUserDto } from '../../../../server/Users/dto/users.dto';
+import { CreateUserDto, PatchUserDto, PutUserDto } from '../../../../server/Users/dto/users.dto';
 import { gender } from '../../../../server/Users/dto/users.dto';
 import UsersApi, { IUpdateUserByForm, IAddUserToMatches, IReloadMessages } from './api';
 
@@ -90,6 +90,22 @@ export const addUserToMatches: any = createAsyncThunk("user/addUserToMatches", a
     }
 });
 
+export const updateUser: any = createAsyncThunk("user/updateUser", async ({ id, fields }: { id: string, fields: PatchUserDto }) => {
+    try {
+        const response = await UsersApi.updateUser({ id, fields });
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error("my err", errData);
+            return errData;
+        } else {
+            const resData = await response.json();
+            return resData;
+        }
+    } catch (err) {
+        throw err;
+    }
+});
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -138,6 +154,9 @@ const userSlice = createSlice({
         builder.addCase(addUserToMatches.fulfilled, defaultAddAll);
         builder.addCase(getUserByAuthID.fulfilled, (state, action: { payload: CreateUserDto }) => {
             if (action.payload.gender) state.isFirstTime = false;
+            state = addAllResultProp(state, action);
+        });
+        builder.addCase(updateUser.fulfilled, (state, action: { payload: PutUserDto }) => {
             state = addAllResultProp(state, action);
         });
     }

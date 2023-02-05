@@ -38,6 +38,10 @@ class UsersDao {
         }
     }
 
+    async findUser(filter) {
+        return this.User.findOne(filter).exec();
+    }
+
     async getUserByAuth0Email(email: string) {
         return this.User.findOne({ "auth0.email": email }).exec();
     }

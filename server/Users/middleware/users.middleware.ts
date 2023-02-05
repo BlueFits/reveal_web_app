@@ -21,6 +21,33 @@ class UsersMiddleware {
         }
     }
 
+    async validateSameUsernameDoesntExist(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) {
+        const username = req.body.username;
+        const user = await usersDao.findUser({ username });
+        if (user) {
+            res.status(400).send({ error: `Username already exists` });
+        } else {
+            next();
+        }
+    }
+
+    async usernameNotBlank(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) {
+        const username = req.body.username;
+        if (username === "") {
+            res.status(400).send({ error: `Username cannot be blank` });
+        } else {
+            next();
+        }
+    }
+
     async isIDValid(
         req: express.Request,
         res: express.Response,

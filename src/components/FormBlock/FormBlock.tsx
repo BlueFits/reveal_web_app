@@ -5,13 +5,14 @@ interface IFormBlock {
     label: string;
     onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
     value: string;
+    placeholder?: string;
 }
 
-const FormBlock: React.FC<IFormBlock> = ({ label, onChange, value }) => {
+const FormBlock: React.FC<IFormBlock> = ({ label, onChange, value, placeholder }) => {
     return (
         <div>
             <Typography marginBottom={2} variant="h5">{label}</Typography>
-            <TextField sx={{ marginBottom: "15px" }} value={value} onChange={onChange} fullWidth label={label} variant="outlined" />
+            <TextField placeholder={placeholder || ""} sx={{ marginBottom: "15px" }} value={value} onChange={onChange} fullWidth label={label} variant="outlined" />
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useAuth0 } from "@auth0/auth0-react";
 import Box from '@mui/material/Box';
@@ -20,7 +20,13 @@ import Loading from "../../../../components/Loading/Loading";
 import ModalComponent from "../../../../components/ModalComponent/ModalComponent";
 import FormBlock from "../../../../components/FormBlock/FormBlock";
 import FormShowMe from "../../../../components/FormShowMe/FormShowMe";
-import { gender } from "../../../../../server/Users/dto/users.dto";
+import { gender, PatchUserDto } from "../../../../../server/Users/dto/users.dto";
+import { updateUser } from "../../../../services/modules/User/userSlice";
+import { useDispatch } from "react-redux";
+import { CircularProgress, IconButton } from "@mui/material";
+import Alert from '@mui/material/Alert';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const sxStyles = {
     box: {
@@ -31,14 +37,23 @@ const sxStyles = {
 };
 
 const ProfilePage = () => {
+    const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const { logout } = useAuth0();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
-    const [showMe, setShowMe] = useState<gender>(gender.Female);
+    const [showMe, setShowMe] = useState<gender>(userReducer.showMe);
     const [showUsernameSettings, setShowUsernameSettings] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showMeSettings, setShowMeSettings] = useState(false);
+    const [error, setError] = useState<string>("");
+
+    // useEffect(() => {
+    //     console.log(userReducer);
+    //     setShowMe(userReducer.showMe);
+    //     console.log(showMe);
+    // }, [userReducer]);
 
     const handleShowMeChange = (event: SelectChangeEvent) => {
         setShowMe(event.target.value as gender);
@@ -60,42 +75,80 @@ const ProfilePage = () => {
         setIsOpen(true);
     }
 
+    const submitHandler = async (fields: PatchUserDto) => {
+        setIsLoading(true);
+        const res = await dispatch(updateUser({ fields, id: userReducer._id }));
+        if (res.payload.error) {
+            setError(res.payload.error);
+            setIsLoading(false);
+            return;
+        }
+        setUsername("");
+        setIsOpen(false);
+        setIsLoading(false);
+        setError("");
+    }
+
     return (
         <div className="bg-gray-300 grow flex items-center flex-col">
             <ModalComponent
                 handleClose={closeModalHandler}
                 open={isOpen}
             >
-                {
-                    showUsernameSettings && (
-                        <div>
-                            <FormBlock
-                                label="Display Name"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
+                <div className="flex justify-end">
+                    <IconButton onClick={closeModalHandler} style={{ color: "grey" }}>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+                {showUsernameSettings && (
+                    <div>
+                        <FormBlock
+                            placeholder={userReducer.username}
+                            label="Display Name"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        {isLoading ?
+                            <div className="mt-5 flex justify-center items-center">
+                                <CircularProgress color="secondary" />
+                            </div> :
                             <Button
-                                // onClick={submitHandler}
+                                onClick={submitHandler.bind(this, { username })}
                                 disableElevation
-                                style={{ borderRadius: 9999, padding: 10, backgroundColor: "#9b59b6" }}
+                                style={{ borderRadius: 9999, padding: 10, backgroundColor: "#9b59b6", marginTop: 10 }}
                                 fullWidth
                                 color="secondary"
-                                sx={{ margin: "15px 0" }}
                                 variant="contained"
                             >
                                 update
                             </Button>
-                        </div>
-                    )
-                }
-                {
-                    showMeSettings && (
+                        }
+                        {error &&
+                            <div className="mt-5">
+                                <Alert severity="error">{error}</Alert>
+                            </div>
+                        }
+                    </div>
+                )}
+                {showMeSettings && (
+                    <div>
                         <FormShowMe
                             value={showMe}
                             onChange={handleShowMeChange}
                         />
-                    )
-                }
+                        <Button
+                            onClick={submitHandler.bind(this, { showMe })}
+                            disableElevation
+                            style={{ borderRadius: 9999, padding: 10, backgroundColor: "#9b59b6" }}
+                            fullWidth
+                            color="secondary"
+                            sx={{ margin: "15px 0" }}
+                            variant="contained"
+                        >
+                            save
+                        </Button>
+                    </div>
+                )}
             </ModalComponent>
             {/* <DrawerComponent
                 isOpen={isOpen}

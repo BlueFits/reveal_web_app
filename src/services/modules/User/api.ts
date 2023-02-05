@@ -1,8 +1,7 @@
 import { serverURL } from "../../../../config/Server";
-import { gender } from "../../../../server/Users/dto/users.dto";
+import { gender, PatchUserDto } from "../../../../server/Users/dto/users.dto";
 
 const API = "/api/users";
-const MessagesAPI = "/api/messages"
 
 export interface IUpdateUserByForm {
     _id?: string;
@@ -53,6 +52,16 @@ const UsersApi = {
             }),
         });
     },
+    async updateUser({ id, fields }: { id: string, fields: PatchUserDto }) {
+        return await fetch(`${serverURL}${API}/${id}`, {
+            method: "PATCH",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(fields),
+        });
+    }
 };
 
 export default UsersApi;
