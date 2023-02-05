@@ -11,7 +11,7 @@ import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
 import socket from "../../../config/Socket";
 import { useRouter } from "next/router";
 import { currentENV, status } from "../../../config/Server";
-
+import { fmtMSS } from "../../utils/timeUtils";
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
 import { acceptCallData, callUserData } from "../../constants/callTypes";
 import { IAddUserToMatches } from "../../services/modules/User/api";
@@ -32,7 +32,6 @@ enum matchStatus {
 
 const Index = () => {
     const revealTimerNum = currentENV === status.development ? 5 : 120;
-    console.log("Re-rendering");
     const router = useRouter();
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
@@ -52,6 +51,8 @@ const Index = () => {
     const [match, setMatch] = useState<matchStatus>(matchStatus.STANDBY);
     const [revealTimer, setRevealTimer] = useState(revealTimerNum);
     const [callAccepted, setCallAccepted] = useState(false);
+
+    const [userJoinedRoom, setUserJoinedRoom] = useState<boolean>(false);
 
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
@@ -83,7 +84,7 @@ const Index = () => {
         }));
         console.log("Joining ", roomData);
         if (roomData.payload && roomData.payload._id) {
-            joinRoom(roomData.payload._id, userReducer.socketID);
+            joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         } else {
             /* no available rooms for database */
             createRoomExec();
@@ -96,7 +97,7 @@ const Index = () => {
             gender: userReducer.gender,
         }));
         console.log("Created room id ", roomData.payload._id);
-        joinRoom(roomData.payload._id, userReducer.socketID);
+        joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
             await dispatch(removeRoom(roomData.payload._id));
 
@@ -276,6 +277,7 @@ const Index = () => {
     };
 
     const skipHandler = () => {
+        setUserJoinedRoom(false);
         setCallAccepted(false);
         setRevealTimer(revealTimerNum);
         setReveal(revealStatus.STANDBY);
@@ -346,13 +348,13 @@ const Index = () => {
                                 size="large"
                                 variant="contained"
                             >
-                                {revealTimer !== 0 ? revealTimer : reveal}
+                                {revealTimer !== 0 ? fmtMSS(revealTimer) : reveal}
                             </Button>
                         </ButtonContainer>
                 }
                 <div className="flex justify-between">
                     <Button onClick={() => window.location.href = "/dashboard"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
-                    <Button /* disabled={!callAccepted} */ onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
+                    <Button disabled={!userJoinedRoom} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </div>
             </Container>
         </Container>

@@ -1,8 +1,5 @@
-import { MutableRefObject } from "react";
-import Peer from "simple-peer";
 import socket from "../../config/Socket";
 import socketEmitters from "../constants/emitters";
-import { IUserReducer } from "../services/modules/User/userSlice";
 
 export const setupMediaStream = async (setStream) => {
     try {
@@ -17,6 +14,7 @@ export const setupMediaStream = async (setStream) => {
 };
 
 
-export const joinRoom = (roomID: string, userID: string) => {
+export const joinRoom = (roomID: string, userID: string, setUserJoinedRoom) => {
     socket.emit(socketEmitters.JOIN_ROOM, { roomID, userID });
+    setUserJoinedRoom(true);
 }
