@@ -84,6 +84,8 @@ const ProfilePage = () => {
             return;
         }
         setUsername("");
+        setShowUsernameSettings(false);
+        setShowMeSettings(false);
         setIsOpen(false);
         setIsLoading(false);
         setError("");
