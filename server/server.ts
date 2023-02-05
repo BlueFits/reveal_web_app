@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import SocketInstance from './utils/socketInstance';
+import SocketInstance from './utils/socketUtils/socketInstance';
 import { auth, requiresAuth } from "express-openid-connect";
 
 //Config

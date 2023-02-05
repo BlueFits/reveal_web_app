@@ -32,7 +32,7 @@ enum matchStatus {
 
 const Index = () => {
     const revealTimerNum = currentENV === status.development ? 5 : 120;
-    console.log("my curr env", currentENV);
+    console.log("Re-rendering");
     const router = useRouter();
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
@@ -163,10 +163,11 @@ const Index = () => {
             })
 
             socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
-                console.log("This ran");
+                console.log("$$$ This ran");
                 dispatch(setOtherUser(user))
                 let peer2 = null;
                 if (!connectionRef.current) {
+                    console.log("New connection Ref");
                     peer2 = new Peer({
                         trickle: false,
                         initiator: false,
@@ -174,6 +175,7 @@ const Index = () => {
                     });
                     connectionRef.current = peer2;
                     peer2.on("signal", async (signal) => {
+                        console.log("Answering on client");
                         socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID, userAccepting: userReducer });
                         setCallAccepted(true);
                     })
@@ -278,6 +280,13 @@ const Index = () => {
         setRevealTimer(revealTimerNum);
         setReveal(revealStatus.STANDBY);
         socket.emit(socketEmitters.ROOM_LEAVE)
+
+        /* 
+        source of RTC connection bug, essentially calls user twice because it initializes user connected twice so we turn it off 
+        when user presses skip
+        */
+        socket.off(socketEmitters.USER_CONNECTED);
+
         dispatch(clearState())
         if (connectionRef.current) {
             connectionRef.current.destroy()
@@ -343,7 +352,7 @@ const Index = () => {
                 }
                 <div className="flex justify-between">
                     <Button onClick={() => window.location.href = "/dashboard"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
-                    <Button disabled={!callAccepted} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
+                    <Button /* disabled={!callAccepted} */ onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
                 </div>
             </Container>
         </Container>
