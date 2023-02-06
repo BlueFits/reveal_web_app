@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, TextField, Button, Alert } from "@mui/material"
 import { useDispatch } from "react-redux";
-import { setUsername, setPreference, setSocketID, setAvatar, IUserReducer } from "../../../../services/modules/User/userSlice";
+import { setUsername, setPreference, setSocketID, setAvatar, IUserReducer, setOpener } from "../../../../services/modules/User/userSlice";
 import { useRouter } from "next/router";
 import socket from "../../../../../config/Socket";
 import socketEmitters from "../../../../constants/emitters";
@@ -16,6 +16,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 
 	// const [username, setLocalUsername] = useState<string>("");
 	// const [preference, setLocalPreference] = useState<string>("");
+	const [openingLine, setOpeningLine] = useState<string>("");
 	const [hasErrors, setHasErrors] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -34,6 +35,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 		// const preferenceArr: Array<string> = preference.replace(/ /g, '').split(",");
 		// dispatch(setUsername(user.username));
 		// dispatch(setPreference(preferenceArr));
+		dispatch(setOpener(openingLine));
 		dispatch(setAvatar());
 		router.push("/chat");
 	};
@@ -50,12 +52,24 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 			maxWidth="lg"
 		>
 			<Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-				<Typography variant="h4" gutterBottom>
+				{/* <Typography variant="h4" gutterBottom>
 					Start Chatting
+				</Typography> */}
+				<Typography variant="h5" gutterBottom>
+					Write an opener!
 				</Typography>
 				{/* <TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" /> */}
 				{/* <TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" /> */}
 				<div className="w-3/4 lg:max-w-lg">
+					<TextField
+						multiline
+						placeholder={"E.g. Hey what's your name? You can call me yours."}
+						value={openingLine}
+						onChange={e => setOpeningLine(e.target.value)}
+						fullWidth
+						label="Write here:"
+						variant="standard"
+					/>
 					<Button
 						fullWidth
 						onClick={onStartHandler}

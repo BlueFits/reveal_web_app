@@ -14,6 +14,11 @@ interface IVideoPreview {
 const VideoPreview: React.FC<IVideoPreview> = ({ user, videoRef = null, isMuted = true, showAvatar = true }) => {
     const [localRef, setLocalRef] = useState(videoRef);
     const { username, avatar } = user;
+
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
+
     useEffect(() => {
         setLocalRef(videoRef)
     }, [videoRef.current]);
@@ -32,9 +37,16 @@ const VideoPreview: React.FC<IVideoPreview> = ({ user, videoRef = null, isMuted 
             {
                 showAvatar &&
                 <div style={{ backgroundColor: avatar.bg }} className={`h-full w-full flex items-center justify-center`}>
-                    <Typography variant="h4" color={"#fff"}>
-                        {avatar.display}
-                    </Typography>
+                    <div className="flex flex-col w-3/4 items-center justify-center">
+                        <Typography variant="h4" color={"#fff"}>
+                            {avatar.display}
+                        </Typography>
+                        {user.opener && (
+                            <Typography marginTop={2} variant="h6" color={"#fff"}>
+                                {user.opener}
+                            </Typography>
+                        )}
+                    </div>
                 </div>
             }
             <video

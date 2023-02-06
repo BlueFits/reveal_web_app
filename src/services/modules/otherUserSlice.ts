@@ -12,7 +12,8 @@ const initialState: apiTempUser = {
     avatar: {
         bg: null,
         display: null,
-    }
+    },
+    opener: null,
 };
 
 // Then, handle actions in your reducers:
@@ -21,24 +22,20 @@ const otherUserSlice = createSlice({
     initialState,
     reducers: {
         clearState: (state) => {
-            state.__v = null;
-            state._id = null;
-            state.preference = null;
-            state.socketID = null;
-            state.username = null;
+            for (const prop in state) {
+                state[prop] = null;
+            }
             state.avatar = {
                 bg: null,
                 display: null,
-            }
+            };
         },
         setOtherUser: (state, action: { payload: apiTempUser }) => {
-            state.__v = action.payload.__v;
-            state._id = action.payload._id;
-            state.preference = action.payload.preference;
-            state.socketID = action.payload.socketID;
-            state.username = action.payload.username;
-            state.avatar.bg = action.payload.avatar.bg;
-            state.avatar.display = action.payload.avatar.display;
+            for (const prop in action.payload) {
+                if (state.hasOwnProperty(prop)) {
+                    state[prop] = action.payload[prop];
+                }
+            }
         }
     },
     extraReducers: (builder) => {
