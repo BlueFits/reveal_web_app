@@ -3,15 +3,21 @@ import { CreateSocketRoomDTO } from "../dto/SocketRoom.dto";
 import { gender } from '../../Users/dto/users.dto';
 
 class SocketRoom {
-    Schema = mongooseService.mongoose.Schema;
-    socketRoomSchema = new this.Schema({
+    private Schema = mongooseService.mongoose.Schema;
+    private socketRoomSchema = new this.Schema({
         createdBy: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         roomID: String,
     });
-    SocketRoom = mongooseService.mongoose.model('SocketRooms', this.socketRoomSchema);
+    private SocketRoom = mongooseService.mongoose.model('SocketRooms', this.socketRoomSchema);
 
     constructor() { console.log("Initializing SocketRooms") }
+
+    /* Getters */
+
+    get SocketRoomModel() {
+        return this.SocketRoom;
+    }
 
     /* CRUD  */
 

@@ -1,7 +1,4 @@
-import { acceptCallData, callUserData } from "../../../src/constants/callTypes";
 import socketEmitters, { IJoinChatData, ISendIDChat, ISendMsgChat } from "../../../src/constants/emitters";
-import { IUserReducer } from "../../../src/services/modules/User/userSlice";
-import socketRoomDao from "../../socketRoom/dao/socketRoom.dao";
 import {
     acceptMatchHandler,
     disconnectHandler,
@@ -13,9 +10,19 @@ import {
     callUserHandler,
 } from "./helpers/eventListeners";
 
+import socketRoomDao from "../../socketRoom/dao/socketRoom.dao";
+
 export default class SocketInit {
     constructor(io: any) {
         io.on('connection', (socket) => {
+
+            socketRoomDao.SocketRoomModel.watch().on("change", (change) => {
+                // console.log("database change", change);
+                socketRoomDao.SocketRoomModel.count({}, (err, count) => {
+                    console.log("amount of people", count);
+                    socket.emit("socketroomchange", count);
+                });
+            });
 
             socket.on(socketEmitters.REQUEST_ID, () => {
                 socket.emit(socketEmitters.ME, socket.id)

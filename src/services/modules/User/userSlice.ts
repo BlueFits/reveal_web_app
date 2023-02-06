@@ -21,6 +21,7 @@ export interface IUserReducer extends PutUserDto {
     }
     isFirstTime: boolean;
     username: string;
+    opener: string;
 }
 
 
@@ -39,6 +40,7 @@ const initialState: IUserReducer = {
         display: null,
     },
     auth0: null,
+    opener: null,
     isFirstTime: true,
 };
 
@@ -132,6 +134,9 @@ const userSlice = createSlice({
                     state[prop] = action.payload[prop];
                 }
             }
+        },
+        setOpener: (state, action: { payload: string }) => {
+            state.opener = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -168,6 +173,7 @@ export const {
     setSocketID,
     setAvatar,
     formSet,
+    setOpener
 } = userSlice.actions;
 
 export default userSlice;

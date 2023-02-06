@@ -141,6 +141,10 @@ const Index = () => {
         if (!initSetupRan && stream) {
             socket.on(socketEmitters.USER_DISCONNECTED, () => {
                 console.log("User has disconnected in socket");
+                dispatch(clearState());
+                setCallAccepted(false);
+                setRevealTimer(revealTimerNum);
+                setReveal(revealStatus.STANDBY);
             })
             socket.on(socketEmitters.REVEAL_INIT, () => {
                 setReveal(revealStatus.CONFIRM);

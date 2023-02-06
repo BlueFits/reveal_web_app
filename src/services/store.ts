@@ -3,12 +3,14 @@ import userSlice from './modules/User/userSlice';
 import otherUserSlice from './modules/otherUserSlice';
 import roomSlice from "./modules/roomSlice";
 import messageSlice from './modules/Messages/messagesSlice';
+import liveCountSlice from './modules/LiveCount/LiveCount';
 
 export interface IReducer {
   user: any;
   otherUser: any;
   room: any;
   messages: any;
+  liveCount: any;
 }
 
 const reducerObject: IReducer = {
@@ -16,6 +18,7 @@ const reducerObject: IReducer = {
   otherUser: otherUserSlice.reducer,
   room: roomSlice.reducer,
   messages: messageSlice.reducer,
+  liveCount: liveCountSlice.reducer,
 };
 
 const reducer = combineReducers(reducerObject);
