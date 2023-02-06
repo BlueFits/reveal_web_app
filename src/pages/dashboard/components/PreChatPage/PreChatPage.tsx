@@ -90,8 +90,8 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 				<Typography variant="h4" gutterBottom>
 					Start Chatting
 				</Typography>
-				<Typography textAlign={"center"} variant="body1" gutterBottom>
-					<span style={{ color: colors.primary }} className="font-semibold">{liveCountReducer.liveCount || 0}</span> people waiting to talk.
+				<Typography textAlign={"center"} variant="subtitle1" gutterBottom>
+					<span style={{ color: colors.primary }} className="font-bold">{liveCountReducer.liveCount || 0}</span> people waiting to talk.
 				</Typography>
 				{/* <TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" /> */}
 				{/* <TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" /> */}
@@ -139,7 +139,12 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 							<MenuItem value={"0"}>Normal</MenuItem>
 							<MenuItem value={"1"}>Open</MenuItem>
 						</Select>
-						<FormHelperText>Select your chat type</FormHelperText>
+						<FormHelperText>
+							<span className="mt-3 flex flex-col text-center">
+								<span>*Normal - connect depending on your orientation</span>
+								<span className="mt-2">*Open - connect to everyone</span>
+							</span>
+						</FormHelperText>
 					</FormControl>
 				</div>
 			</div>
