@@ -80,6 +80,8 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 				{/* <TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" /> */}
 				<div className="w-3/4 lg:max-w-lg mt-3">
 					<TextField
+						// InputLabelProps={{ style: { textAlign: "center", width: "100%", } }}
+						inputProps={{ style: { textAlign: "center" } }}
 						multiline
 						placeholder={"E.g. Hey what's your name? You can call me yours."}
 						value={openingLine}
