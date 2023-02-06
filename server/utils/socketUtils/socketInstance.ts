@@ -16,12 +16,10 @@ export default class SocketInit {
     constructor(io: any) {
         io.on('connection', (socket) => {
 
+            socket.on(socketEmitters.SOCKET_ROOM_GET, () => this.getSocketRoomCount(socket));
+
             socketRoomDao.SocketRoomModel.watch().on("change", (change) => {
-                // console.log("database change", change);
-                socketRoomDao.SocketRoomModel.count({}, (err, count) => {
-                    console.log("amount of people", count);
-                    socket.emit("socketroomchange", count);
-                });
+                this.getSocketRoomCount(socket);
             });
 
             socket.on(socketEmitters.REQUEST_ID, () => {
@@ -106,6 +104,12 @@ export default class SocketInit {
             socket.on(socketEmitters.CALLUSER, (data) => callUserHandler(io, data))
 
             socket.on(socketEmitters.ANSWER_CALL, (data) => answerCallHandler(io, data))
+        });
+    }
+
+    private getSocketRoomCount(socket) {
+        socketRoomDao.SocketRoomModel.count({}, (err, count) => {
+            socket.emit(socketEmitters.SOCKET_ROOM_WATCH, count);
         });
     }
 };

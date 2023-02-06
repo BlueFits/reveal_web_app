@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serverURL } from "../../../config/Server";
 import { CreateSocketRoomDTO } from '../../../server/socketRoom/dto/SocketRoom.dto';
 import { gender } from '../../../server/Users/dto/users.dto';
+import { addAllResultProp } from './common/utils.common';
 
 export interface IRoomReducer extends Partial<CreateSocketRoomDTO> {
     _id: string | null;
@@ -11,15 +12,22 @@ const initialState: IRoomReducer = {
     _id: null,
     createdBy: null,
     showMe: null,
+    openRoom: null,
 };
 
 const API = "/api/socket_room";
+
+const parseChatType = (chatType: string) => {
+    if (chatType === "0") return false;
+    if (chatType === "1") return true;
+}
 
 //Thunks
 export const findRoom: any = createAsyncThunk("room/findSim", async (data: {
     showMe: gender,
     gender: gender,
-    roomID?: string | null
+    roomID?: string | null,
+    openRoom: string,
 }) => {
     try {
         const response = await fetch(`${serverURL}${API}/preference_match`, {
@@ -32,6 +40,7 @@ export const findRoom: any = createAsyncThunk("room/findSim", async (data: {
                 showMe: data.showMe,
                 gender: data.gender,
                 roomID: data.roomID || null,
+                openRoom: parseChatType(data.openRoom),
             }),
         });
         if (!response.ok) {
@@ -50,6 +59,7 @@ export const findRoom: any = createAsyncThunk("room/findSim", async (data: {
 export const createRoom: any = createAsyncThunk("room/create", async (data: {
     showMe: gender,
     gender: gender,
+    openRoom: string
 }) => {
     const response = await fetch(`${serverURL}${API}`, {
         method: "POST",
@@ -60,6 +70,7 @@ export const createRoom: any = createAsyncThunk("room/create", async (data: {
         body: JSON.stringify({
             showMe: data.showMe,
             gender: data.gender,
+            openRoom: parseChatType(data.openRoom),
         }),
     });
     if (!response.ok) {
@@ -94,21 +105,13 @@ const roomSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(findRoom.fulfilled, (state, action: { payload: IRoomReducer }) => {
-            //If possible fix the socket duplication in the future
-            state._id = action.payload._id;
-            state.createdBy = action.payload.createdBy;
-            state.showMe = action.payload.showMe;
-        });
-        builder.addCase(createRoom.fulfilled, (state, action: { payload: IRoomReducer }) => {
-            state._id = action.payload._id;
-            state.createdBy = action.payload.createdBy;
-            state.showMe = action.payload.showMe;
-        })
+        builder.addCase(findRoom.fulfilled, addAllResultProp);
+        builder.addCase(createRoom.fulfilled, addAllResultProp)
         builder.addCase(removeRoom.fulfilled, (state) => {
             state._id = null;
             state.createdBy = null;
             state.showMe = null;
+            state.openRoom = null;
         });
     }
 })

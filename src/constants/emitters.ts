@@ -44,6 +44,8 @@ enum socketEmitters {
     CHAT_LEAVE = "CHAT_LEAVE",
     CHAT_DISCONNECT = "CHAT_DISCONNECT",
     CHAT_CLEAN = "CHAT_CLEAN",
+    SOCKET_ROOM_WATCH = "SOCKET_ROOM_WATCH",
+    SOCKET_ROOM_GET = "SOCKET_ROOM_GET"
 }
 
 export default socketEmitters;

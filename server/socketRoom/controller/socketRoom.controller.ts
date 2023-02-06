@@ -10,7 +10,11 @@ class SocketRoomController {
     }
 
     async createUser(req: Request, res: Response) {
-        const socketRoom = await socketRoomDao.addRoom({ showMe: req.body.showMe, createdBy: req.body.gender });
+        const socketRoom = await socketRoomDao.addRoom({
+            showMe: req.body.showMe,
+            createdBy: req.body.gender,
+            openRoom: req.body.openRoom || false,
+        });
         res.status(201).send(socketRoom);
     }
 
@@ -22,26 +26,38 @@ class SocketRoomController {
     async getRoomWithSamePref(req: Request, res: Response) {
         const roomID = req.body.roomID;
 
-        let showMe: gender = null;
-        let createdBy: gender = null;
+        let room = null;
 
-        if (req.body.showMe === gender.Female && req.body.gender === gender.Male) {
-            showMe = gender.Male;
-            createdBy = gender.Female;
-        } else if (req.body.showMe === gender.Male && req.body.gender === gender.Female) {
-            showMe = gender.Female;
-            createdBy = gender.Male;
-        } else if (req.body.showMe === gender.Male && req.body.gender === gender.Male) {
-            showMe = gender.Male;
-            createdBy = gender.Male;
-        } else if (req.body.showMe === gender.Female && req.body.gender === gender.Female) {
-            showMe = gender.Female;
-            createdBy = gender.Female;
+        if (req.body.openRoom) {
+
+            room = await socketRoomDao.getRooms({
+                filter: { "_id": { $ne: roomID }, openRoom: true }
+            });
+
+        } else {
+            let showMe: gender = null;
+            let createdBy: gender = null;
+
+            if (req.body.showMe === gender.Female && req.body.gender === gender.Male) {
+                showMe = gender.Male;
+                createdBy = gender.Female;
+            } else if (req.body.showMe === gender.Male && req.body.gender === gender.Female) {
+                showMe = gender.Female;
+                createdBy = gender.Male;
+            } else if (req.body.showMe === gender.Male && req.body.gender === gender.Male) {
+                showMe = gender.Male;
+                createdBy = gender.Male;
+            } else if (req.body.showMe === gender.Female && req.body.gender === gender.Female) {
+                showMe = gender.Female;
+                createdBy = gender.Female;
+            }
+
+            room = await socketRoomDao.getRooms({
+                filter: { "_id": { $ne: roomID }, showMe, createdBy, openRoom: false }
+            });
         }
 
-        const room = await socketRoomDao.getRooms({
-            filter: { "_id": { $ne: roomID }, showMe, createdBy }
-        });
+
         if (room.length == 0) {
             res.status(404).send(null);
         } else {

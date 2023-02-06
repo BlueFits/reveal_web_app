@@ -5,6 +5,7 @@ import { gender } from '../../Users/dto/users.dto';
 class SocketRoom {
     private Schema = mongooseService.mongoose.Schema;
     private socketRoomSchema = new this.Schema({
+        openRoom: { type: Boolean, default: false },
         createdBy: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         roomID: String,

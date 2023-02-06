@@ -80,7 +80,8 @@ const Index = () => {
         const roomData: { payload: IRoomReducer } = await dispatch(findRoom({
             showMe: userReducer.showMe,
             gender: userReducer.gender,
-            roomID: roomReducer._id || null
+            roomID: roomReducer._id || null,
+            openRoom: router.query.chatType,
         }));
         console.log("Joining ", roomData);
         if (roomData.payload && roomData.payload._id) {
@@ -95,6 +96,7 @@ const Index = () => {
         const roomData = await dispatch(createRoom({
             showMe: userReducer.showMe,
             gender: userReducer.gender,
+            openRoom: router.query.chatType,
         }));
         console.log("Created room id ", roomData.payload._id);
         joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
