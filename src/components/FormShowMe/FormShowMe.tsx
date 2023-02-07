@@ -1,11 +1,13 @@
 import { Typography, Select, MenuItem } from "@mui/material";
 import { gender } from "../../../server/Users/dto/users.dto";
 
-const FormShowMe = ({ value, onChange }) => {
+const FormShowMe = ({ value, onChange, hideTitle = false }) => {
 
     return (
         <div className="mb-4">
-            <Typography marginBottom={2} variant="h5">{"Interested in"}</Typography>
+            {!hideTitle &&
+                <Typography marginBottom={2} variant="h5">{"Interested in"}</Typography>
+            }
             <Select
                 fullWidth
                 value={value}

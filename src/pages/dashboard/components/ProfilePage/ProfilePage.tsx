@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, forwardRef } from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useAuth0 } from "@auth0/auth0-react";
 import Box from '@mui/material/Box';
@@ -16,16 +16,29 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Typography, Button } from "@mui/material";
 import DrawerComponent from "../../../../components/DrawerComponent/DrawerComponent";
-import Loading from "../../../../components/Loading/Loading";
-import ModalComponent from "../../../../components/ModalComponent/ModalComponent";
-import FormBlock from "../../../../components/FormBlock/FormBlock";
 import FormShowMe from "../../../../components/FormShowMe/FormShowMe";
 import { gender, PatchUserDto } from "../../../../../server/Users/dto/users.dto";
 import { updateUser } from "../../../../services/modules/User/userSlice";
 import { useDispatch } from "react-redux";
-import { CircularProgress, IconButton } from "@mui/material";
-import Alert from '@mui/material/Alert';
-import CloseIcon from '@mui/icons-material/Close';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import colors from "../../../../constants/colors";
+
+const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 
 const sxStyles = {
@@ -37,16 +50,18 @@ const sxStyles = {
 };
 
 const ProfilePage = () => {
+    const theme = useTheme();
+    const notSm = useMediaQuery(theme.breakpoints.up('sm'));
     const dispatch = useDispatch();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const { logout } = useAuth0();
 
-    const [isOpen, setIsOpen] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const [showMe, setShowMe] = useState<gender>(userReducer.showMe);
     const [showUsernameSettings, setShowUsernameSettings] = useState(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showMeSettings, setShowMeSettings] = useState(false);
+    const [snackBarOpen, setSnackBarOpen] = useState(false);
+    const [snackBarError, setSnackBarError] = useState(false);
     const [error, setError] = useState<string>("");
 
     // useEffect(() => {
@@ -59,99 +74,102 @@ const ProfilePage = () => {
         setShowMe(event.target.value as gender);
     };
 
-    const closeModalHandler = () => {
-        setShowUsernameSettings(false);
-        setShowMeSettings(false);
-        setIsOpen(false);
-    };
-
     const usernameHandler = () => {
         setShowUsernameSettings(true);
-        setIsOpen(true);
     }
 
     const showMeHandler = () => {
         setShowMeSettings(true);
-        setIsOpen(true);
     }
 
     const submitHandler = async (fields: PatchUserDto) => {
-        setIsLoading(true);
         const res = await dispatch(updateUser({ fields, id: userReducer._id }));
         if (res.payload.error) {
+            console.log(res.payload);
             setError(res.payload.error);
-            setIsLoading(false);
+            setSnackBarError(true);
             return;
         }
         setUsername("");
         setShowUsernameSettings(false);
         setShowMeSettings(false);
-        setIsOpen(false);
-        setIsLoading(false);
         setError("");
+        setSnackBarOpen(true);
     }
+
+    const handleSnackBarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBarOpen(false);
+    };
+
+
+    const handleSnackBarError = (event: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBarError(false);
+    };
+
 
     return (
         <div className="bg-gray-300 grow flex items-center flex-col">
-            <ModalComponent
-                handleClose={closeModalHandler}
-                open={isOpen}
-            >
-                <div className="flex justify-end">
-                    <IconButton onClick={closeModalHandler} style={{ color: "grey" }}>
-                        <CloseIcon />
-                    </IconButton>
-                </div>
-                {showUsernameSettings && (
-                    <div>
-                        <FormBlock
-                            placeholder={userReducer.username}
-                            label="Display Name"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                        {isLoading ?
-                            <div className="mt-5 flex justify-center items-center">
-                                <CircularProgress color="secondary" />
-                            </div> :
-                            <Button
-                                onClick={submitHandler.bind(this, { username })}
-                                disableElevation
-                                style={{ borderRadius: 9999, padding: 10, backgroundColor: "#9b59b6", marginTop: 10 }}
-                                fullWidth
-                                color="secondary"
-                                variant="contained"
-                            >
-                                update
-                            </Button>
-                        }
-                        {error &&
-                            <div className="mt-5">
-                                <Alert severity="error">{error}</Alert>
-                            </div>
-                        }
-                    </div>
-                )}
-                {showMeSettings && (
-                    <div>
-                        <FormShowMe
-                            value={showMe}
-                            onChange={handleShowMeChange}
-                        />
-                        <Button
-                            onClick={submitHandler.bind(this, { showMe })}
-                            disableElevation
-                            style={{ borderRadius: 9999, padding: 10, backgroundColor: "#9b59b6" }}
-                            fullWidth
-                            color="secondary"
-                            sx={{ margin: "15px 0" }}
-                            variant="contained"
-                        >
-                            save
-                        </Button>
-                    </div>
-                )}
-            </ModalComponent>
+
+            <Snackbar open={snackBarOpen} autoHideDuration={6000} onClose={handleSnackBarClose}>
+                <Alert onClose={handleSnackBarClose} severity="success" sx={{ width: '100%' }}>
+                    Succesfully Updated Settings
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={snackBarError} autoHideDuration={6000} onClose={handleSnackBarError}>
+                <Alert onClose={handleSnackBarClose} severity="error" sx={{ width: '100%' }}>
+                    {error}
+                </Alert>
+            </Snackbar>
+
+            <Dialog fullScreen={!notSm} fullWidth open={showUsernameSettings} onClose={() => setShowUsernameSettings(false)}>
+                <DialogTitle>Username</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please enter a new username.
+                    </DialogContentText>
+                    <TextField
+                        onChange={(e) => setUsername(e.target.value)}
+                        value={username}
+                        autoFocus
+                        margin="dense"
+                        label="Username"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        placeholder={userReducer.username}
+                    />
+                    <DialogActions sx={{ marginTop: 3 }}>
+                        <Button color="secondary" onClick={() => setShowUsernameSettings(false)}>Cancel</Button>
+                        <Button color="secondary" onClick={submitHandler.bind(this, { username })}>Save</Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog fullScreen={!notSm} fullWidth open={showMeSettings} onClose={() => setShowMeSettings(false)}>
+                <DialogTitle>Interested in</DialogTitle>
+                <DialogContent>
+                    <DialogContentText marginBottom={2}>
+                        Choose which gender you want to have calls with in the normal chat
+                    </DialogContentText>
+                    <FormShowMe
+                        hideTitle
+                        value={showMe}
+                        onChange={handleShowMeChange}
+                    />
+                    <DialogActions sx={{ marginTop: 3 }}>
+                        <Button color="secondary" onClick={() => setShowMeSettings(false)}>Cancel</Button>
+                        <Button color="secondary" onClick={submitHandler.bind(this, { showMe })}>Save</Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
+
             {/* <DrawerComponent
                 isOpen={isOpen}
                 title={drawerTitle}
@@ -179,6 +197,7 @@ const ProfilePage = () => {
                                     <AccountCircleIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Username" />
+                                <ListItemText sx={{ color: colors.grey }} primary={userReducer && userReducer.username} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
@@ -187,6 +206,20 @@ const ProfilePage = () => {
                                     <FavoriteIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Looking For" />
+                                <ListItemText sx={{ color: colors.grey }} primary={(() => {
+                                    switch (userReducer && userReducer.showMe) {
+                                        case gender.Male:
+                                            return "Male"
+                                        case gender.Female:
+                                            return "Female";
+                                        case gender.Gay:
+                                            return "Gay";
+                                        case gender.Lesbian:
+                                            return "Lesbian";
+                                        default:
+                                            return "Undefined"
+                                    }
+                                })()} />
                             </ListItemButton>
                         </ListItem>
                     </List>
@@ -208,7 +241,7 @@ const ProfilePage = () => {
             </Box>
             <Typography variant="h6" fontWeight={"bold"}>Reveal</Typography>
             <Typography>Version 0.0.1</Typography>
-        </div>
+        </div >
     );
 };
 

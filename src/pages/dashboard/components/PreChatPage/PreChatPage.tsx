@@ -110,11 +110,12 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 					<Button
 						fullWidth
 						onClick={onStartHandler}
+						sx={{ margin: "15px 0" }}
+						variant="contained"
+						size="large"
+						disableElevation
+						style={{ borderRadius: 9999, backgroundColor: "#9b59b6" }}
 						color="secondary"
-
-						style={{ borderRadius: 9999, borderWidth: 2 }}
-						sx={{ color: "#9b59b6", margin: "15px 0" }}
-						variant="outlined"
 					>
 						Start
 					</Button>
@@ -141,8 +142,8 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 						</Select>
 						<FormHelperText>
 							<span className="mt-3 flex flex-col text-center">
-								<span>*Normal - connect depending on your orientation</span>
-								<span className="mt-2">*Open - connect to everyone</span>
+								<span>*Normal - connect with the opposite gender</span>
+								<span className="mt-2">*Open - connect to anyone for fun</span>
 							</span>
 						</FormHelperText>
 					</FormControl>
