@@ -17,6 +17,7 @@ import { acceptCallData, callUserData } from "../../constants/callTypes";
 import { IAddUserToMatches } from "../../services/modules/User/api";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 
 
 import Snackbar from '@mui/material/Snackbar';
@@ -64,6 +65,15 @@ const Index = () => {
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
     const streamRef = useRef<MediaStream>();
+
+    //Google Analytics
+
+    useEffect(() => {
+        gtag("event", "chat-focus", {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
+    }, []);
 
     //MediaStream Setup
     useEffect(() => {
@@ -244,6 +254,10 @@ const Index = () => {
     }
 
     const revealHandler = () => {
+        gtag("event", "reveal-clicked", {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
         if (reveal === revealStatus.CONFIRM) {
             setReveal(revealStatus.ACCEPTED);
             socket.emit(socketEmitters.ACCEPT_REVEAL, { to: otherUserReducer });
@@ -261,6 +275,10 @@ const Index = () => {
     };
 
     const matchHandler = () => {
+        gtag("event", "match-clicked", {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
 
         const addToMatches = async () => {
             const data: IAddUserToMatches = { userIdToAdd: otherUserReducer._id, _id: userReducer._id };
@@ -288,6 +306,10 @@ const Index = () => {
     };
 
     const skipHandler = () => {
+        gtag("event", "skip-clicked", {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
         setUserJoinedRoom(false);
         setCallAccepted(false);
         setRevealTimer(revealTimerNum);

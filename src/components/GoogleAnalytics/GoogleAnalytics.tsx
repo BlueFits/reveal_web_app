@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { memo, useEffect } from "react";
-const TRACKING_ID = 'G-W2YP40HSXZ';
+import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 const GoogleAnalytics = () => {
     const router = useRouter();
     // 👇 send page views when users gets to the landing page
