@@ -1,0 +1,1 @@
+export const TRACKING_ID = 'G-W2YP40HSXZ';

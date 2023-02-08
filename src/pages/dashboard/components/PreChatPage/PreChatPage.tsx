@@ -17,6 +17,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Divider } from "@mui/material";
 import PickupLines from "../../../../constants/pickupLines";
+import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 
 interface IPreChatPage {
 	user: IUserReducer;
@@ -39,6 +40,15 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	const [hasErrors, setHasErrors] = useState<boolean>(false);
 	const [chatType, setChatType] = useState<IChatType>(IChatType.NORMAL);
 	// const [pickupLine, setPickupLine] = useState(PickupLines.random());
+
+	//Google Analytics
+
+	useEffect(() => {
+		gtag("event", "pre-chat-focus", {
+			page_path: window.location.pathname,
+			send_to: TRACKING_ID,
+		});
+	}, []);
 
 	const pickupLine = useCallback(() => {
 		if (chatType === "0") {

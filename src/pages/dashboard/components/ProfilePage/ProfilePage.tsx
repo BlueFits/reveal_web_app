@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useAuth0 } from "@auth0/auth0-react";
 import Box from '@mui/material/Box';
@@ -31,6 +31,7 @@ import { useTheme } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import colors from "../../../../constants/colors";
+import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -69,6 +70,15 @@ const ProfilePage = () => {
     //     setShowMe(userReducer.showMe);
     //     console.log(showMe);
     // }, [userReducer]);
+
+    //Google Analytics
+
+    useEffect(() => {
+        gtag("event", "profile-focus", {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
+    }, []);
 
     const handleShowMeChange = (event: SelectChangeEvent) => {
         setShowMe(event.target.value as gender);

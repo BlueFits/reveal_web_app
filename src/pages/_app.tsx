@@ -8,6 +8,7 @@ import Auth0Config, { SPA } from "../../config/Auth0.config";
 import { serverURL } from "../../config/Server";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import GoogleAnalytics from "../components/GoogleAnalytics/GoogleAnalytics";
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -83,6 +84,7 @@ function MyApp({ Component, pageProps }) {
           </Head>
           <Provider store={store}>
             <ThemeProvider theme={theme}>
+              <GoogleAnalytics />
               <Component {...pageProps} />
             </ThemeProvider>
           </Provider>

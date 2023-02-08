@@ -14,6 +14,7 @@ import { CreateMessageDto, IMessageSingle } from '../../../../../server/Messages
 import { ButtonBase } from '@mui/material';
 import socket from '../../../../../config/Socket';
 import socketEmitters, { IJoinChatData } from '../../../../constants/emitters';
+import { TRACKING_ID } from '../../../../../config/GoogleAnalyticsConfig';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -31,6 +32,15 @@ const MatchesPage = () => {
 
     const [isMessageOpen, setIsMessageOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState<CreateMessageDto>();
+
+    //Google Analytics
+
+    useEffect(() => {
+        gtag("event", "matches-focus", {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
+    }, []);
 
     useEffect(() => {
         const asyncInit = async () => {
