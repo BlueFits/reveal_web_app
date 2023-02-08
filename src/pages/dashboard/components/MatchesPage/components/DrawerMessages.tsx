@@ -79,6 +79,9 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
     const sendHandler = async () => {
         try {
+
+            if (msg === "") return;
+
             const response = (await dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg }))).payload;
 
             const data: ISendMsgChat = {

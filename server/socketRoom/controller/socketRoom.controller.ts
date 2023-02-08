@@ -35,25 +35,8 @@ class SocketRoomController {
             });
 
         } else {
-            let showMe: gender = null;
-            let createdBy: gender = null;
-
-            if (req.body.showMe === gender.Female && req.body.gender === gender.Male) {
-                showMe = gender.Male;
-                createdBy = gender.Female;
-            } else if (req.body.showMe === gender.Male && req.body.gender === gender.Female) {
-                showMe = gender.Female;
-                createdBy = gender.Male;
-            } else if (req.body.showMe === gender.Male && req.body.gender === gender.Male) {
-                showMe = gender.Male;
-                createdBy = gender.Male;
-            } else if (req.body.showMe === gender.Female && req.body.gender === gender.Female) {
-                showMe = gender.Female;
-                createdBy = gender.Female;
-            }
-
             room = await socketRoomDao.getRooms({
-                filter: { "_id": { $ne: roomID }, showMe, createdBy, openRoom: false }
+                filter: { "_id": { $ne: roomID }, showMe: req.body.gender, createdBy: req.body.showMe, openRoom: false }
             });
         }
 

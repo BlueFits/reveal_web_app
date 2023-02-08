@@ -1,4 +1,4 @@
-import { useEffect, useState, MutableRefObject, useRef } from "react";
+import { useEffect, useState, MutableRefObject, useRef, Fragment } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
@@ -15,6 +15,12 @@ import { fmtMSS } from "../../utils/timeUtils";
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
 import { acceptCallData, callUserData } from "../../constants/callTypes";
 import { IAddUserToMatches } from "../../services/modules/User/api";
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+
+
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 enum revealStatus {
     WAITING = "WAITING",
@@ -44,7 +50,6 @@ const Index = () => {
         </div>
     );
 
-    //Video Call Shtuff
     const [stream, setStream] = useState<MediaProvider>();
     const [initSetupRan, setInitSetupRan] = useState(false);
     const [reveal, setReveal] = useState<revealStatus>(revealStatus.STANDBY);
@@ -52,6 +57,7 @@ const Index = () => {
     const [revealTimer, setRevealTimer] = useState(revealTimerNum);
     const [callAccepted, setCallAccepted] = useState(false);
 
+    const [openChatInfo, setOpenChatInfo] = useState<boolean>(router.query.chatType === "1" ? true : false);
     const [userJoinedRoom, setUserJoinedRoom] = useState<boolean>(false);
 
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
@@ -182,7 +188,6 @@ const Index = () => {
                     });
                     connectionRef.current = peer2;
                     peer2.on("signal", async (signal) => {
-                        console.log("Answering on client");
                         socket.emit(socketEmitters.ANSWER_CALL, { signal, socketID: user.socketID, userAccepting: userReducer });
                         setCallAccepted(true);
                     })
@@ -307,10 +312,38 @@ const Index = () => {
         }, 1000);
     };
 
+    const isRevealDisabled = () => !callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING) || reveal === revealStatus.ACCEPTED;
+
+    const openChatInfoCloseHandler = () => {
+        setOpenChatInfo(false);
+    }
+
+    const action = (
+        <Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={openChatInfoCloseHandler}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </Fragment>
+    );
+
     return !userReducer.username ? (
         <Typography>Invalid Page Redirecting...</Typography>
     ) : (
         <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
+            <Snackbar
+                open={openChatInfo}
+                autoHideDuration={5000}
+                onClose={openChatInfoCloseHandler}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                message="Matching is disabled in open chat"
+                action={action}
+            />
+
             <VideoPreview
                 isMuted={false}
                 videoRef={userVideo}
@@ -324,7 +357,7 @@ const Index = () => {
             />
             <Container className="absolute flex flex-col bottom-5">
                 {
-                    reveal === revealStatus.ACCEPTED ?
+                    reveal === revealStatus.ACCEPTED && router.query.chatType === "0" ?
                         <ButtonContainer>
                             <Button
                                 onClick={matchHandler}
@@ -344,9 +377,9 @@ const Index = () => {
                         <ButtonContainer>
                             <Button
                                 onClick={revealHandler}
-                                disabled={!callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING)}
+                                disabled={isRevealDisabled()}
                                 style={{
-                                    backgroundColor: revealTimer !== 0 || reveal === revealStatus.WAITING ? "inherit" : "#0971f1",
+                                    backgroundColor: isRevealDisabled() ? "inherit" : "#0971f1",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999

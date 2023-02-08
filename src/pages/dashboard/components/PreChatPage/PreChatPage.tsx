@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Container, Typography, TextField, Button, Alert } from "@mui/material"
 import { useDispatch } from "react-redux";
 import { setUsername, setPreference, setSocketID, setAvatar, IUserReducer, setOpener } from "../../../../services/modules/User/userSlice";
@@ -16,9 +16,15 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Divider } from "@mui/material";
+import PickupLines from "../../../../constants/pickupLines";
 
 interface IPreChatPage {
 	user: IUserReducer;
+}
+
+enum IChatType {
+	NORMAL = "0",
+	OPEN = "1",
 }
 
 const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
@@ -31,8 +37,14 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	// const [preference, setLocalPreference] = useState<string>("");
 	const [openingLine, setOpeningLine] = useState<string>("");
 	const [hasErrors, setHasErrors] = useState<boolean>(false);
-	const [checked, setChecked] = useState(false);
-	const [chatType, setChatType] = useState<string>("0");
+	const [chatType, setChatType] = useState<IChatType>(IChatType.NORMAL);
+	// const [pickupLine, setPickupLine] = useState(PickupLines.random());
+
+	const pickupLine = useCallback(() => {
+		if (chatType === "0") {
+			return PickupLines.random();
+		}
+	}, [chatType]);
 
 	useEffect(() => {
 		socket.off(socketEmitters.SOCKET_ROOM_WATCH, (count) => {
@@ -50,10 +62,6 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 			dispatch(setSocketID(socketID));
 		})
 	}, []);
-
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setChecked(event.target.checked);
-	};
 
 	const onStartHandler = async () => {
 		//Basic Sanitation
@@ -100,7 +108,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 						// InputLabelProps={{ style: { textAlign: "center", width: "100%", } }}
 						inputProps={{ style: { textAlign: "center" } }}
 						multiline
-						placeholder={"E.g. Hey what's your name? You can call me yours."}
+						placeholder={chatType === "0" ? `E.g. ${pickupLine()}` : "E.g. Isn't Reveal awesome?"}
 						value={openingLine}
 						onChange={e => setOpeningLine(e.target.value)}
 						fullWidth
@@ -135,10 +143,10 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 							color="secondary"
 							value={chatType}
 							label="Chat Type"
-							onChange={(e: SelectChangeEvent) => setChatType(e.target.value)}
+							onChange={(e: SelectChangeEvent) => setChatType((e.target.value as IChatType))}
 						>
-							<MenuItem value={"0"}>Normal</MenuItem>
-							<MenuItem value={"1"}>Open</MenuItem>
+							<MenuItem value={IChatType.NORMAL}>Normal</MenuItem>
+							<MenuItem value={IChatType.OPEN}>Open</MenuItem>
 						</Select>
 						<FormHelperText>
 							<span className="mt-3 flex flex-col text-center">
