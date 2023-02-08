@@ -4,7 +4,7 @@ import { store } from "../services/store";
 import Head from "next/head";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Auth0Provider } from "@auth0/auth0-react";
-import Auth0Config, { SPA } from "../../config/Auth0.config";
+import { SPA } from "../../config/Auth0.config";
 import { serverURL } from "../../config/Server";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
