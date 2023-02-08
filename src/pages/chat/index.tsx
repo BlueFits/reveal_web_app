@@ -17,10 +17,7 @@ import { acceptCallData, callUserData } from "../../constants/callTypes";
 import { IAddUserToMatches } from "../../services/modules/User/api";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
-
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 enum revealStatus {
     WAITING = "WAITING",
@@ -64,6 +61,14 @@ const Index = () => {
     const userVideo: MutableRefObject<HTMLVideoElement> = useRef();
     const connectionRef: Peer = useRef();
     const streamRef = useRef<MediaStream>();
+
+    /* if redux is not set properly */
+
+    useEffect(() => {
+        if (!userReducer.username || !userReducer.gender) {
+            router.push("/dashboard");
+        }
+    }, [userReducer]);
 
     //MediaStream Setup
     useEffect(() => {
@@ -210,14 +215,6 @@ const Index = () => {
             });
         }
     }, [stream]);
-
-    /* if redux is not set properly */
-
-    useEffect(() => {
-        if (!userReducer.username || !userReducer.gender) {
-            router.push("/dashboard");
-        }
-    }, [userReducer]);
 
     /* Reveal timer countdown */
     useEffect(() => {
