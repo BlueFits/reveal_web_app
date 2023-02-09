@@ -7,6 +7,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import SocketInstance from './utils/socketUtils/socketInstance';
 import { auth, requiresAuth } from "express-openid-connect";
+import basicAuth from 'express-basic-auth'
 
 //Config
 import Auth0Config from '../config/Auth0.config';
@@ -28,6 +29,7 @@ const usersRouter = new UserRoutes("UserRoutes").getRouter;
 const messageRouter = new MessageRoutes("MessageRoutes").getRouter;
 
 
+
 app.prepare().then(() => {
 
 	if (dev) {
@@ -42,9 +44,16 @@ app.prepare().then(() => {
 	server.use("/api/users", usersRouter);
 	server.use("/api/messages", messageRouter);
 
-	// server.get("/", (req, res) => {
-	// 	res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-	// });
+	server.use(basicAuth({
+		challenge: true,
+		users: {
+			'admin': 'Kanto1234'
+		}
+	}))
+
+	server.get("/", (req, res) => {
+		res.redirect("/dashboard")
+	});
 
 	server.get("/profile", requiresAuth(), (req, res) => {
 		res.send(JSON.stringify(req.oidc.user));
