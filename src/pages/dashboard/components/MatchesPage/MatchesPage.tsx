@@ -78,8 +78,6 @@ const MatchesPage = () => {
                 };
                 setMessageInfo(response);
             }
-
-            console.log("Joining Chat");
             socket.emit(socketEmitters.JOIN_CHAT, data)
             setIsMessageOpen(true);
         } catch (err) {

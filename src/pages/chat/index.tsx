@@ -56,6 +56,8 @@ const Index = () => {
     const [match, setMatch] = useState<matchStatus>(matchStatus.STANDBY);
     const [revealTimer, setRevealTimer] = useState(revealTimerNum);
     const [callAccepted, setCallAccepted] = useState(false);
+    const [isSkipped, setSkipped] = useState(false);
+    const [showMatched, setShowMatched] = useState(false);
 
     const [openChatInfo, setOpenChatInfo] = useState<boolean>(router.query.chatType === "1" ? true : false);
     const [userJoinedRoom, setUserJoinedRoom] = useState<boolean>(false);
@@ -165,8 +167,9 @@ const Index = () => {
         if (!initSetupRan && stream) {
             socket.on(socketEmitters.USER_DISCONNECTED, () => {
                 console.log("User has disconnected in socket");
-                dispatch(clearState());
-                setCallAccepted(false);
+                setSkipped(true);
+                // dispatch(clearState());
+                // setCallAccepted(false);
                 setRevealTimer(revealTimerNum);
                 setReveal(revealStatus.STANDBY);
             })
@@ -287,13 +290,15 @@ const Index = () => {
         if (match === matchStatus.CONFIRM) {
             setMatch(matchStatus.ACCEPTED);
             socket.emit(socketEmitters.ACCEPT_MATCH, { to: otherUserReducer });
-            alert("Congratulations users matched!");
+            // alert("Congratulations users matched!");
+            setShowMatched(true);
             /* Add match logic here */
             addToMatches();
         } else {
             socket.emit(socketEmitters.MATCH_INIT, { from: userReducer, to: otherUserReducer });
             socket.on(socketEmitters.MATCH_ACCEPT, () => {
-                alert("Congratulations users matched!");
+                // alert("Congratulations users matched!");
+                setShowMatched(true);
                 socket.off(socketEmitters.MATCH_ACCEPT);
                 setMatch(matchStatus.ACCEPTED);
                 /* Add match logic here */
@@ -308,6 +313,7 @@ const Index = () => {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });
+        setSkipped(false);
         setUserJoinedRoom(false);
         setCallAccepted(false);
         setRevealTimer(revealTimerNum);
@@ -332,7 +338,7 @@ const Index = () => {
         }, 1000);
     };
 
-    const isRevealDisabled = () => !callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING) || reveal === revealStatus.ACCEPTED;
+    const isRevealDisabled = () => !callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING) || reveal === revealStatus.ACCEPTED || isSkipped;
 
     const openChatInfoCloseHandler = () => {
         setOpenChatInfo(false);
@@ -369,13 +375,18 @@ const Index = () => {
                 videoRef={userVideo}
                 user={otherUserReducer}
                 showAvatar={reveal !== revealStatus.ACCEPTED}
+                matched={showMatched}
+                disableDisplay={isSkipped}
             />
             <VideoPreview
                 videoRef={myVid}
                 user={userReducer}
                 showAvatar={reveal !== revealStatus.ACCEPTED}
+                skipped={isSkipped}
+                matched={showMatched}
+                matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
             />
-            <Container className="absolute flex flex-col bottom-5">
+            <Container className="absolute flex flex-col bottom-5 z-20">
                 {
                     reveal === revealStatus.ACCEPTED && router.query.chatType === "0" ?
                         <ButtonContainer>
