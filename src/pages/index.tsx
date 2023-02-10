@@ -87,7 +87,9 @@ const Index = () => {
                                 Should you encounter any bugs, glitches, lack of functionality or
                                 other problems on the website, please let us know immediately so we
                                 can rectify these accordingly. Your help in this regard is greatly
-                                appreciated! You can write to us at this address support@reveal.com.
+                                appreciated! You can write to us at this address
+                                <Link color="inherit" href="mailto:support@reveal-app.site"> support@reveal-app.site</Link>
+                                .
                             </Typography>
                         </div>
                     </div>
