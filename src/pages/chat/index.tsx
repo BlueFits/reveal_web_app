@@ -168,10 +168,10 @@ const Index = () => {
             socket.on(socketEmitters.USER_DISCONNECTED, () => {
                 console.log("User has disconnected in socket");
                 setSkipped(true);
-                /* Removed clearState becuase match */
                 dispatch(clearState());
                 setCallAccepted(false);
                 setRevealTimer(revealTimerNum);
+                // Removed so that show avatar stays even after usker skips
                 // setReveal(revealStatus.STANDBY);
             })
             socket.on(socketEmitters.REVEAL_INIT, () => {
