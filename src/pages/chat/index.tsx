@@ -168,10 +168,11 @@ const Index = () => {
             socket.on(socketEmitters.USER_DISCONNECTED, () => {
                 console.log("User has disconnected in socket");
                 setSkipped(true);
-                // dispatch(clearState());
-                // setCallAccepted(false);
+                /* Removed clearState becuase match */
+                dispatch(clearState());
+                setCallAccepted(false);
                 setRevealTimer(revealTimerNum);
-                setReveal(revealStatus.STANDBY);
+                // setReveal(revealStatus.STANDBY);
             })
             socket.on(socketEmitters.REVEAL_INIT, () => {
                 setReveal(revealStatus.CONFIRM);
@@ -392,9 +393,9 @@ const Index = () => {
                         <ButtonContainer>
                             <Button
                                 onClick={matchHandler}
-                                disabled={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
+                                disabled={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED || isSkipped}
                                 style={{
-                                    backgroundColor: !(userReducer.matches.some(match => match._id === otherUserReducer._id)) && match !== matchStatus.ACCEPTED ? "#2ecc71" : "inherit",
+                                    backgroundColor: !(userReducer.matches.some(match => match._id === otherUserReducer._id)) && match !== matchStatus.ACCEPTED && !isSkipped ? "#2ecc71" : "inherit",
                                     color: "#fff",
                                     width: 100,
                                     borderRadius: 9999
