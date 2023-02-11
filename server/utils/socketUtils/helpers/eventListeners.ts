@@ -36,7 +36,6 @@ export const disconnectHandler = async (socket, roomID, userID) => {
 
 
 export const callUserHandler = (io, { toCallID, signal, user }: callUserData) => {
-    console.log("user calling", user);
     io.to(toCallID).emit(socketEmitters.CALLUSER, { signal, user });
 };
 
