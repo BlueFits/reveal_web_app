@@ -424,8 +424,25 @@ const Index = () => {
                         </ButtonContainer>
                 }
                 <div className="flex justify-between">
-                    <Button onClick={() => window.location.href = "/dashboard"} sx={{ borderRadius: 9999 }} size="large" variant="outlined">Leave</Button>
-                    <Button disabled={!userJoinedRoom} onClick={skipHandler} sx={{ width: 100, borderRadius: 9999 }} size="large" variant="outlined">Skip</Button>
+                    <Button
+                        color="light"
+                        onClick={() => window.location.href = "/dashboard"}
+                        sx={{ borderRadius: 9999 }}
+                        size="large"
+                        variant="outlined"
+                    >
+                        Leave
+                    </Button>
+                    <Button
+                        color="light"
+                        disabled={!userJoinedRoom}
+                        onClick={skipHandler}
+                        sx={{ width: 100, borderRadius: 9999 }}
+                        size="large"
+                        variant="outlined"
+                    >
+                        Skip
+                    </Button>
                 </div>
             </Container>
         </Container>

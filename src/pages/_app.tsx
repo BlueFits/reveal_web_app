@@ -9,6 +9,7 @@ import { serverURL } from "../../config/Server";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import GoogleAnalytics from "../components/GoogleAnalytics/GoogleAnalytics";
+import FeedbackComponent from "../components/FeedbackComponent/FeedbackComponent";
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -19,10 +20,12 @@ declare module '@mui/material/styles' {
 
   interface Palette {
     neutral: Palette['primary'];
+    light: Palette["primary"];
   }
 
   interface PaletteOptions {
     neutral: PaletteOptions['primary'];
+    light: Palette["primary"];
   }
 
   interface PaletteColor {
@@ -37,6 +40,14 @@ declare module '@mui/material/styles' {
     status: {
       danger: React.CSSProperties['color'];
     };
+  }
+}
+
+// Update the Button's color prop options
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    neutral: true;
+    light: true;
   }
 }
 
@@ -55,12 +66,18 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#fff',
+      main: '#9b59b6',
       darker: '#053e85',
     },
     neutral: {
-      main: '#64748B',
+      main: '#fff',
       contrastText: '#fff',
+    },
+    light: {
+      main: '#fff',
+      contrastText: '#fff',
+      dark: "#fff",
+      light: "#fff",
     },
     secondary: {
       main: "#9b59b6"
@@ -85,6 +102,7 @@ function MyApp({ Component, pageProps }) {
           <Provider store={store}>
             <ThemeProvider theme={theme}>
               <GoogleAnalytics />
+              <FeedbackComponent />
               <Component {...pageProps} />
             </ThemeProvider>
           </Provider>

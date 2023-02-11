@@ -49,6 +49,7 @@ const Index = () => {
                             </Typography>
                             <div className="mt-4">
                                 <Button
+                                    color="light"
                                     onClick={() => loginWithRedirect()}
                                     style={{ border: "3px solid" }}
                                     size="large"
