@@ -1,6 +1,9 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {
+
+  description = "Try blindfold dating! With Reveal, talk with someone wihout seeing what they look like at first, and then chose wether you both will reveal or not."
+
   render() {
     return (
       <Html>
@@ -25,9 +28,11 @@ class MyDocument extends Document {
           />
           <meta
             name="description"
-            content="Try blindfold dating! With Reveal, talk with someone wihout seeing what they look like at first, and then chose wether you both will reveal or not."
+            content={this.description}
             key="desc"
           />
+
+          <meta property="og:description" content={this.description} key="ogdesc" />
         </Head>
         <body>
           <Main />
