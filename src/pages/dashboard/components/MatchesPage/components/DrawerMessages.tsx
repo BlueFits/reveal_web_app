@@ -82,8 +82,6 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
             if (msg === "") return;
 
-            const response = (await dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg }))).payload;
-
             const data: ISendMsgChat = {
                 message: {
                     sender: user._id,
@@ -92,10 +90,16 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 otherSocketID,
             };
 
-
-            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
+            //Show users responsive message
             pushToMsg(data.message);
             setMsg("");
+
+            //and then save to database and emit
+
+            const response = (await dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg }))).payload;
+
+
+            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
         } catch (err) {
             throw err;
         }
