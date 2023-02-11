@@ -14,7 +14,7 @@ class UsersController {
     }
 
     async getUserByEmail(req: Request, res: Response) {
-        const email: string = req.params.email;
+        const email: string = req.body.email;
         const user = await userDao.getUserByAuth0Email(email);
         res.status(200).send(user);
     }

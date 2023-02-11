@@ -21,6 +21,13 @@ export default class UserRoutes extends CommonRoutesConfig {
                 usersController.createUser
             )
 
+        this.router.route("/email")
+            .post(
+                body("email").isString(),
+                BodyValidationMiddleware.verifyBodyFieldsErrors,
+                usersController.getUserByEmail
+            );
+
         this.router.param("userID", usersMiddleware.extractUserId);
 
         this.router.route("/:userID")

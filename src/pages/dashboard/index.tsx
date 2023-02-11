@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserByAuthID, IUserReducer } from "../../services/modules/User/userSlice";
+import { getUserByAuthID, IUserReducer, getUserByEmail } from "../../services/modules/User/userSlice";
 import { IReducer } from "../../services/store";
 import { BottomNavigation, BottomNavigationAction, Box } from "@mui/material";
 import { Person } from "@mui/icons-material";
@@ -32,7 +32,8 @@ const Index = () => {
         const init = async () => {
             if (!user) router.push("/");
             if (user && user.sub) {
-                const response = await dispatch(getUserByAuthID(user.sub));
+                console.log(user);
+                const response = await dispatch(getUserByEmail(user.email));
                 if (response.payload && !response.payload.gender) router.push("/setup");
             }
         }

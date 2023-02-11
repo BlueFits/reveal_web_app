@@ -44,6 +44,22 @@ const initialState: IUserReducer = {
     isFirstTime: true,
 };
 
+export const getUserByEmail: any = createAsyncThunk("user/getUserByEmail", async (email: string) => {
+    try {
+        const response = await UsersApi.getUserByEmailPost(email);
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error("my err", errData);
+            throw errData;
+        } else {
+            const resData = await response.json();
+            return resData;
+        }
+    } catch (err) {
+        throw err;
+    }
+});
+
 export const getUserByAuthID: any = createAsyncThunk("user/getUserByAuthID", async (data: string) => {
     try {
         const response = await UsersApi.getUserByAuthID(data);
@@ -158,6 +174,10 @@ const userSlice = createSlice({
         builder.addCase(updateUserByForm.fulfilled, defaultAddAll);
         builder.addCase(addUserToMatches.fulfilled, defaultAddAll);
         builder.addCase(getUserByAuthID.fulfilled, (state, action: { payload: CreateUserDto }) => {
+            if (action.payload.gender) state.isFirstTime = false;
+            state = addAllResultProp(state, action);
+        });
+        builder.addCase(getUserByEmail.fulfilled, (state, action: { payload: CreateUserDto }) => {
             if (action.payload.gender) state.isFirstTime = false;
             state = addAllResultProp(state, action);
         });

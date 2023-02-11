@@ -22,6 +22,18 @@ export interface IReloadMessages {
 }
 
 const UsersApi = {
+    async getUserByEmailPost(email: string): Promise<Response> {
+        return await fetch(`${serverURL}${API}/email`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+            }),
+        });
+    },
     async getUserByAuthID(id: string): Promise<Response> {
         return await fetch(`${serverURL}${API}/${id}`);
     },
