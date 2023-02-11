@@ -74,7 +74,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
             {
                 !user.username &&
                 <div style={{ right: "50%", top: "50%" }} className="absolute">
-                    <CircularProgress color="primary" />
+                    <CircularProgress style={{ color: "#fff" }} />
                 </div>
             }
             {

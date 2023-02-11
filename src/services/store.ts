@@ -4,6 +4,7 @@ import otherUserSlice from './modules/otherUserSlice';
 import roomSlice from "./modules/roomSlice";
 import messageSlice from './modules/Messages/messagesSlice';
 import liveCountSlice from './modules/LiveCount/LiveCount';
+import feedbackSlice from './modules/Feedback/Feedback';
 
 export interface IReducer {
   user: any;
@@ -11,6 +12,7 @@ export interface IReducer {
   room: any;
   messages: any;
   liveCount: any;
+  feedback: any;
 }
 
 const reducerObject: IReducer = {
@@ -19,6 +21,7 @@ const reducerObject: IReducer = {
   room: roomSlice.reducer,
   messages: messageSlice.reducer,
   liveCount: liveCountSlice.reducer,
+  feedback: feedbackSlice.reducer,
 };
 
 const reducer = combineReducers(reducerObject);

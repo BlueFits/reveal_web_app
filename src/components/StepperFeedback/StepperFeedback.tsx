@@ -7,16 +7,25 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ExperienceForm from './components/ExperienceForm';
 import AdditionalFeedback from './components/AdditionalFeedback';
+import { useSelector, useDispatch } from 'react-redux';
+import { IFeedback, createFeedback } from '../../services/modules/Feedback/Feedback';
+import { IReducer } from '../../services/store';
 
 const steps = ['Tell us about your experience', 'Additional feedbacks'];
 
 
 export default function HorizontalLinearStepper({ isFeedbackOpen, feedbackCloseHandler }) {
+    const dispatch = useDispatch();
+    const feedbackReducer: IFeedback = useSelector((state: IReducer) => state.feedback);
     const [experienceValue, setExperienceValue] = React.useState<number | null>(null);
-    const [recommendationValue, setRecommendationValue] = React.useState<number | null>(null);
+    const [recommendationValue, setRecommendationValue] = React.useState<string | null>(null);
     const [additionalFeedback, setAdditionalFeedback] = React.useState<string>("");
     const [activeStep, setActiveStep] = React.useState<number>(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
+
+    React.useEffect(() => {
+        console.log("Fedback Reducer", feedbackReducer);
+    }, [feedbackReducer]);
 
     const isStepOptional = (step: number) => {
         return step === 2;
@@ -35,6 +44,17 @@ export default function HorizontalLinearStepper({ isFeedbackOpen, feedbackCloseH
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setSkipped(newSkipped);
+
+        if (activeStep === steps.length - 1) {
+            console.log("Submitting Form");
+            console.log(experienceValue, parseInt(recommendationValue), additionalFeedback);
+            let data: IFeedback = {
+                experience: experienceValue,
+                wouldRecommend: parseInt(recommendationValue),
+                additionalFeedback,
+            };
+            dispatch(createFeedback(data))
+        }
     };
 
     const handleBack = () => {

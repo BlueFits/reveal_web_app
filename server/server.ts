@@ -15,6 +15,7 @@ import Auth0Config from '../config/Auth0.config';
 import SocketRoom from './socketRoom/socketRoom.routes.config';
 import UserRoutes from './Users/user.routes.config';
 import MessageRoutes from './Messages/messages.routes.config';
+import FeedbackRoutes from './Feedback/feedback.routes.config';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -26,6 +27,7 @@ const io = new Server(httpServer, { cors: { origin: '*', methods: ["GET", "POST"
 const availableSocketRoomRouter = new SocketRoom("SocketRoomRoutes").getRouter;
 const usersRouter = new UserRoutes("UserRoutes").getRouter;
 const messageRouter = new MessageRoutes("MessageRoutes").getRouter;
+const feedbackRouter = new FeedbackRoutes("FeedbackRoute").getRouter;
 
 app.prepare().then(() => {
 
@@ -40,6 +42,7 @@ app.prepare().then(() => {
 	server.use("/api/socket_room", availableSocketRoomRouter);
 	server.use("/api/users", usersRouter);
 	server.use("/api/messages", messageRouter);
+	server.use("/api/feedback", feedbackRouter);
 
 	// enableLock(server);
 
