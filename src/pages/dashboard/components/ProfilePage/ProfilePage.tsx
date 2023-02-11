@@ -32,6 +32,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import colors from "../../../../constants/colors";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
+import ShareReveal from "../../../../components/ShareReveal/ShareReveal";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -251,6 +252,11 @@ const ProfilePage = () => {
             </Box>
             <Typography variant="h6" fontWeight={"bold"}>Reveal</Typography>
             <Typography>Version 0.0.1</Typography>
+
+            <div className="mt-10 flex flex-col justify-center items-center">
+                <Typography marginBottom={1} variant="body1">Share Reveal</Typography>
+                <ShareReveal />
+            </div>
         </div >
     );
 };

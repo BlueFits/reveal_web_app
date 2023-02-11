@@ -23,6 +23,11 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
+          <meta
+            name="description"
+            content="Try blindfold dating! With Reveal, talk with someone wihout seeing what they look like at first, and then chose wether you both will reveal or not."
+            key="desc"
+          />
         </Head>
         <body>
           <Main />

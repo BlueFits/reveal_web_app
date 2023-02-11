@@ -30,7 +30,7 @@ const FeedbackComponent = () => {
                     </IconButton>
                 </div>
 
-                <DialogTitle>Feedback</DialogTitle>
+                <DialogTitle variant="h5" marginBottom={2} textAlign={"center"}>Feedback</DialogTitle>
                 <DialogContent>
                     <StepperFeedback
                         isFeedbackOpen={isFeedbackOpen}
