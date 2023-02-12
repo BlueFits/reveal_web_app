@@ -1,6 +1,6 @@
 export enum status {
     development = "development",
-    prod = "reveal-app",
+    prod = "prod",
     render = "render",
 }
 
