@@ -19,7 +19,7 @@ import { Divider } from "@mui/material";
 import PickupLines from "../../../../constants/pickupLines";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 import InterestsInput from "../../../../components/Interests/InterestsInput";
-import InterestsChips from "../../../../components/Interests/InterestsCips";
+import InterestsChips from "../../../../components/Interests/InterestsChips";
 
 interface IPreChatPage {
 	user: IUserReducer;

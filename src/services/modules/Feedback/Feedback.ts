@@ -35,7 +35,6 @@ const feedbackSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(createFeedback.fulfilled, (state, action: { payload: { feedback: CreateFeedbackDto } }) => {
-            console.log("return result", action.payload.feedback);
             for (const prop in action.payload.feedback) {
                 if (state.hasOwnProperty(prop)) {
                     state[prop] = action.payload.feedback[prop];

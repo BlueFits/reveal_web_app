@@ -14,6 +14,7 @@ export interface CreateUserDto {
     preference?: Array<string>,
     picture?: string,
     matches: [CreateUserDto],
+    interests: [string],
     auth0: {
         name: string,
         email: string,
@@ -33,6 +34,7 @@ export interface PutUserDto {
     preference: Array<string>,
     picture: string,
     matches: [CreateUserDto],
+    interests: [string],
     auth0: {
         name: string,
         email: string,

@@ -3,6 +3,10 @@ import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import TagFacesIcon from '@mui/icons-material/TagFaces';
+import { useSelector, useDispatch } from 'react-redux';
+import { IUserReducer } from '../../services/modules/User/userSlice';
+import { IReducer } from '../../services/store';
+import { updateUser } from '../../services/modules/User/userSlice';
 
 interface ChipData {
     key: number;
@@ -14,6 +18,11 @@ const ListItem = styled('li')(({ theme }) => ({
 }));
 
 const InterestsChips = () => {
+
+    const dispatch = useDispatch();
+    const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
+
+
     const [chipData, setChipData] = React.useState<readonly ChipData[]>([
         { key: 0, label: 'Angular' },
         { key: 1, label: 'jQuery' },
@@ -22,9 +31,20 @@ const InterestsChips = () => {
         { key: 4, label: 'Vue.js' },
     ]);
 
-    const handleDelete = (chipToDelete: ChipData) => () => {
-        setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+    const handleDelete = (chipToDelete: string) => () => {
+        // setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+        console.log("Deleting chip", chipToDelete);
     };
+
+    const deleteHandler = async (interest) => {
+        const newInterests = userReducer.interests.filter((interestCompare: string) => interestCompare !== interest);
+        await dispatch(updateUser({
+            id: userReducer._id,
+            fields: {
+                interests: newInterests
+            }
+        }));
+    }
 
     return (
         <Paper
@@ -39,19 +59,13 @@ const InterestsChips = () => {
             }}
             component="ul"
         >
-            {chipData.map((data) => {
-                let icon;
-
-                if (data.label === 'React') {
-                    icon = <TagFacesIcon />;
-                }
-
+            {userReducer.interests.map((interest, index) => {
                 return (
-                    <ListItem key={data.key}>
+                    <ListItem key={index}>
                         <Chip
-                            icon={icon}
-                            label={data.label}
-                            onDelete={data.label === 'React' ? undefined : handleDelete(data)}
+                            icon={null}
+                            label={interest}
+                            onDelete={() => deleteHandler(interest)}
                         />
                     </ListItem>
                 );

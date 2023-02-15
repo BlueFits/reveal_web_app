@@ -32,7 +32,6 @@ const Index = () => {
         const init = async () => {
             if (!user) router.push("/");
             if (user && user.sub) {
-                console.log(user);
                 const response = await dispatch(getUserByEmail(user.email));
                 if (response.payload && !response.payload.gender) router.push("/setup");
             }
