@@ -18,6 +18,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Divider } from "@mui/material";
 import PickupLines from "../../../../constants/pickupLines";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
+import InterestsInput from "../../../../components/Interests/InterestsInput";
+import InterestsChips from "../../../../components/Interests/InterestsCips";
 
 interface IPreChatPage {
 	user: IUserReducer;
@@ -125,17 +127,9 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 						label="Write an opener here:"
 						variant="standard"
 					/> */}
-					<TextField
-						// InputLabelProps={{ style: { textAlign: "center", width: "100%", } }}
-						inputProps={{ style: { textAlign: "center" } }}
-						multiline
-						placeholder={chatType === "0" ? `E.g. ${pickupLine()}` : "E.g. Isn't Reveal awesome?"}
-						value={openingLine}
-						onChange={e => setOpeningLine(e.target.value)}
-						fullWidth
-						label="Write an opener here:"
-						variant="standard"
-					/>
+					<InterestsInput />
+					<InterestsChips />
+
 					<Button
 						fullWidth
 						onClick={onStartHandler}
