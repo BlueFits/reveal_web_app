@@ -44,7 +44,7 @@ app.prepare().then(() => {
 	server.use("/api/messages", messageRouter);
 	server.use("/api/feedback", feedbackRouter);
 
-	enableLock(server);
+	// enableLock(server);
 
 	server.get("/profile", requiresAuth(), (req, res) => {
 		res.send(JSON.stringify(req.oidc.user));
