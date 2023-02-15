@@ -114,6 +114,17 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 				{/* <TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" /> */}
 				{/* <TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" /> */}
 				<div className="w-3/4 lg:max-w-lg mt-3">
+					{/* <TextField
+						// InputLabelProps={{ style: { textAlign: "center", width: "100%", } }}
+						inputProps={{ style: { textAlign: "center" } }}
+						multiline
+						placeholder={chatType === "0" ? `E.g. ${pickupLine()}` : "E.g. Isn't Reveal awesome?"}
+						value={openingLine}
+						onChange={e => setOpeningLine(e.target.value)}
+						fullWidth
+						label="Write an opener here:"
+						variant="standard"
+					/> */}
 					<TextField
 						// InputLabelProps={{ style: { textAlign: "center", width: "100%", } }}
 						inputProps={{ style: { textAlign: "center" } }}
