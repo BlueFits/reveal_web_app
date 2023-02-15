@@ -179,7 +179,6 @@ const userSlice = createSlice({
             state = addAllResultProp(state, action);
         });
         builder.addCase(getUserByEmail.fulfilled, (state, action: { payload: CreateUserDto }) => {
-            console.log("my log", action.payload);
             if (action.payload.gender) state.isFirstTime = false;
             state = addAllResultProp(state, action);
         });
