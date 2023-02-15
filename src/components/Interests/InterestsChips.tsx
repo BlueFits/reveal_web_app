@@ -45,7 +45,7 @@ const InterestsChips: React.FC<IInterestChips> = ({ readOnly = false, user }) =>
             }}
             component="ul"
         >
-            {user.interests.map((interest, index) => {
+            {user && user.interests && user.interests.map((interest, index) => {
                 return (
                     <ListItem key={index}>
                         <Chip
