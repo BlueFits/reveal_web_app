@@ -2,6 +2,7 @@ import { MutableRefObject, useEffect, useMemo, useState } from "react";
 import { Container, Avatar, Typography, CircularProgress } from "@mui/material"
 import { IUserReducer } from "../../services/modules/User/userSlice";
 import { apiTempUser } from "../../services/modules/otherUserSlice";
+import InterestsChips from "../Interests/InterestsChips";
 
 interface IVideoPreview {
     user: IUserReducer | apiTempUser;
@@ -27,6 +28,10 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     const [localRef, setLocalRef] = useState(videoRef);
     const { username, avatar } = user;
     const [matchedDisplay, setMatchedDisplay] = useState(false);
+
+    useEffect(() => {
+        console.log("my user", user);
+    }, [user]);
 
     useEffect(() => {
         if (matched) {
@@ -89,6 +94,12 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                                 {user.opener}
                             </Typography>
                         )}
+                        <div className="mt-5">
+                            <InterestsChips
+                                readOnly={true}
+                                user={user}
+                            />
+                        </div>
                     </div>
                 </div>
             }

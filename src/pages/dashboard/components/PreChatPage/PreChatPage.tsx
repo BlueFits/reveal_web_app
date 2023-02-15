@@ -35,6 +35,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	const router = useRouter();
 
 	const liveCountReducer: IliveCountReducer = useSelector((state: IReducer) => state.liveCount);
+	const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
 
 	// const [username, setLocalUsername] = useState<string>("");
 	// const [preference, setLocalPreference] = useState<string>("");
@@ -128,7 +129,9 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 						variant="standard"
 					/> */}
 					<InterestsInput />
-					<InterestsChips />
+					<InterestsChips
+						user={userReducer}
+					/>
 
 					<Button
 						fullWidth

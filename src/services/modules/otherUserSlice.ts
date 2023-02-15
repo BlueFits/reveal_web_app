@@ -14,6 +14,7 @@ const initialState: apiTempUser = {
         display: null,
     },
     opener: null,
+    interests: null,
 };
 
 // Then, handle actions in your reducers:
