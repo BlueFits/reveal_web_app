@@ -5,9 +5,14 @@ import Header from "./_components/Header/Header";
 import DrawerMenu from "./_components/DrawerMenu/DrawerMenu";
 import { useAuth0 } from "@auth0/auth0-react";
 import Head from 'next/head'
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import colors from "../constants/colors";
 
 
 const Index = () => {
+    const theme = useTheme();
+    const notSm = useMediaQuery(theme.breakpoints.up('sm'));
     const { loginWithRedirect } = useAuth0();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -31,8 +36,9 @@ const Index = () => {
                     style={{
                         backgroundImage: "url('https://images.unsplash.com/photo-1571771826307-98d0d0999028?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80')"
                     }}
-                    className={"bg-cover bg-no-repeat bg-center h-screen w-screen flex flex-col justify-between"}
+                    className={"bg-cover bg-no-repeat bg-center h-screen w-screen flex flex-col justify-between relative"}
                 >
+                    <div className="bg-black h-full w-full absolute opacity-20"></div>
                     <Header
                         headerButtonOnClick={() => setIsDrawerOpen(true)}
                         disableIcon
@@ -42,23 +48,24 @@ const Index = () => {
                     onClose={() => setIsDrawerOpen(false)}
                     open={isDrawerOpen}
                 /> */}
-                    <div className="flex items-center flex-col justify-center">
+                    <div className="flex items-center flex-col justify-center z-10">
                         <div className="w-4/6 text-center">
-                            <Typography fontWeight={"bold"} color="#fff" variant="h4">
-                                Start Chatting Now
+                            <Typography fontWeight={"bold"} color="#fff" variant="h3">
+                                Connect Beyond Sight
+                            </Typography>
+                            <Typography marginTop={2} marginBottom={5} color="#fff" variant="subtitle1">
+                                Get on a call without showing what you look like, and then decide if you both want to reveal!
                             </Typography>
                             <div className="mt-4">
                                 <Button
-                                    color="light"
+                                    color="primary"
                                     onClick={() => loginWithRedirect()}
-                                    style={{ border: "3px solid" }}
+                                    style={{ backgroundColor: colors.primary }}
                                     size="large"
-                                    disableElevation
-                                    sx={{ borderRadius: 9999 }}
-                                    fullWidth
-                                    variant="outlined"
+                                    sx={{ borderRadius: 9999, width: notSm ? 250 : "100%" }}
+                                    variant="contained"
                                 >
-                                    Chat now
+                                    Get Started
                                 </Button>
                             </div>
                         </div>

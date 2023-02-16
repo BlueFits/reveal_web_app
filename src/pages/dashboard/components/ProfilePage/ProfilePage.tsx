@@ -151,6 +151,7 @@ const ProfilePage = () => {
                         Please enter a new username.
                     </DialogContentText>
                     <TextField
+                        autoComplete="off"
                         onChange={(e) => setUsername(e.target.value)}
                         value={username}
                         autoFocus
@@ -193,6 +194,7 @@ const ProfilePage = () => {
                         Direct upload is currently not supported, however you could use a photo from any url
                     </DialogContentText>
                     <TextField
+                        autoComplete="off"
                         onChange={(e) => setPhotoURL(e.target.value)}
                         value={photoURL}
                         autoFocus

@@ -86,7 +86,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                 !disableDisplay && showAvatar &&
                 <div style={{ backgroundColor: avatar.bg }} className={`h-full w-full flex items-center justify-center`}>
                     <div className="flex flex-col w-3/4 items-center justify-center">
-                        <Typography variant="h4" color={"#fff"}>
+                        <Typography variant="h5" color={"#fff"}>
                             {avatar.display}
                         </Typography>
                         {user.opener && (
@@ -94,6 +94,11 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                                 {user.opener}
                             </Typography>
                         )}
+                        {avatar.display &&
+                            <Typography marginTop={2} variant="h6" color={"#fff"}>
+                                Here are some things I like
+                            </Typography>
+                        }
                         <div className="mt-5">
                             <InterestsChips
                                 readOnly={true}

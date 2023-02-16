@@ -31,7 +31,7 @@ const InterestsInput = () => {
             // InputLabelProps={{ style: { textAlign: "center", width: "100%", } }}
             inputProps={{ style: { textAlign: "center" } }}
             multiline
-            placeholder={"E.g. Isn't Reveal awesome?"}
+            placeholder={"E.g. Reading Books"}
             value={interestInput}
             onChange={e => setInterestInput(e.target.value)}
             fullWidth
