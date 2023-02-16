@@ -13,6 +13,7 @@ interface IVideoPreview {
     matched?: boolean;
     disableDisplay?: boolean;
     matchStatus?: boolean;
+    callAccepted?: boolean;
 }
 
 
@@ -24,14 +25,21 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     matched = false,
     disableDisplay = false,
     matchStatus = false,
+    callAccepted = false,
 }) => {
     const [localRef, setLocalRef] = useState(videoRef);
     const { username, avatar } = user;
     const [matchedDisplay, setMatchedDisplay] = useState(false);
+    const [showReject, setShowReject] = useState(true);
 
     useEffect(() => {
-        console.log("my match status", matchStatus);
-    }, [user]);
+        console.log("match", matchStatus, "callAccepted", callAccepted);
+
+        if (callAccepted && matchStatus) {
+            setShowReject(false);
+        }
+
+    }, [matchStatus, callAccepted]);
 
     useEffect(() => {
         if (matched) {
@@ -61,9 +69,8 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     return (
         <Container sx={{ backgroundColor: "#000" }} disableGutters className="flex-1 relative overflow-hidden">
 
-
-            {!matchStatus &&
-                <div className={`${skippedStyles.base} ${skipped ? skippedStyles.show : skippedStyles.hidden}`}>
+            {showReject &&
+                <div className={`${skippedStyles.base} ${ skipped ? skippedStyles.show : skippedStyles.hidden}`}>
                     <Typography fontWeight={"bold"} variant="h4" color={"#fff"}>REJECTED</Typography>
                 </div>
             }

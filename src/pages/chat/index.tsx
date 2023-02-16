@@ -386,7 +386,8 @@ const Index = () => {
                 showAvatar={reveal !== revealStatus.ACCEPTED}
                 skipped={isSkipped}
                 matched={showMatched}
-                matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED || isSkipped}
+                matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
+                callAccepted={callAccepted}
             />
             <Container className="absolute flex flex-col bottom-5 z-20">
                 {
