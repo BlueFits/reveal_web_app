@@ -201,7 +201,7 @@ const ProfilePage = () => {
                         type="text"
                         fullWidth
                         variant="standard"
-                        placeholder={userReducer && userReducer.picture}
+                        placeholder={userReducer && userReducer.picture || ""}
                     />
                     <DialogActions sx={{ marginTop: 3 }}>
                         <Button color="secondary" onClick={() => setProfilePhotoSettings(false)}>Cancel</Button>
@@ -222,7 +222,7 @@ const ProfilePage = () => {
             <Box sx={{ ...sxStyles.box }}>
                 <List subheader={<ListSubheader>Profile</ListSubheader>} >
                     <div className="flex justify-center items-center mb-5">
-                        <Avatar sx={{ width: 80, height: 80 }} alt={`${userReducer.username} avatar`} src={userReducer && userReducer.picture || (userReducer.auth0 && userReducer.auth0.picture)} />
+                        <Avatar sx={{ width: 80, height: 80 }} alt={`${userReducer.username} avatar`} src={userReducer && userReducer.picture || (userReducer.auth0 && userReducer.auth0.picture) || ""} />
                     </div>
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => setProfilePhotoSettings(true)}>
