@@ -379,13 +379,14 @@ const Index = () => {
                 matched={showMatched}
                 disableDisplay={isSkipped}
             />
+
             <VideoPreview
                 videoRef={myVid}
                 user={userReducer}
                 showAvatar={reveal !== revealStatus.ACCEPTED}
                 skipped={isSkipped}
                 matched={showMatched}
-                matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
+                matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED || isSkipped}
             />
             <Container className="absolute flex flex-col bottom-5 z-20">
                 {

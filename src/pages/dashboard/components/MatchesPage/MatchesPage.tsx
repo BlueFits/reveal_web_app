@@ -106,7 +106,7 @@ const MatchesPage = () => {
                         return (
                             <Item key={index + "matchesKey"}>
                                 <ButtonBase onClick={messagesHandler.bind(this, match)} style={{ borderRadius: 9999 }}>
-                                    <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture} />
+                                    <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture || (match.auth0 && match.auth0.picture)} />
                                 </ButtonBase>
                                 <Typography marginTop={0.5} fontWeight={"bold"} variant='body2'>{match.username}</Typography>
                             </Item>
@@ -125,7 +125,7 @@ const MatchesPage = () => {
                             <List key={`keyForList:${index}`}>
                                 <ListItemButton onClick={messagesHandler.bind(this, otherUser)}>
                                     <ListItemAvatar>
-                                        <Avatar alt="Profile Picture" src={undefined} />
+                                        <Avatar alt="Profile Picture" src={otherUser.picture || (otherUser.auth0 && otherUser.auth0.picture)} />
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={otherUser && otherUser.username}

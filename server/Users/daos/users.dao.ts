@@ -71,7 +71,7 @@ class UsersDao {
             { _id: userId },
             { $set: userFields },
             { new: true }
-        ).exec();
+        ).populate("matches").exec();
 
         return existingUser;
     }

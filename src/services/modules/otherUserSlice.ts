@@ -14,6 +14,8 @@ const initialState: apiTempUser = {
         display: null,
     },
     opener: null,
+    picture: null,
+    auth0: null,
     interests: null,
 };
 

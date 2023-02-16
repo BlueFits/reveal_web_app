@@ -30,7 +30,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     const [matchedDisplay, setMatchedDisplay] = useState(false);
 
     useEffect(() => {
-        console.log("my user", user);
+        console.log("my match status", matchStatus);
     }, [user]);
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
             </div>
 
             <div className="p-2 absolute bg-black/50 w-2/4 flex rounded-full items-center" style={{ top: 30, left: 10 }}>
-                <Avatar alt={`${!showAvatar ? (username && username.toLocaleUpperCase()) || "." : "."} avatar`} src="/static/images/avatar/1.jpg" sx={{ marginRight: 3 }} />
+                <Avatar alt={`${!showAvatar ? (username && username.toLocaleUpperCase()) || "." : "."} avatar`} src={!showAvatar ? user.picture || user && user.auth0 && user.auth0.picture || null : "not set"} sx={{ marginRight: 3 }} />
                 <p className="text-white">{showAvatar ? "..." : (username || "...")}</p>
             </div>
             {

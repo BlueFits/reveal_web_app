@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { IReducer } from "../../../../services/store";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Avatar } from "@mui/material";
 import DrawerComponent from "../../../../components/DrawerComponent/DrawerComponent";
 import FormShowMe from "../../../../components/FormShowMe/FormShowMe";
 import { gender, PatchUserDto } from "../../../../../server/Users/dto/users.dto";
@@ -33,6 +33,7 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import colors from "../../../../constants/colors";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 import ShareReveal from "../../../../components/ShareReveal/ShareReveal";
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -65,6 +66,8 @@ const ProfilePage = () => {
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [snackBarError, setSnackBarError] = useState(false);
     const [error, setError] = useState<string>("");
+    const [photoURL, setPhotoURL] = useState<string>("");
+    const [profilePhotoSettings, setProfilePhotoSettings] = useState(false);
 
     // useEffect(() => {
     //     console.log(userReducer);
@@ -101,6 +104,8 @@ const ProfilePage = () => {
             setSnackBarError(true);
             return;
         }
+        setProfilePhotoSettings(false);
+        setPhotoURL("");
         setUsername("");
         setShowUsernameSettings(false);
         setShowMeSettings(false);
@@ -181,6 +186,30 @@ const ProfilePage = () => {
                 </DialogContent>
             </Dialog>
 
+            <Dialog fullScreen={!notSm} fullWidth open={profilePhotoSettings} onClose={() => setProfilePhotoSettings(false)}>
+                <DialogTitle>Profile Photo</DialogTitle>
+                <DialogContent>
+                    <DialogContentText marginBottom={2}>
+                        Direct upload is currently not supported, however you could use a photo from any url
+                    </DialogContentText>
+                    <TextField
+                        onChange={(e) => setPhotoURL(e.target.value)}
+                        value={photoURL}
+                        autoFocus
+                        margin="dense"
+                        label="Photo URL"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        placeholder={userReducer.picture}
+                    />
+                    <DialogActions sx={{ marginTop: 3 }}>
+                        <Button color="secondary" onClick={() => setProfilePhotoSettings(false)}>Cancel</Button>
+                        <Button color="secondary" onClick={submitHandler.bind(this, { picture: photoURL })}>Save</Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
+
             {/* <DrawerComponent
                 isOpen={isOpen}
                 title={drawerTitle}
@@ -190,6 +219,31 @@ const ProfilePage = () => {
                     
                 </div>
             </DrawerComponent> */}
+            <Box sx={{ ...sxStyles.box }}>
+                <List subheader={<ListSubheader>Profile</ListSubheader>} >
+                    <div className="flex justify-center items-center mb-5">
+                        <Avatar sx={{ width: 80, height: 80 }} alt={`${userReducer.username} avatar`} src={userReducer.picture || (userReducer.auth0 && userReducer.auth0.picture)} />
+                    </div>
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => setProfilePhotoSettings(true)}>
+                            <ListItemIcon>
+                                <AddAPhotoIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Photo URL" />
+                            <ListItemText
+                                sx={{ color: colors.grey }}
+                                style={{ width: "min-content" }}
+                                primary={
+                                    (userReducer && userReducer.picture || userReducer.auth0.picture) ?
+                                        (userReducer && userReducer.picture || userReducer.auth0.picture).substring(0, 20) + "..." :
+                                        ""
+                                }
+                            />
+                        </ListItemButton>
+                    </ListItem>
+                </List>
+            </Box>
+
             <Box sx={sxStyles.box}>
                 <nav aria-label="main mailbox folders">
                     <List subheader={<ListSubheader>Account Settings</ListSubheader>} >
