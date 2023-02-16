@@ -38,7 +38,7 @@ const FeedbackComponent = () => {
                     />
                 </DialogContent>
             </Dialog>
-            <div className='fixed right-[5%] bottom-[10%]'>
+            <div className='z-10 fixed right-[5%] bottom-[10%]'>
                 <Fab
                     onClick={() => setIsFeedbackOpen(true)}
                     style={{ borderRadius: 9999, backgroundColor: colors.primary }}

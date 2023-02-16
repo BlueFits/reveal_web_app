@@ -9,6 +9,8 @@ import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import colors from "../constants/colors";
 
+const backgroundURL = "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=989&q=80";
+
 
 const Index = () => {
     const theme = useTheme();
@@ -34,7 +36,7 @@ const Index = () => {
             <div className="overflow-x-hidden">
                 <div
                     style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1571771826307-98d0d0999028?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80')"
+                        backgroundImage: `url('${backgroundURL}')`
                     }}
                     className={"bg-cover bg-no-repeat bg-center h-screen w-screen flex flex-col justify-between relative"}
                 >
@@ -58,12 +60,13 @@ const Index = () => {
                             </Typography>
                             <div className="mt-4">
                                 <Button
-                                    color="primary"
+                                    color="light"
                                     onClick={() => loginWithRedirect()}
-                                    style={{ backgroundColor: colors.primary }}
+                                    style={{ border: "3px solid" }}
+                                    // style={{ backgroundColor: colors.primary }}
                                     size="large"
                                     sx={{ borderRadius: 9999, width: notSm ? 250 : "100%" }}
-                                    variant="contained"
+                                    variant="outlined"
                                 >
                                     Get Started
                                 </Button>
