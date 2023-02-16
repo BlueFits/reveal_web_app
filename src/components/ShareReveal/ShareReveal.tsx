@@ -1,25 +1,25 @@
 import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon, WhatsappShareButton, WhatsappIcon } from "react-share";
 import { apis } from "../../../config/Server";
-import IconButton from '@mui/material/IconButton';
+import { Divider } from "@mui/material";
 
 const ShareReveal = () => {
     return (
         <div className="flex">
-            <FacebookShareButton url={apis.prod}>
-                <IconButton>
+            <div className="mx-2">
+                <FacebookShareButton url={apis.prod}>
                     <FacebookIcon size={42} round={true} />
-                </IconButton>
-            </FacebookShareButton>
-            <TwitterShareButton url={apis.prod}>
-                <IconButton>
+                </FacebookShareButton>
+            </div>
+            <div className="mx-2">
+                <TwitterShareButton url={apis.prod}>
                     <TwitterIcon size={42} round={true} />
-                </IconButton>
-            </TwitterShareButton>
-            <WhatsappShareButton url={apis.prod}>
-                <IconButton>
+                </TwitterShareButton>
+            </div>
+            <div className="mx-2">
+                <WhatsappShareButton url={apis.prod}>
                     <WhatsappIcon size={42} round={true} />
-                </IconButton>
-            </WhatsappShareButton>
+                </WhatsappShareButton>
+            </div>
         </div>
     );
 }

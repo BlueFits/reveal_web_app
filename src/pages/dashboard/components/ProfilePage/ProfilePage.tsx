@@ -254,7 +254,7 @@ const ProfilePage = () => {
             <Typography>Version 0.0.1</Typography>
 
             <div className="mt-10 flex flex-col justify-center items-center">
-                <Typography marginBottom={1} variant="body1">Share Reveal</Typography>
+                <Typography marginBottom={3} variant="body1">Share Reveal</Typography>
                 <ShareReveal />
             </div>
         </div >
