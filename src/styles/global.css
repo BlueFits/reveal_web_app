@@ -19,6 +19,16 @@ a {
   box-sizing: border-box;
 }
 
+.global_bttn_width {
+  width: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  .global_bttn_width {
+    width: 250px;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }

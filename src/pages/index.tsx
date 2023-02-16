@@ -60,12 +60,13 @@ const Index = () => {
                             </Typography>
                             <div className="mt-4">
                                 <Button
+                                    className="global_bttn_width"
                                     color="light"
                                     onClick={() => loginWithRedirect()}
                                     style={{ border: "3px solid" }}
                                     // style={{ backgroundColor: colors.primary }}
                                     size="large"
-                                    sx={{ borderRadius: 9999, width: notSm ? 250 : "100%" }}
+                                    sx={{ borderRadius: 9999 }}
                                     variant="outlined"
                                 >
                                     Get Started
