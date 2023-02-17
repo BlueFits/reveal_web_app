@@ -15,11 +15,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Divider } from "@mui/material";
 import PickupLines from "../../../../constants/pickupLines";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 import InterestsInput from "../../../../components/Interests/InterestsInput";
 import InterestsChips from "../../../../components/Interests/InterestsChips";
+
 
 interface IPreChatPage {
 	user: IUserReducer;
@@ -42,6 +42,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	const [openingLine, setOpeningLine] = useState<string>("");
 	const [hasErrors, setHasErrors] = useState<boolean>(false);
 	const [chatType, setChatType] = useState<IChatType>(IChatType.NORMAL);
+	const [snackBarOpen, setSnackBarOpen] = useState(false);
 	// const [pickupLine, setPickupLine] = useState(PickupLines.random());
 
 	//Google Analytics
@@ -104,9 +105,8 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 			className="h-full"
 			maxWidth="lg"
 		>
-			<div className="flex-1">
-				{/* Placeholder */}
-			</div>
+			<div className="flex-1">{/* Placeholder */}</div>
+
 			<Container sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", flex: 1 }}>
 				<Typography variant="h4" gutterBottom>
 					Start Chatting
@@ -116,7 +116,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 				</Typography>
 				{/* <TextField sx={{ marginBottom: "15px" }} value={username} onChange={e => setLocalUsername(e.target.value)} fullWidth label="display name" variant="outlined" /> */}
 				{/* <TextField value={preference} onChange={e => setLocalPreference(e.target.value)} fullWidth label="preference" variant="outlined" /> */}
-				<div className="w-3/4 lg:max-w-lg mt-3">
+				<div className="w-3/4 lg:max-w-lg mt-3 flex flex-col justify-center items-center">
 					{/* <TextField
 						// InputLabelProps={{ style: { textAlign: "center", width: "100%", } }}
 						inputProps={{ style: { textAlign: "center" } }}
@@ -134,17 +134,24 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 					/>
 
 					<Button
+						disabled
+						className="global_bttn_width"
 						fullWidth
-						onClick={onStartHandler}
+						// onClick={onStartHandler}
+						onClick={() => setSnackBarOpen(true)}
 						sx={{ margin: "15px 0" }}
 						variant="contained"
 						size="large"
 						disableElevation
-						style={{ borderRadius: 9999, backgroundColor: "#9b59b6" }}
+						// style={{ borderRadius: 9999, backgroundColor: "#9b59b6" }}
+						style={{ borderRadius: 9999 }}
 						color="secondary"
 					>
 						Start
 					</Button>
+					<Alert sx={{ marginBottom: 2 }} severity="info">
+						Chat is currently disabled, please check back on launch date.
+					</Alert>
 					{hasErrors && <Alert severity="error">Invalid Fields</Alert>}
 				</div>
 			</Container>
@@ -152,7 +159,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 				{/* <Divider sx={{ marginBottom: 2 }} /> */}
 				<Typography textAlign={"center"} variant="body2" gutterBottom>Additional Settings</Typography>
 				<div className="mt-6 flex flex-col justify-center items-center">
-					<FormControl sx={{ minWidth: 120 }}>
+					<FormControl sx={{ maxWidth: "200px" }}>
 						<InputLabel size="small" color="secondary">Chat Type</InputLabel>
 						<Select
 							SelectDisplayProps={{ style: { borderRadius: 9999 } }}
