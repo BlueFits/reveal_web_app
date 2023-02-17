@@ -67,10 +67,10 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     }
 
     return (
-        <Container sx={{ backgroundColor: "#000" }} disableGutters className="flex-1 relative overflow-hidden">
+        <Container sx={{ backgroundColor: "#000", zIndex: "11" }} disableGutters className="flex-1 relative overflow-hidden">
 
             {showReject &&
-                <div className={`${skippedStyles.base} ${ skipped ? skippedStyles.show : skippedStyles.hidden}`}>
+                <div className={`${skippedStyles.base} ${skipped ? skippedStyles.show : skippedStyles.hidden}`}>
                     <Typography fontWeight={"bold"} variant="h4" color={"#fff"}>REJECTED</Typography>
                 </div>
             }
