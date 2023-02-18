@@ -42,7 +42,6 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	const [openingLine, setOpeningLine] = useState<string>("");
 	const [hasErrors, setHasErrors] = useState<boolean>(false);
 	const [chatType, setChatType] = useState<IChatType>(IChatType.NORMAL);
-	const [snackBarOpen, setSnackBarOpen] = useState(false);
 	// const [pickupLine, setPickupLine] = useState(PickupLines.random());
 
 	//Google Analytics
@@ -134,17 +133,15 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 					/>
 
 					<Button
-						// disabled
+						disabled
 						className="global_bttn_width"
 						fullWidth
 						// onClick={onStartHandler}
-						// onClick={() => setSnackBarOpen(true)}
 						sx={{ margin: "15px 0" }}
 						variant="contained"
 						size="large"
 						disableElevation
-						// style={{ borderRadius: 9999, backgroundColor: "#9b59b6" }}
-						style={{ borderRadius: 9999 }}
+						style={{ borderRadius: 9999, /*backgroundColor: "#9b59b6"*/ }}
 						color="secondary"
 					>
 						Start
