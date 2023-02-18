@@ -134,7 +134,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 					/>
 
 					<Button
-						disabled
+						// disabled
 						className="global_bttn_width"
 						fullWidth
 						// onClick={onStartHandler}
@@ -143,7 +143,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 						variant="contained"
 						size="large"
 						disableElevation
-						// style={{ borderRadius: 9999, backgroundColor: "#9b59b6" }}
+						style={{ borderRadius: 9999, backgroundColor: "#9b59b6" }}
 						style={{ borderRadius: 9999 }}
 						color="secondary"
 					>
