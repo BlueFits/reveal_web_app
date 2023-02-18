@@ -138,13 +138,13 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 						className="global_bttn_width"
 						fullWidth
 						onClick={onStartHandler}
-						onClick={() => setSnackBarOpen(true)}
+						// onClick={() => setSnackBarOpen(true)}
 						sx={{ margin: "15px 0" }}
 						variant="contained"
 						size="large"
 						disableElevation
 						style={{ borderRadius: 9999, backgroundColor: "#9b59b6" }}
-						style={{ borderRadius: 9999 }}
+						// style={{ borderRadius: 9999 }}
 						color="secondary"
 					>
 						Start
