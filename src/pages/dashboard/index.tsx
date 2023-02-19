@@ -3,7 +3,7 @@ import { useEffect, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserByAuthID, IUserReducer, getUserByEmail } from "../../services/modules/User/userSlice";
 import { IReducer } from "../../services/store";
-import { BottomNavigation, BottomNavigationAction, Box } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction, Box, Button, Typography } from "@mui/material";
 import { Person } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
@@ -35,9 +35,10 @@ const Index = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
-    const { user, isAuthenticated, isLoading } = useAuth0();
+    const { user, isAuthenticated, isLoading, logout } = useAuth0();
     const [value, setValue] = useState<number>(0);
     const [snackBarOpen, setSnackBarOpen] = useState(true);
+
 
     const handleSnackBarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -45,6 +46,7 @@ const Index = () => {
         }
         setSnackBarOpen(false);
     };
+
 
     useEffect(() => {
         const init = async () => {
@@ -57,59 +59,72 @@ const Index = () => {
         if (!isLoading) init();
     }, [user, isLoading]);
 
-    // useEffect(() => {
-    //     console.log("my log", userReducer);
-    // }, [userReducer]);
 
     if (isLoading) return (<Loading />);
 
     return (
         isAuthenticated && !userReducer.isFirstTime ? (
-            <>
-                <Head>
-                    <title>Reveal | dashboard</title>
-                </Head>
-                <div className="h-screen w-screen flex flex-col justify-between">
-                    <Snackbar
-                        sx={{ maxWidth: 500 }}
-                        open={snackBarOpen}
-                        autoHideDuration={8 * 1000}
-                        onClose={handleSnackBarClose}
-                        anchorOrigin={{ horizontal: "right", vertical: "top" }}
-                    >
-                        <Alert onClose={handleSnackBarClose} severity="info" sx={{ width: '100%' }}>
-                            Thank you for participating in Reveal's early access.
-                            Should you encounter any bugs, glitches, lack of functionality or
-                            other problems on the website, please let us know immediately so we
-                            can rectify these accordingly.
-                        </Alert>
-                    </Snackbar>
-
-                    {value === 0 &&
-                        <div className="grow">
-                            <PreChatPage
-                                user={userReducer}
-                            />
-                        </div>
-                    }
-                    {value === 1 && <MatchesPage />}
-                    {value === 2 && <ProfilePage />}
-                    <Box sx={{ width: "100%" }}>
-                        <BottomNavigation
-                            showLabels
-                            value={value}
-                            onChange={(event, newValue) => {
-                                setValue(newValue);
-                            }}
+            user && user.email_verified ? (
+                <>
+                    <Head>
+                        <title>Reveal | dashboard</title>
+                    </Head>
+                    <div className="h-screen w-screen flex flex-col justify-between">
+                        <Snackbar
+                            sx={{ maxWidth: 500 }}
+                            open={snackBarOpen}
+                            autoHideDuration={8 * 1000}
+                            onClose={handleSnackBarClose}
+                            anchorOrigin={{ horizontal: "right", vertical: "top" }}
                         >
-                            <MuiBottomNavigationAction label="Chat" icon={<VideoChatIcon />} />
-                            <MuiBottomNavigationAction label="Matches" icon={<Diversity1Icon />} />
-                            <MuiBottomNavigationAction label="Profile" icon={<Person />} />
-                        </BottomNavigation>
-                    </Box>
-                </div>
-            </>
+                            <Alert onClose={handleSnackBarClose} severity="info" sx={{ width: '100%' }}>
+                                Thank you for participating in Reveal's early access.
+                                Should you encounter any bugs, glitches, lack of functionality or
+                                other problems on the website, please let us know immediately so we
+                                can rectify these accordingly.
+                            </Alert>
+                        </Snackbar>
 
+                        {value === 0 &&
+                            <div className="grow">
+                                <PreChatPage
+                                    user={userReducer}
+                                />
+                            </div>
+                        }
+                        {value === 1 && <MatchesPage />}
+                        {value === 2 && <ProfilePage />}
+                        <Box sx={{ width: "100%" }}>
+                            <BottomNavigation
+                                showLabels
+                                value={value}
+                                onChange={(event, newValue) => {
+                                    setValue(newValue);
+                                }}
+                            >
+                                <MuiBottomNavigationAction label="Chat" icon={<VideoChatIcon />} />
+                                <MuiBottomNavigationAction label="Matches" icon={<Diversity1Icon />} />
+                                <MuiBottomNavigationAction label="Profile" icon={<Person />} />
+                            </BottomNavigation>
+                        </Box>
+                    </div>
+                </>
+            ) : (
+                // Verification Redirect
+                <div className="flex h-screen w-screen justify-center items-center flex-col p-8">
+                    <Typography marginBottom={3} variant="h4">
+                        Please verify your email to continue.
+                    </Typography>
+                    <Typography variant="body1" marginBottom={5}>
+                        We sent an email to <strong>{userReducer.auth0.email}</strong>. You are moments away from trying out reveal, please refresh this page once you have verified your email.
+                    </Typography>
+                    <Button
+                        onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                    >
+                        Back to home page
+                    </Button>
+                </div>
+            )
         ) : (
             <Loading />
         )

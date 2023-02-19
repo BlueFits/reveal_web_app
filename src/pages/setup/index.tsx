@@ -13,6 +13,7 @@ import { IReducer } from "../../services/store";
 import { useRouter } from "next/router";
 import { serverURL } from "../../../config/Server";
 import GenderForm from "../../components/Forms/GenderForm/GenderForm";
+import colors from "../../constants/colors";
 
 export async function getServerSideProps({ params, req }) {
     const referer = req.headers.referer || null
@@ -109,7 +110,7 @@ const InitialSetup = ({ referer }) => {
                 <Button
                     onClick={submitHandler}
                     disableElevation
-                    style={{ borderRadius: 9999, padding: 10 }}
+                    style={{ borderRadius: 9999, padding: 10, backgroundColor: colors.primary }}
                     fullWidth
                     color="secondary"
                     sx={{ margin: "15px 0" }}
