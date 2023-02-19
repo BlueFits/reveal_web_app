@@ -1,5 +1,5 @@
 import { Typography, Select, MenuItem } from "@mui/material";
-import { gender } from "../../../server/Users/dto/users.dto";
+import { gender } from "../../../../server/Users/dto/users.dto";
 
 const FormShowMe = ({ value, onChange, hideTitle = false }) => {
 

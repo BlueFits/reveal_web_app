@@ -16,7 +16,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Typography, Button, Avatar } from "@mui/material";
 import DrawerComponent from "../../../../components/DrawerComponent/DrawerComponent";
-import FormShowMe from "../../../../components/FormShowMe/FormShowMe";
+import FormShowMe from "../../../../components/Forms/FormShowMe/FormShowMe";
 import { gender, PatchUserDto } from "../../../../../server/Users/dto/users.dto";
 import { updateUser } from "../../../../services/modules/User/userSlice";
 import { useDispatch } from "react-redux";
@@ -34,6 +34,8 @@ import colors from "../../../../constants/colors";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 import ShareReveal from "../../../../components/ShareReveal/ShareReveal";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import GenderForm from "../../../../components/Forms/GenderForm/GenderForm";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -68,6 +70,8 @@ const ProfilePage = () => {
     const [error, setError] = useState<string>("");
     const [photoURL, setPhotoURL] = useState<string>("");
     const [profilePhotoSettings, setProfilePhotoSettings] = useState(false);
+    const [genderShowSettings, setGenderShowSettings] = useState(false);
+    const [genderSelection, setGenderSelection] = useState<gender>(userReducer.gender || gender.Male);
 
     // useEffect(() => {
     //     console.log(userReducer);
@@ -96,6 +100,7 @@ const ProfilePage = () => {
         setShowMeSettings(true);
     }
 
+
     const submitHandler = async (fields: PatchUserDto) => {
         const res = await dispatch(updateUser({ fields, id: userReducer._id }));
         if (res.payload.error) {
@@ -104,6 +109,7 @@ const ProfilePage = () => {
             setSnackBarError(true);
             return;
         }
+        setGenderShowSettings(false);
         setProfilePhotoSettings(false);
         setPhotoURL("");
         setUsername("");
@@ -126,6 +132,10 @@ const ProfilePage = () => {
             return;
         }
         setSnackBarError(false);
+    };
+
+    const handleSelectChange = (event: SelectChangeEvent) => {
+        setGenderSelection(event.target.value as gender);
     };
 
 
@@ -187,6 +197,23 @@ const ProfilePage = () => {
                 </DialogContent>
             </Dialog>
 
+            <Dialog fullScreen={!notSm} fullWidth open={genderShowSettings} onClose={() => setGenderShowSettings(false)}>
+                <DialogTitle>Gender</DialogTitle>
+                <DialogContent>
+                    <DialogContentText marginBottom={2}>
+                        Select your gender
+                    </DialogContentText>
+                    <GenderForm
+                        genderSelection={genderSelection}
+                        handleSelectChange={handleSelectChange}
+                    />
+                    <DialogActions sx={{ marginTop: 3 }}>
+                        <Button color="secondary" onClick={() => setGenderShowSettings(false)}>Cancel</Button>
+                        <Button color="secondary" onClick={submitHandler.bind(this, { gender: genderSelection })}>Save</Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
+
             <Dialog fullScreen={!notSm} fullWidth open={profilePhotoSettings} onClose={() => setProfilePhotoSettings(false)}>
                 <DialogTitle>Profile Photo</DialogTitle>
                 <DialogContent>
@@ -221,6 +248,7 @@ const ProfilePage = () => {
                     
                 </div>
             </DrawerComponent> */}
+
             <Box sx={{ ...sxStyles.box }}>
                 <List subheader={<ListSubheader>Profile</ListSubheader>} >
                     <div className="flex justify-center items-center mb-5">
@@ -269,6 +297,28 @@ const ProfilePage = () => {
                                 </ListItemIcon>
                                 <ListItemText primary="Username" />
                                 <ListItemText sx={{ color: colors.grey }} primary={userReducer && userReducer.username} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => setGenderShowSettings(true)}>
+                                <ListItemIcon>
+                                    <PermIdentityIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Gender" />
+                                <ListItemText sx={{ color: colors.grey }} primary={(() => {
+                                    switch (userReducer && userReducer.gender) {
+                                        case gender.Male:
+                                            return "Male"
+                                        case gender.Female:
+                                            return "Female";
+                                        case gender.Gay:
+                                            return "Gay";
+                                        case gender.Lesbian:
+                                            return "Lesbian";
+                                        default:
+                                            return "Undefined"
+                                    }
+                                })()} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>

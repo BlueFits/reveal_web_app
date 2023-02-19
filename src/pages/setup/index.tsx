@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Typography, Button, TextField, MenuItem, FormControl } from "@mui/material";
 import FormBlock from "../../components/FormBlock/FormBlock";
-import FormShowMe from "../../components/FormShowMe/FormShowMe";
+import FormShowMe from "../../components/Forms/FormShowMe/FormShowMe";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -12,6 +12,7 @@ import { IUserReducer, updateUserByForm } from "../../services/modules/User/user
 import { IReducer } from "../../services/store";
 import { useRouter } from "next/router";
 import { serverURL } from "../../../config/Server";
+import GenderForm from "../../components/Forms/GenderForm/GenderForm";
 
 export async function getServerSideProps({ params, req }) {
     const referer = req.headers.referer || null
@@ -94,21 +95,10 @@ const InitialSetup = ({ referer }) => {
                     </div>
                 </FormControl>
                 <FormControl>
-                    <div className="mb-4">
-                        <Typography marginBottom={2} variant="h5">{"Your Gender"}</Typography>
-                        <Select
-                            fullWidth
-                            labelId="gender-select-label"
-                            id="gender-simple-select"
-                            value={genderSelection}
-                            onChange={handleSelectChange}
-                        >
-                            <MenuItem value={gender.Male}>Male</MenuItem>
-                            <MenuItem value={gender.Female}>Female</MenuItem>
-                            <MenuItem value={gender.Gay}>Gay</MenuItem>
-                            <MenuItem value={gender.Lesbian}>Lesbian</MenuItem>
-                        </Select>
-                    </div>
+                    <GenderForm
+                        genderSelection={genderSelection}
+                        handleSelectChange={handleSelectChange}
+                    />
                 </FormControl>
                 <FormControl>
                     <FormShowMe

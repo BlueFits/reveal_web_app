@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserByAuthID, IUserReducer, getUserByEmail } from "../../services/modules/User/userSlice";
 import { IReducer } from "../../services/store";
@@ -14,6 +14,16 @@ import Loading from "../../components/Loading/Loading";
 import Head from 'next/head'
 import MatchesPage from "./components/MatchesPage/MatchesPage";
 import Diversity1Icon from '@mui/icons-material/Diversity1';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+
+const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const MuiBottomNavigationAction = styled(BottomNavigationAction)(`
   &.Mui-selected {
@@ -27,6 +37,14 @@ const Index = () => {
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const { user, isAuthenticated, isLoading } = useAuth0();
     const [value, setValue] = useState<number>(0);
+    const [snackBarOpen, setSnackBarOpen] = useState(true);
+
+    const handleSnackBarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBarOpen(false);
+    };
 
     useEffect(() => {
         const init = async () => {
@@ -52,6 +70,21 @@ const Index = () => {
                     <title>Reveal | dashboard</title>
                 </Head>
                 <div className="h-screen w-screen flex flex-col justify-between">
+                    <Snackbar
+                        sx={{ maxWidth: 500 }}
+                        open={snackBarOpen}
+                        autoHideDuration={8 * 1000}
+                        onClose={handleSnackBarClose}
+                        anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                    >
+                        <Alert onClose={handleSnackBarClose} severity="info" sx={{ width: '100%' }}>
+                            Thank you for participating in Reveal's early access.
+                            Should you encounter any bugs, glitches, lack of functionality or
+                            other problems on the website, please let us know immediately so we
+                            can rectify these accordingly.
+                        </Alert>
+                    </Snackbar>
+
                     {value === 0 &&
                         <div className="grow">
                             <PreChatPage

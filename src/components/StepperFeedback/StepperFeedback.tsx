@@ -23,9 +23,9 @@ export default function HorizontalLinearStepper({ isFeedbackOpen, feedbackCloseH
     const [activeStep, setActiveStep] = React.useState<number>(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
 
-    React.useEffect(() => {
-        console.log("Fedback Reducer", feedbackReducer);
-    }, [feedbackReducer]);
+    // React.useEffect(() => {
+    //     console.log("Fedback Reducer", feedbackReducer);
+    // }, [feedbackReducer]);
 
     const isStepOptional = (step: number) => {
         return step === 2;
