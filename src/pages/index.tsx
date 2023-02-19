@@ -56,7 +56,8 @@ const Index = () => {
                                 Connect Beyond Sight
                             </Typography>
                             <Typography marginTop={2} marginBottom={5} color="#fff" variant="subtitle1">
-                                Get on a call without showing what you look like, and then decide if you both want to reveal!
+                                {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
+                                Try blind-dating online with reveal!
                             </Typography>
                             <div className="mt-4">
                                 <Button
@@ -80,20 +81,19 @@ const Index = () => {
                 <section className="py-6 px-4 flex justify-center items-center">
                     <div className="max-w-5xl">
                         {/* <Divider sx={{ margin: "10px 0" }} /> */}
-                        <Typography marginBottom={2} variant="h6">Welcome to Reveal Alpha!</Typography>
+                        <Typography marginBottom={2} variant="h6">Welcome to Reveal!</Typography>
                         <Typography variant="body2">
-                            Ever wanted to go to a blind date? Now is your chance!
-                            With Reveal, get to know someone based on their personality and not for how
-                            they look, at the start anyways. You will be put in a room with someone and
-                            you can talk to them without seeing them first. After awhile a prompt will show
+                            Ever wanted to go to a blind date?
+                            With Reveal you will be put in a room with someone and
+                            you can talk to them without seeing them at first. After awhile a prompt will show
                             up in which the two of you can then decide to see each other. So what are
-                            you waiting for find someone today with Reveal!
+                            you waiting for and find someone today with Reveal!
                         </Typography>
                         <Divider sx={{ margin: "15px 0" }} />
                         <div className="flex flex-col">
                             <Typography marginBottom={1} fontWeight={"bold"} variant="caption">Disclaimer </Typography>
                             <Typography variant="caption">
-                                Please note that this is an alpha version of Reveal which is still undergoing
+                                Please note that this is an early access version of Reveal which is still undergoing
                                 multiple testing before its official release.
                                 We have opened access to the alpha version only for testing purposes.
                                 Should you encounter any bugs, glitches, lack of functionality or
