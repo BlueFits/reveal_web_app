@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Typography, Button, TextField, MenuItem, FormControl } from "@mui/material";
+import { Typography, Button, TextField, MenuItem, FormControl, Alert } from "@mui/material";
 import FormBlock from "../../components/FormBlock/FormBlock";
 import FormShowMe from "../../components/Forms/FormShowMe/FormShowMe";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -33,6 +33,7 @@ const InitialSetup = ({ referer }) => {
     const [birthday, setBirthday] = useState<Dayjs | null>(dayjs('2014-08-18T21:11:54'));
     const [genderSelection, setGenderSelection] = useState<gender>(gender.Male);
     const [showMe, setShowMe] = useState<gender>(gender.Female);
+    const [errs, setErrs] = useState<Array<string>>([]);
 
     useEffect(() => {
         if (referer !== `${serverURL}/dashboard`) router.push("/");
@@ -51,6 +52,21 @@ const InitialSetup = ({ referer }) => {
     };
 
     const submitHandler = async () => {
+
+        let newErrs = [];
+
+        if (birthday.isAfter(dayjs("2005-12-30"))) {
+            newErrs.push("User is not over 18")
+        }
+        if (username.length <= 0) {
+            newErrs.push("Username cannot be empty");
+        }
+
+        if (newErrs.length > 0) {
+            setErrs(newErrs);
+            return;
+        }
+
         await dispatch(updateUserByForm({
             id: userReducer._id,
             birthday: birthday.toDate(),
@@ -59,6 +75,8 @@ const InitialSetup = ({ referer }) => {
             username,
         }));
         router.push("/dashboard");
+
+        setErrs([]);
     }
 
     return referer === `${serverURL}/dashboard` ?
@@ -123,6 +141,13 @@ const InitialSetup = ({ referer }) => {
                     >
                         Sign Up
                     </Button>
+                    {
+                        errs.length > 0 && (
+                            errs.map((err, index) => (
+                                <Alert sx={{ marginBottom: 1 }} key={index} severity="error">{err}</Alert>
+                            ))
+                        )
+                    }
                 </div>
             </>
         ) : (
