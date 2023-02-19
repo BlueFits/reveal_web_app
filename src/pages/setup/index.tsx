@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { serverURL } from "../../../config/Server";
 import GenderForm from "../../components/Forms/GenderForm/GenderForm";
 import colors from "../../constants/colors";
+import Head from 'next/head'
 
 export async function getServerSideProps({ params, req }) {
     const referer = req.headers.referer || null
@@ -62,63 +63,68 @@ const InitialSetup = ({ referer }) => {
 
     return referer === `${serverURL}/dashboard` ?
         (
-            <div className="p-7 flex flex-col">
-                <FormControl>
-                    <FormBlock
-                        label="Display Name"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </FormControl>
-                <FormControl>
-                    <div className="mb-4">
-                        <Typography marginBottom={2} variant="h5">{"Date of Birth"}</Typography>
-                        <div className="hidden lg:block">
-                            <DesktopDatePicker
-                                className="w-full"
-                                label="Date of Birth"
-                                inputFormat="MM/DD/YYYY"
-                                value={birthday}
-                                onChange={(birthdayChange)}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
+            <>
+                <Head>
+                    <title>Reveal | Setup</title>
+                </Head>
+                <div className="p-7 flex flex-col">
+                    <FormControl>
+                        <FormBlock
+                            label="Display Name"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <div className="mb-4">
+                            <Typography marginBottom={2} variant="h5">{"Date of Birth"}</Typography>
+                            <div className="hidden lg:block">
+                                <DesktopDatePicker
+                                    className="w-full"
+                                    label="Date of Birth"
+                                    inputFormat="MM/DD/YYYY"
+                                    value={birthday}
+                                    onChange={(birthdayChange)}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </div>
+                            <div className="lg:hidden">
+                                <MobileDatePicker
+                                    className="w-full"
+                                    label="Date of Birth"
+                                    inputFormat="MM/DD/YYYY"
+                                    value={birthday}
+                                    onChange={birthdayChange}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </div>
                         </div>
-                        <div className="lg:hidden">
-                            <MobileDatePicker
-                                className="w-full"
-                                label="Date of Birth"
-                                inputFormat="MM/DD/YYYY"
-                                value={birthday}
-                                onChange={birthdayChange}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </div>
-                    </div>
-                </FormControl>
-                <FormControl>
-                    <GenderForm
-                        genderSelection={genderSelection}
-                        handleSelectChange={handleSelectChange}
-                    />
-                </FormControl>
-                <FormControl>
-                    <FormShowMe
-                        value={showMe}
-                        onChange={handleShowMeChange}
-                    />
-                </FormControl>
-                <Button
-                    onClick={submitHandler}
-                    disableElevation
-                    style={{ borderRadius: 9999, padding: 10, backgroundColor: colors.primary }}
-                    fullWidth
-                    color="secondary"
-                    sx={{ margin: "15px 0" }}
-                    variant="contained"
-                >
-                    Sign Up
-                </Button>
-            </div>
+                    </FormControl>
+                    <FormControl>
+                        <GenderForm
+                            genderSelection={genderSelection}
+                            handleSelectChange={handleSelectChange}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <FormShowMe
+                            value={showMe}
+                            onChange={handleShowMeChange}
+                        />
+                    </FormControl>
+                    <Button
+                        onClick={submitHandler}
+                        disableElevation
+                        style={{ borderRadius: 9999, padding: 10, backgroundColor: colors.primary }}
+                        fullWidth
+                        color="secondary"
+                        sx={{ margin: "15px 0" }}
+                        variant="contained"
+                    >
+                        Sign Up
+                    </Button>
+                </div>
+            </>
         ) : (
             <p>Invalid page redirecting...</p>
         )
