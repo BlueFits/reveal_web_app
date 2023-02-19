@@ -57,7 +57,7 @@ const Index = () => {
                             </Typography>
                             <Typography marginTop={2} marginBottom={5} color="#fff" variant="subtitle1">
                                 {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
-                                Try blind-dating online with reveal!
+                                Try speed blind-dating online with reveal!
                             </Typography>
                             <div className="mt-4">
                                 <Button
