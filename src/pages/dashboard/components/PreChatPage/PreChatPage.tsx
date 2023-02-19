@@ -133,22 +133,22 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 					/>
 
 					<Button
-						disabled
+						// disabled
 						className="global_bttn_width"
 						fullWidth
-						// onClick={onStartHandler}
+						onClick={onStartHandler}
 						sx={{ margin: "15px 0" }}
 						variant="contained"
 						size="large"
 						disableElevation
-						style={{ borderRadius: 9999, /*backgroundColor: colors.primary*/ }}
+						style={{ borderRadius: 9999, backgroundColor: colors.primary }}
 						color="secondary"
 					>
 						Start
 					</Button>
-					<Alert sx={{ marginBottom: 2 }} severity="info">
+					{/* <Alert sx={{ marginBottom: 2 }} severity="info">
 						Chat is currently disabled, please check back on the launch date (February 22, 2023).
-					</Alert>
+					</Alert> */}
 					{hasErrors && <Alert severity="error">Invalid Fields</Alert>}
 				</div>
 			</Container>
