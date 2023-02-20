@@ -375,19 +375,6 @@ const Index = () => {
         </Fragment>
     );
 
-    const actionTrial = (
-        <Fragment>
-            <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={trialMsgCloseHandler}
-            >
-                <CloseIcon fontSize="small" />
-            </IconButton>
-        </Fragment>
-    );
-
     return !userReducer.username ? (
         <>
             <Head>
