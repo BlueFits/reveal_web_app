@@ -1,8 +1,9 @@
 import { Typography, IconButton } from "@mui/material";
 import { ReactNode } from "react";
+import Link from 'next/link'
 
 interface IHeader {
-    icon: ReactNode,
+    icon?: ReactNode,
     headerButtonOnClick: () => any;
     disableIcon?: boolean;
 }
@@ -11,9 +12,11 @@ const Header: React.FC<IHeader> = ({ icon, headerButtonOnClick, disableIcon = fa
 
     return (
         <div className="px-4 py-4 flex justify-between items-center bg-gradient-to-b from-black ">
-            <Typography fontWeight="bold" color="#fff" variant="h5">
-                Reveal
-            </Typography>
+            <Link href="/">
+                <Typography fontWeight="bold" color="#fff" variant="h5">
+                    Reveal
+                </Typography>
+            </Link>
 
             {
                 !disableIcon &&

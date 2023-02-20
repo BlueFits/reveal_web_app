@@ -1,0 +1,9 @@
+.priv_container > div > h1{
+    font-weight: bold;
+    font-size: 22px;
+    margin: 10px 0;
+}
+
+.priv_container > div > ul > li {
+    margin: 10px 0;
+}

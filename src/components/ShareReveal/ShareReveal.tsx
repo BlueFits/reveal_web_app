@@ -6,17 +6,17 @@ const ShareReveal = () => {
     return (
         <div className="flex">
             <div className="mx-2">
-                <FacebookShareButton url={apis.prod}>
+                <FacebookShareButton url={apis.prod2}>
                     <FacebookIcon size={42} round={true} />
                 </FacebookShareButton>
             </div>
             <div className="mx-2">
-                <TwitterShareButton url={apis.prod}>
+                <TwitterShareButton url={apis.prod2}>
                     <TwitterIcon size={42} round={true} />
                 </TwitterShareButton>
             </div>
             <div className="mx-2">
-                <WhatsappShareButton url={apis.prod}>
+                <WhatsappShareButton url={apis.prod2}>
                     <WhatsappIcon size={42} round={true} />
                 </WhatsappShareButton>
             </div>

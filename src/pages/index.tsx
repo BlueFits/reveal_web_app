@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Typography, IconButton, Link, Divider, TextField } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import Header from "./_components/Header/Header";
+import Header from "../components/Header/Header";
 import DrawerMenu from "./_components/DrawerMenu/DrawerMenu";
 import { useAuth0 } from "@auth0/auth0-react";
 import Head from 'next/head'
@@ -22,6 +22,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+
 
 
 const backgroundURL = "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=989&q=80";
@@ -200,7 +201,9 @@ const Index = () => {
                             <Typography variant="caption">FAQ</Typography>
                         </FooterLinks>
                         <FooterLinks disableSlash>
-                            <Typography variant="caption">Terms</Typography>
+                            <Link style={{ textDecoration: "none", color: "inherit" }} href="/privacy">
+                                <Typography variant="caption">Terms</Typography>
+                            </Link>
                         </FooterLinks>
                     </ul>
                 </footer>
