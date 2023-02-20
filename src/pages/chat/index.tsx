@@ -19,6 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Head from 'next/head'
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -388,113 +389,123 @@ const Index = () => {
     );
 
     return !userReducer.username ? (
-        <Typography>Invalid Page Redirecting...</Typography>
+        <>
+            <Head>
+                <title>Reveal | Invalid Redirecting...</title>
+            </Head>
+            <Typography>Invalid Page Redirecting...</Typography>
+        </>
     ) : (
-        <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
-            {
-                !userReducer.isTrial &&
-                <Snackbar
-                    open={openChatInfo}
-                    autoHideDuration={5000}
-                    onClose={openChatInfoCloseHandler}
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                    message="Matching is disabled in open chat"
-                    action={action}
-                />
-            }
-
-            <Snackbar
-                sx={{ maxWidth: 500 }}
-                open={trialUserMsg}
-                autoHideDuration={8 * 1000}
-                onClose={trialMsgCloseHandler}
-                anchorOrigin={{ horizontal: "right", vertical: "top" }}
-            >
-                <Alert onClose={trialMsgCloseHandler} severity="info" sx={{ width: '100%' }}>
-                    Welcome to Open Chat. Open chat allows for any user to be connected regardless of orientation, however there is no matching, and you
-                    will be unable to set your own profile info.
-                    Additionally, trial users have a limited amount of functionality, such
-                    as limited skips, disabled user info, etc.
-                </Alert>
-            </Snackbar>
-
-            <VideoPreview
-                isMuted={false}
-                videoRef={userVideo}
-                user={otherUserReducer}
-                showAvatar={reveal !== revealStatus.ACCEPTED}
-                matched={showMatched}
-                disableDisplay={isSkipped}
-            />
-
-            <VideoPreview
-                videoRef={myVid}
-                user={userReducer}
-                showAvatar={reveal !== revealStatus.ACCEPTED}
-                skipped={isSkipped}
-                matched={showMatched}
-                matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
-                callAccepted={callAccepted}
-            />
-            <Container className="absolute flex flex-col bottom-5 z-20">
+        <>
+            <Head>
+                <title>Reveal | Chat</title>
+            </Head>
+            <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
                 {
-                    reveal === revealStatus.ACCEPTED && router.query.chatType === "0" ?
-                        <ButtonContainer>
-                            <Button
-                                onClick={matchHandler}
-                                disabled={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED || isSkipped}
-                                style={{
-                                    backgroundColor: !(userReducer.matches.some(match => match._id === otherUserReducer._id)) && match !== matchStatus.ACCEPTED && !isSkipped ? "#2ecc71" : "inherit",
-                                    color: "#fff",
-                                    width: 100,
-                                    borderRadius: 9999
-                                }}
-                                size="large"
-                                variant="contained"
-                            >
-                                {match}
-                            </Button>
-                        </ButtonContainer> :
-                        <ButtonContainer>
-                            <Button
-                                onClick={revealHandler}
-                                disabled={isRevealDisabled()}
-                                style={{
-                                    backgroundColor: isRevealDisabled() ? "inherit" : "#0971f1",
-                                    color: "#fff",
-                                    width: 100,
-                                    borderRadius: 9999
-                                }}
-                                size="large"
-                                variant="contained"
-                            >
-                                {revealTimer !== 0 ? fmtMSS(revealTimer) : reveal}
-                            </Button>
-                        </ButtonContainer>
+                    !userReducer.isTrial &&
+                    <Snackbar
+                        open={openChatInfo}
+                        autoHideDuration={5000}
+                        onClose={openChatInfoCloseHandler}
+                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                        message="Matching is disabled in open chat"
+                        action={action}
+                    />
                 }
-                <div className="flex justify-between">
-                    <Button
-                        color="light"
-                        onClick={() => window.location.href = "/dashboard"}
-                        sx={{ borderRadius: 9999 }}
-                        size="large"
-                        variant="outlined"
-                    >
-                        Leave
-                    </Button>
-                    <Button
-                        color="light"
-                        disabled={!userJoinedRoom}
-                        onClick={skipHandler}
-                        sx={{ width: 100, borderRadius: 9999 }}
-                        size="large"
-                        variant="outlined"
-                    >
-                        Skip
-                    </Button>
-                </div>
+
+                <Snackbar
+                    sx={{ maxWidth: 500 }}
+                    open={trialUserMsg}
+                    autoHideDuration={8 * 1000}
+                    onClose={trialMsgCloseHandler}
+                    anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                >
+                    <Alert onClose={trialMsgCloseHandler} severity="info" sx={{ width: '100%' }}>
+                        Welcome to Open Chat. Open chat allows for any user to be connected regardless of orientation, however there is no matching, and you
+                        will be unable to set your own profile info.
+                        Additionally, trial users have a limited amount of functionality, such
+                        as limited skips, disabled user info, etc.
+                    </Alert>
+                </Snackbar>
+
+                <VideoPreview
+                    isMuted={false}
+                    videoRef={userVideo}
+                    user={otherUserReducer}
+                    showAvatar={reveal !== revealStatus.ACCEPTED}
+                    matched={showMatched}
+                    disableDisplay={isSkipped}
+                />
+
+                <VideoPreview
+                    videoRef={myVid}
+                    user={userReducer}
+                    showAvatar={reveal !== revealStatus.ACCEPTED}
+                    skipped={isSkipped}
+                    matched={showMatched}
+                    matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
+                    callAccepted={callAccepted}
+                />
+                <Container className="absolute flex flex-col bottom-5 z-20">
+                    {
+                        reveal === revealStatus.ACCEPTED && router.query.chatType === "0" ?
+                            <ButtonContainer>
+                                <Button
+                                    onClick={matchHandler}
+                                    disabled={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED || isSkipped}
+                                    style={{
+                                        backgroundColor: !(userReducer.matches.some(match => match._id === otherUserReducer._id)) && match !== matchStatus.ACCEPTED && !isSkipped ? "#2ecc71" : "inherit",
+                                        color: "#fff",
+                                        width: 100,
+                                        borderRadius: 9999
+                                    }}
+                                    size="large"
+                                    variant="contained"
+                                >
+                                    {match}
+                                </Button>
+                            </ButtonContainer> :
+                            <ButtonContainer>
+                                <Button
+                                    onClick={revealHandler}
+                                    disabled={isRevealDisabled()}
+                                    style={{
+                                        backgroundColor: isRevealDisabled() ? "inherit" : "#0971f1",
+                                        color: "#fff",
+                                        width: 100,
+                                        borderRadius: 9999
+                                    }}
+                                    size="large"
+                                    variant="contained"
+                                >
+                                    {revealTimer !== 0 ? fmtMSS(revealTimer) : reveal}
+                                </Button>
+                            </ButtonContainer>
+                    }
+                    <div className="flex justify-between">
+                        <Button
+                            color="light"
+                            onClick={() => window.location.href = "/dashboard"}
+                            sx={{ borderRadius: 9999 }}
+                            size="large"
+                            variant="outlined"
+                        >
+                            Leave
+                        </Button>
+                        <Button
+                            color="light"
+                            disabled={!userJoinedRoom}
+                            onClick={skipHandler}
+                            sx={{ width: 100, borderRadius: 9999 }}
+                            size="large"
+                            variant="outlined"
+                        >
+                            Skip
+                        </Button>
+                    </div>
+                </Container>
             </Container>
-        </Container>
+        </>
     );
 };
 
