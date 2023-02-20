@@ -15,6 +15,7 @@ const FormShowMe = ({ value, onChange, hideTitle = false }) => {
             >
                 <MenuItem value={gender.Male}>Male</MenuItem>
                 <MenuItem value={gender.Female}>Female</MenuItem>
+                <MenuItem value={gender.Both}>Both</MenuItem>
                 <MenuItem value={gender.Gay}>Gay</MenuItem>
                 <MenuItem value={gender.Lesbian}>Lesbian</MenuItem>
             </Select>

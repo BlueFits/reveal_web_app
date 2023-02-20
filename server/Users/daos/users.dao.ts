@@ -7,7 +7,7 @@ class UsersDao {
         username: String,
         birthday: { type: Date },
         gender: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
-        showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
+        showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian, gender.Both] },
         preference: [String],
         picture: { type: String, required: false, default: "" },
         matches: [{ type: this.Schema.Types.ObjectId, ref: "Users" }],

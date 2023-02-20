@@ -2,7 +2,8 @@ export enum gender {
     Male = "m",
     Female = "f",
     Gay = "gay",
-    Lesbian = "lesbian"
+    Lesbian = "lesbian",
+    Both = "both",
 }
 
 export interface CreateUserDto {

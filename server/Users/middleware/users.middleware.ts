@@ -27,11 +27,15 @@ class UsersMiddleware {
         next: express.NextFunction
     ) {
         const username = req.body.username;
-        const user = await usersDao.findUser({ username });
-        if (user) {
-            res.status(400).send({ error: `Username already exists` });
-        } else {
+        if (!username) {
             next();
+        } else {
+            const user = await usersDao.findUser({ username });
+            if (user) {
+                res.status(400).send({ error: `Username already exists` });
+            } else {
+                next();
+            }
         }
     }
 
@@ -41,10 +45,14 @@ class UsersMiddleware {
         next: express.NextFunction
     ) {
         const username = req.body.username;
-        if (username === "") {
-            res.status(400).send({ error: `Username cannot be blank` });
-        } else {
+        if (!username) {
             next();
+        } else {
+            if (username === "") {
+                res.status(400).send({ error: `Username cannot be blank` });
+            } else {
+                next();
+            }
         }
     }
 

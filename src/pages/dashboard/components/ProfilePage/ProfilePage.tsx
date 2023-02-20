@@ -337,6 +337,8 @@ const ProfilePage = () => {
                                             return "Gay";
                                         case gender.Lesbian:
                                             return "Lesbian";
+                                        case gender.Both:
+                                            return "Both";
                                         default:
                                             return "Undefined"
                                     }
