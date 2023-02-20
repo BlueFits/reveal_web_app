@@ -17,6 +17,7 @@ const initialState: apiTempUser = {
     picture: null,
     auth0: null,
     interests: null,
+    isTrial: null,
 };
 
 // Then, handle actions in your reducers:

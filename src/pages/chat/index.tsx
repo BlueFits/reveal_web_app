@@ -1,4 +1,4 @@
-import { useEffect, useState, MutableRefObject, useRef, Fragment } from "react";
+import { useEffect, useState, MutableRefObject, useRef, Fragment, forwardRef } from "react";
 import { Container, Button, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { IReducer } from "../../services/store";
@@ -18,7 +18,14 @@ import { IAddUserToMatches } from "../../services/modules/User/api";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
+const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 import Snackbar from '@mui/material/Snackbar';
 
@@ -60,6 +67,8 @@ const Index = () => {
     const [showMatched, setShowMatched] = useState(false);
 
     const [openChatInfo, setOpenChatInfo] = useState<boolean>(router.query.chatType === "1" ? true : false);
+    const [trialUserMsg, setTrialUserMsg] = useState<boolean>(userReducer.isTrial);
+
     const [userJoinedRoom, setUserJoinedRoom] = useState<boolean>(false);
 
     const myVid: MutableRefObject<HTMLVideoElement> = useRef();
@@ -125,6 +134,9 @@ const Index = () => {
         console.log("Created room id ", roomData.payload._id);
         joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
+
+            console.log("the id:", userID);
+
             await dispatch(removeRoom(roomData.payload._id));
 
             const peer1 = new Peer({
@@ -345,6 +357,10 @@ const Index = () => {
         setOpenChatInfo(false);
     }
 
+    const trialMsgCloseHandler = () => {
+        setTrialUserMsg(false);
+    }
+
     const action = (
         <Fragment>
             <IconButton
@@ -358,18 +374,49 @@ const Index = () => {
         </Fragment>
     );
 
+    const actionTrial = (
+        <Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={trialMsgCloseHandler}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </Fragment>
+    );
+
     return !userReducer.username ? (
         <Typography>Invalid Page Redirecting...</Typography>
     ) : (
         <Container sx={{ display: "flex" }} className="justify-center items-center h-screen flex-col" maxWidth="lg" disableGutters>
+            {
+                !userReducer.isTrial &&
+                <Snackbar
+                    open={openChatInfo}
+                    autoHideDuration={5000}
+                    onClose={openChatInfoCloseHandler}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    message="Matching is disabled in open chat"
+                    action={action}
+                />
+            }
+
             <Snackbar
-                open={openChatInfo}
-                autoHideDuration={5000}
-                onClose={openChatInfoCloseHandler}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                message="Matching is disabled in open chat"
-                action={action}
-            />
+                sx={{ maxWidth: 500 }}
+                open={trialUserMsg}
+                autoHideDuration={8 * 1000}
+                onClose={trialMsgCloseHandler}
+                anchorOrigin={{ horizontal: "right", vertical: "top" }}
+            >
+                <Alert onClose={trialMsgCloseHandler} severity="info" sx={{ width: '100%' }}>
+                    Welcome to Open Chat. Open chat allows for any user to be connected regardless of orientation, however there is no matching, and you
+                    will be unable to set your own profile info.
+                    Additionally, trial users have a limited amount of functionality, such
+                    as limited skips, disabled user info, etc.
+                </Alert>
+            </Snackbar>
 
             <VideoPreview
                 isMuted={false}

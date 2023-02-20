@@ -5,11 +5,12 @@ import { CreateUserDto, PatchUserDto, PutUserDto } from '../../../../server/User
 import { gender } from '../../../../server/Users/dto/users.dto';
 import UsersApi, { IUpdateUserByForm, IAddUserToMatches, IReloadMessages } from './api';
 
-interface IFormSet {
+export interface IFormSet {
     username: string;
     birthday: Date,
     gender: gender,
-    showMe: gender
+    showMe: gender,
+    matches?: Array<CreateUserDto> | [];
 }
 
 export interface IUserReducer extends PutUserDto {
@@ -22,6 +23,7 @@ export interface IUserReducer extends PutUserDto {
     isFirstTime: boolean;
     username: string;
     opener: string;
+    isTrial: boolean;
 }
 
 
@@ -43,6 +45,7 @@ const initialState: IUserReducer = {
     auth0: null,
     opener: null,
     isFirstTime: true,
+    isTrial: false,
 };
 
 export const getUserByEmail: any = createAsyncThunk("user/getUserByEmail", async (email: string) => {
@@ -129,6 +132,9 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
+        setTrialUser: (state, action: { payload: boolean }) => {
+            state.isTrial = action.payload;
+        },
         setUsername: (state, action: { payload: string }) => {
             state.username = action.payload;
         },
@@ -189,6 +195,7 @@ const userSlice = createSlice({
 })
 
 export const {
+    setTrialUser,
     setPreference,
     setUsername,
     setSocketID,

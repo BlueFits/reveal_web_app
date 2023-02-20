@@ -25,7 +25,7 @@ interface IPreChatPage {
 	user: IUserReducer;
 }
 
-enum IChatType {
+export enum IChatType {
 	NORMAL = "0",
 	OPEN = "1",
 }

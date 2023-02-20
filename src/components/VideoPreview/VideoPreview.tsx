@@ -101,7 +101,12 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                                 {user.opener}
                             </Typography>
                         )}
-                        {avatar.display &&
+                        {avatar.display && user.isTrial &&
+                            <Typography marginTop={2} variant="h6" color={"#fff"}>
+                                Trial User
+                            </Typography>
+                        }
+                        {avatar.display && !user.isTrial &&
                             <Typography marginTop={2} variant="h6" color={"#fff"}>
                                 Here are some things I like
                             </Typography>

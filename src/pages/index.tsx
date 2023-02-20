@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Typography, IconButton, Link, Divider } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import Header from "./_components/Header/Header";
@@ -8,15 +8,35 @@ import Head from 'next/head'
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import colors from "../constants/colors";
+import { useDispatch } from "react-redux";
+import { setAvatar, formSet, IFormSet, setSocketID, setTrialUser } from "../services/modules/User/userSlice";
+import { useRouter } from "next/router";
+import { IChatType } from "./dashboard/components/PreChatPage/PreChatPage";
+import { gender } from "../../server/Users/dto/users.dto";
+import dayjs from "dayjs";
+import { v4 as uuidv4 } from 'uuid';
+import socket from "../../config/Socket";
+import socketEmitters from "../constants/emitters";
+
 
 const backgroundURL = "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=989&q=80";
 
 
 const Index = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
     const theme = useTheme();
     const notSm = useMediaQuery(theme.breakpoints.up('sm'));
     const { loginWithRedirect } = useAuth0();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    useEffect(() => {
+        socket.emit(socketEmitters.SOCKET_ROOM_GET);
+        socket.emit(socketEmitters.REQUEST_ID)
+        socket.once(socketEmitters.ME, (socketID: string) => {
+            dispatch(setSocketID(socketID));
+        })
+    }, []);
 
     const FooterLinks = ({ disableSlash = false, children }) => (
         <li>
@@ -27,6 +47,25 @@ const Index = () => {
             }
         </li>
     );
+
+    const tryNowHandler = () => {
+        dispatch(setAvatar());
+        dispatch(setTrialUser(true));
+        console.log("generated id", uuidv4());
+        const data: IFormSet = {
+            birthday: null,
+            gender: gender.Male,
+            showMe: gender.Female,
+            username: "Guest",
+            matches: [],
+        };
+        dispatch(formSet(data));
+
+        router.push({
+            pathname: "/chat",
+            query: { chatType: IChatType.OPEN }
+        });
+    }
 
     return (
         <>
@@ -59,7 +98,19 @@ const Index = () => {
                                 {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
                                 Try speed blindfold dating online with reveal!
                             </Typography>
-                            <div className="mt-4">
+                            <div className="mt-4 flex flex-col justify-center items-center">
+                                <Button
+
+                                    className="global_bttn_width"
+                                    color="light"
+                                    onClick={tryNowHandler}
+                                    style={{ backgroundColor: colors.primary, marginBottom: 20 }}
+                                    size="large"
+                                    sx={{ borderRadius: 9999 }}
+                                    variant="contained"
+                                >
+                                    Try Open Chat
+                                </Button>
                                 <Button
                                     className="global_bttn_width"
                                     color="light"
