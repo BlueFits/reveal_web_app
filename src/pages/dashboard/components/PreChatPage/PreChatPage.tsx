@@ -45,7 +45,6 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 	// const [pickupLine, setPickupLine] = useState(PickupLines.random());
 
 	//Google Analytics
-
 	useEffect(() => {
 		gtag("event", "pre-chat-focus", {
 			page_path: window.location.pathname,

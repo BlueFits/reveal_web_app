@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Typography, IconButton, Link, Divider } from "@mui/material";
+import { Button, Typography, IconButton, Link, Divider, TextField } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import Header from "./_components/Header/Header";
 import DrawerMenu from "./_components/DrawerMenu/DrawerMenu";
@@ -17,6 +17,11 @@ import dayjs from "dayjs";
 import { v4 as uuidv4 } from 'uuid';
 import socket from "../../config/Socket";
 import socketEmitters from "../constants/emitters";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 const backgroundURL = "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=989&q=80";
@@ -29,6 +34,8 @@ const Index = () => {
     const notSm = useMediaQuery(theme.breakpoints.up('sm'));
     const { loginWithRedirect } = useAuth0();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [over18Prompt, setOver18Prompt] = useState(false);
+    const [isUser18, setIsUser18] = useState<0 | 1 | 2>(0);
 
     useEffect(() => {
         socket.emit(socketEmitters.SOCKET_ROOM_GET);
@@ -73,6 +80,35 @@ const Index = () => {
                 <title>Reveal</title>
             </Head>
             <div className="overflow-x-hidden">
+                <Dialog fullScreen={!notSm} fullWidth open={over18Prompt} onClose={() => setOver18Prompt(false)}>
+                    {
+                        isUser18 === 2 ?
+                            <>
+                                <DialogTitle>You must be over 18 to enter this site</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        You are not allowed to enter this site
+                                    </DialogContentText>
+                                    <DialogActions sx={{ marginTop: 3 }}>
+                                        <Button color="secondary" onClick={() => setOver18Prompt(false)}>Close</Button>
+                                    </DialogActions>
+                                </DialogContent>
+                            </> :
+                            <>
+                                <DialogTitle>Are you 18 or over?</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText marginBottom={2}>
+                                        You must be 18 years old or over to use Reveal
+                                    </DialogContentText>
+                                    <DialogActions sx={{ marginTop: 3 }}>
+                                        <Button color="secondary" onClick={() => setIsUser18(2)}>Under 18</Button>
+                                        <Button color="secondary" onClick={() => tryNowHandler()}>18 or over</Button>
+                                    </DialogActions>
+                                </DialogContent>
+                            </>
+                    }
+
+                </Dialog>
                 <div
                     style={{
                         backgroundImage: `url('${backgroundURL}')`
@@ -103,7 +139,7 @@ const Index = () => {
 
                                     className="global_bttn_width"
                                     color="light"
-                                    onClick={tryNowHandler}
+                                    onClick={() => setOver18Prompt(true)}
                                     style={{ backgroundColor: colors.primary, marginBottom: 20 }}
                                     size="large"
                                     sx={{ borderRadius: 9999 }}
