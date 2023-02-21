@@ -3,6 +3,8 @@ import { Container, Avatar, Typography, CircularProgress } from "@mui/material"
 import { IUserReducer } from "../../services/modules/User/userSlice";
 import { apiTempUser } from "../../services/modules/otherUserSlice";
 import InterestsChips from "../Interests/InterestsChips";
+import { peerMsgInfo } from "../../pages/chat/constants/types";
+import styles from "./VideoPreview.module.css";
 
 interface IVideoPreview {
     user: IUserReducer | apiTempUser;
@@ -14,6 +16,7 @@ interface IVideoPreview {
     disableDisplay?: boolean;
     matchStatus?: boolean;
     callAccepted?: boolean;
+    peerInfo?: string;
 }
 
 
@@ -26,6 +29,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     disableDisplay = false,
     matchStatus = false,
     callAccepted = false,
+    peerInfo = ""
 }) => {
     const [localRef, setLocalRef] = useState(videoRef);
     const { username, avatar } = user;
@@ -83,8 +87,11 @@ const VideoPreview: React.FC<IVideoPreview> = ({
 
             {
                 !user.username && !isMuted &&
-                <div style={{ right: "50%", top: "50%" }} className="absolute">
-                    <CircularProgress style={{ color: "#fff" }} />
+                <div style={{ right: "40%", top: "45%" }} className={styles.centered_axis_x}>
+                    {peerInfo !== peerMsgInfo.DISCONNECT &&
+                        <CircularProgress style={{ color: "#fff" }} />
+                    }
+                    <Typography textAlign={"center"} marginTop={3} color={"#fff"} variant="body1">{peerInfo}</Typography>
                 </div>
             }
 

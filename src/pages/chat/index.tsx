@@ -21,7 +21,7 @@ import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Head from 'next/head'
 import Snackbar from '@mui/material/Snackbar';
-import { revealStatus, matchStatus } from "./constants/types";
+import { revealStatus, matchStatus, peerMsgInfo } from "./constants/types";
 import ButtonContainer from "./components/ButtonContainer";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -47,6 +47,7 @@ const Index = () => {
     const [callAccepted, setCallAccepted] = useState(false);
     const [isSkipped, setSkipped] = useState(false);
     const [showMatched, setShowMatched] = useState(false);
+    const [peerInfo, setPeerInfo] = useState<peerMsgInfo | "">("");
 
     const [openChatInfo, setOpenChatInfo] = useState<boolean>(router.query.chatType === "1" ? true : false);
     const [trialUserMsg, setTrialUserMsg] = useState<boolean>(userReducer.isTrial);
@@ -100,6 +101,7 @@ const Index = () => {
             roomID: roomReducer._id || null,
             openRoom: router.query.chatType,
         }));
+        setPeerInfo(peerMsgInfo.CONNECTING);
         console.log("Joining ", roomData);
         if (roomData.payload && roomData.payload._id) {
             joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
@@ -115,6 +117,7 @@ const Index = () => {
             gender: userReducer.gender,
             openRoom: router.query.chatType,
         }));
+        setPeerInfo(peerMsgInfo.WAITING);
         console.log("Created room id ", roomData.payload._id);
         joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
@@ -156,6 +159,7 @@ const Index = () => {
         if (!initSetupRan && stream) {
             socket.on(socketEmitters.USER_DISCONNECTED, () => {
                 console.log("User has disconnected in socket");
+                setPeerInfo(peerMsgInfo.DISCONNECT);
                 setSkipped(true);
                 dispatch(clearState());
                 setCallAccepted(false);
@@ -298,6 +302,7 @@ const Index = () => {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });
+        setPeerInfo(peerMsgInfo.FINDING);
         setSkipped(false);
         setUserJoinedRoom(false);
         setCallAccepted(false);
@@ -388,6 +393,7 @@ const Index = () => {
                     </Alert>
                 </Snackbar>
 
+                {/* Other user preview */}
                 <VideoPreview
                     isMuted={false}
                     videoRef={userVideo}
@@ -395,6 +401,7 @@ const Index = () => {
                     showAvatar={reveal !== revealStatus.ACCEPTED}
                     matched={showMatched}
                     disableDisplay={isSkipped}
+                    peerInfo={peerInfo}
                 />
 
                 <VideoPreview

@@ -1,0 +1,10 @@
+.centered_axis_x {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    min-width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
