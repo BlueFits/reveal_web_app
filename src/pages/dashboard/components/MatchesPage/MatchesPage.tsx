@@ -106,7 +106,7 @@ const MatchesPage = () => {
                         return (
                             <Item key={index + "matchesKey"}>
                                 <ButtonBase onClick={messagesHandler.bind(this, match)} style={{ borderRadius: 9999 }}>
-                                    <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={match.picture || (match.auth0 && match.auth0.picture)} />
+                                    <Avatar sx={{ width: 56, height: 56 }} alt={`${match.username} avatar`} src={(match && match.picture) || (match.auth0 && match.auth0.picture) || ""} />
                                 </ButtonBase>
                                 <Typography marginTop={0.5} fontWeight={"bold"} variant='body2'>{match.username}</Typography>
                             </Item>
@@ -118,14 +118,16 @@ const MatchesPage = () => {
                 <Typography variant='h6'>Messages</Typography>
                 {messageReducer.messages.length > 0 ? (
                     messageReducer.messages.map((message, index) => {
+                        if (message.messages.length <= 0) return;
                         const msgExist = message.messages.length > 0;
                         const latestSender = msgExist ? message.members.find((user: IUserReducer) => user._id === message.messages[message.messages.length - 1].sender) as IUserReducer : null;
                         const otherUser = (message.members.find((user: IUserReducer) => user._id !== userReducer._id) as IUserReducer);
-                        return (
+
+                        return latestSender && (
                             <List key={`keyForList:${index}`}>
                                 <ListItemButton onClick={messagesHandler.bind(this, otherUser)}>
                                     <ListItemAvatar>
-                                        <Avatar alt="Profile Picture" src={otherUser.picture || (otherUser.auth0 && otherUser.auth0.picture)} />
+                                        <Avatar alt="Profile Picture" src={(otherUser && otherUser.picture) || (otherUser && otherUser.auth0 && otherUser.auth0.picture) || ""} />
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={otherUser && otherUser.username}

@@ -20,6 +20,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Head from 'next/head'
+import Snackbar from '@mui/material/Snackbar';
+import { revealStatus, matchStatus } from "./constants/types";
+import ButtonContainer from "./components/ButtonContainer";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -28,22 +31,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-import Snackbar from '@mui/material/Snackbar';
-
-enum revealStatus {
-    WAITING = "WAITING",
-    ACCEPTED = "ACCEPTED",
-    STANDBY = "REVEAL",
-    CONFIRM = "CONFIRM",
-}
-
-enum matchStatus {
-    WAITING = "WAITING",
-    ACCEPTED = "ACCEPTED",
-    STANDBY = "MATCH",
-    CONFIRM = "CONFIRM",
-}
-
 const Index = () => {
     const revealTimerNum = currentENV === status.development ? 5 : 60;
     const router = useRouter();
@@ -51,12 +38,6 @@ const Index = () => {
     const userReducer: IUserReducer = useSelector((state: IReducer) => state.user);
     const otherUserReducer: apiTempUser = useSelector((state: IReducer) => state.otherUser);
     const roomReducer: IRoomReducer = useSelector((state: IReducer) => state.room);
-
-    const ButtonContainer = ({ children }) => (
-        <div className="mb-8 flex justify-end">
-            {children}
-        </div>
-    );
 
     const [stream, setStream] = useState<MediaProvider>();
     const [initSetupRan, setInitSetupRan] = useState(false);
@@ -110,6 +91,8 @@ const Index = () => {
         setupWebCam();
     }, [stream]);
 
+    /* Call Methods */
+
     const findRoomThunk = async () => {
         const roomData: { payload: IRoomReducer } = await dispatch(findRoom({
             showMe: userReducer.showMe,
@@ -135,24 +118,17 @@ const Index = () => {
         console.log("Created room id ", roomData.payload._id);
         joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
-
-            console.log("the id:", userID);
-
             await dispatch(removeRoom(roomData.payload._id));
-
             const peer1 = new Peer({
                 initiator: true,
                 trickle: false,
                 stream,
             });
-
             connectionRef.current = peer1;
-
             peer1.on("signal", (signal) => {
                 const data: callUserData = { toCallID: userID, signal, user: userReducer };
                 socket.emit(socketEmitters.CALLUSER, data)
             })
-
             peer1.on("stream", (currStream) => {
                 userVideo.current.srcObject = currStream;
             });
@@ -199,7 +175,6 @@ const Index = () => {
     }, [initSetupRan, stream]);
 
     /* For answer peer */
-
     useEffect(() => {
         if (stream) {
             socket.on(socketEmitters.ROOM_FULL, () => {
@@ -207,9 +182,7 @@ const Index = () => {
                 console.log("Room is full creating a new room");
                 createRoomExec();
             })
-
             socket.on(socketEmitters.CALLUSER, ({ signal, user }: Partial<callUserData>) => {
-                console.log("$$$ This ran");
                 dispatch(setOtherUser(user))
                 let peer2 = null;
                 if (!connectionRef.current) {
@@ -294,13 +267,11 @@ const Index = () => {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });
-
         const addToMatches = async () => {
             const data: IAddUserToMatches = { userIdToAdd: otherUserReducer._id, _id: userReducer._id };
             const result = await dispatch(addUserToMatches(data)).payload;
             return result;
         }
-
         if (match === matchStatus.CONFIRM) {
             setMatch(matchStatus.ACCEPTED);
             socket.emit(socketEmitters.ACCEPT_MATCH, { to: otherUserReducer });
@@ -353,6 +324,8 @@ const Index = () => {
     };
 
     const isRevealDisabled = () => !callAccepted || revealTimer !== 0 || (reveal === revealStatus.WAITING) || reveal === revealStatus.ACCEPTED || isSkipped;
+
+    /* Open Chat info */
 
     const openChatInfoCloseHandler = () => {
         setOpenChatInfo(false);

@@ -33,12 +33,9 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     const [showReject, setShowReject] = useState(true);
 
     useEffect(() => {
-        console.log("match", matchStatus, "callAccepted", callAccepted);
-
         if (callAccepted && matchStatus) {
             setShowReject(false);
         }
-
     }, [matchStatus, callAccepted]);
 
     useEffect(() => {
@@ -83,12 +80,14 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                 <Avatar alt={`${!showAvatar ? (username && username.toLocaleUpperCase()) || "." : "."} avatar`} src={!showAvatar ? user.picture || user && user.auth0 && user.auth0.picture || null : "not set"} sx={{ marginRight: 3 }} />
                 <p className="text-white">{showAvatar ? "..." : (username || "...")}</p>
             </div>
+
             {
-                !user.username &&
+                !user.username && !isMuted &&
                 <div style={{ right: "50%", top: "50%" }} className="absolute">
                     <CircularProgress style={{ color: "#fff" }} />
                 </div>
             }
+
             {
                 !disableDisplay && showAvatar &&
                 <div style={{ backgroundColor: avatar.bg }} className={`h-full w-full flex items-center justify-center`}>
@@ -106,7 +105,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                                 Trial User
                             </Typography>
                         }
-                        {avatar.display && !user.isTrial &&
+                        {avatar.display && !user.isTrial && user.interests.length > 0 &&
                             <Typography marginTop={2} variant="h6" color={"#fff"}>
                                 Here are some things I like
                             </Typography>
