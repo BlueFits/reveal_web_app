@@ -21,7 +21,7 @@ import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Head from 'next/head'
 import Snackbar from '@mui/material/Snackbar';
-import { revealStatus, matchStatus, peerMsgInfo } from "./constants/types";
+import { revealStatus, matchStatus, peerMsgInfo } from "../../constants/chatPageTypes";
 import ButtonContainer from "./components/ButtonContainer";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(

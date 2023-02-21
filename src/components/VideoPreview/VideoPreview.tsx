@@ -3,7 +3,7 @@ import { Container, Avatar, Typography, CircularProgress } from "@mui/material"
 import { IUserReducer } from "../../services/modules/User/userSlice";
 import { apiTempUser } from "../../services/modules/otherUserSlice";
 import InterestsChips from "../Interests/InterestsChips";
-import { peerMsgInfo } from "../../pages/chat/constants/types";
+import { peerMsgInfo } from "../../constants/chatPageTypes";
 import styles from "./VideoPreview.module.css";
 
 interface IVideoPreview {
