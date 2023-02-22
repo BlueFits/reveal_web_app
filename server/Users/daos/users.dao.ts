@@ -18,7 +18,6 @@ class UsersDao {
             user_id: String,
             nickname: String,
             picture: String,
-            email_verified: Boolean,
         },
     });
 
