@@ -1,4 +1,4 @@
-import socketEmitters, { IJoinChatData, ISendIDChat, ISendMsgChat } from "../../../src/constants/emitters";
+import socketEmitters, { IJoinChatData, ISendIDChat, ISendMsgChat } from "../../../src/constants/types/emitters";
 import {
     acceptMatchHandler,
     disconnectHandler,

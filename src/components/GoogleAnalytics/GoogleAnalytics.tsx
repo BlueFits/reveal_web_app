@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 import { memo, useEffect } from "react";
 import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
+import analyticEvents from "../../constants/analytics/analyticEvents";
+
 const GoogleAnalytics = () => {
     const router = useRouter();
     // 👇 send page views when users gets to the landing page
@@ -11,7 +13,7 @@ const GoogleAnalytics = () => {
         gtag("config", TRACKING_ID, {
             send_page_view: false, //manually send page views to have full control
         });
-        gtag("event", "page_view", {
+        gtag("event", analyticEvents.PAGE_VIEW, {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });
@@ -21,7 +23,7 @@ const GoogleAnalytics = () => {
         const handleRouteChange = (url: string) => {
             if (!TRACKING_ID || router.isPreview) return;
             // manually send page views
-            gtag("event", "page_view", {
+            gtag("event", analyticEvents.PAGE_VIEW, {
                 page_path: url,
                 send_to: TRACKING_ID,
             });

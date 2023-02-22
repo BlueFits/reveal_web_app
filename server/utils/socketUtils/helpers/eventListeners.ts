@@ -1,7 +1,7 @@
-import socketEmitters from "../../../../src/constants/emitters";
+import socketEmitters from "../../../../src/constants/types/emitters";
 import socketRoomDao from "../../../socketRoom/dao/socketRoom.dao";
 import { IUserReducer } from "../../../../src/services/modules/User/userSlice";
-import { callUserData, acceptCallData } from "../../../../src/constants/callTypes";
+import { callUserData, acceptCallData } from "../../../../src/constants/types/callTypes";
 
 export const revealInitHandler = (io, { from, to }: { from: IUserReducer, to: IUserReducer }) => {
     io.to(to.socketID).emit(socketEmitters.REVEAL_INIT, { from });

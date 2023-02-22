@@ -12,9 +12,10 @@ import { useDispatch } from 'react-redux';
 import DrawerMessages from './components/DrawerMessages';
 import { CreateMessageDto, IMessageSingle } from '../../../../../server/Messages/dto/messages.dto';
 import { ButtonBase } from '@mui/material';
-import socket from '../../../../../config/Socket';
-import socketEmitters, { IJoinChatData } from '../../../../constants/emitters';
+import socket from '../../../../utils/Socket/socket.utils';
+import socketEmitters, { IJoinChatData } from '../../../../constants/types/emitters';
 import { TRACKING_ID } from '../../../../../config/GoogleAnalyticsConfig';
+import analyticEvents from '../../../../constants/analytics/analyticEvents';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,7 +37,7 @@ const MatchesPage = () => {
     //Google Analytics
 
     useEffect(() => {
-        gtag("event", "matches-focus", {
+        gtag("event", analyticEvents.PAGE.MATCHES, {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });

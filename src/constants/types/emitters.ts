@@ -1,5 +1,5 @@
-import { IMessageSingle } from "../../server/Messages/dto/messages.dto";
-import { CreateUserDto } from "../../server/Users/dto/users.dto";
+import { IMessageSingle } from "../../../server/Messages/dto/messages.dto";
+import { CreateUserDto } from "../../../server/Users/dto/users.dto";
 
 export interface IJoinChatData {
     messageRoomID: string;

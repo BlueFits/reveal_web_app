@@ -3,8 +3,8 @@ import { Drawer, List, ListItem, ListItemText, IconButton, Divider, Typography, 
 import { CreateMessageDto, IMessageSingle } from "../../../../../../server/Messages/dto/messages.dto";
 import { IUserReducer } from "../../../../../services/modules/User/userSlice";
 import SendIcon from '@mui/icons-material/Send';
-import socket from "../../../../../../config/Socket";
-import socketEmitters, { ISendIDChat, ISendMsgChat } from "../../../../../constants/emitters";
+import socket from "../../../../../utils/Socket/socket.utils";
+import socketEmitters, { ISendIDChat, ISendMsgChat } from "../../../../../constants/types/emitters";
 import Loading from "../../../../../components/Loading/Loading";
 import { useDispatch } from "react-redux";
 import { sendMessage, pushMsg } from "../../../../../services/modules/Messages/messagesSlice";

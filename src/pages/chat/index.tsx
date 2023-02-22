@@ -6,14 +6,14 @@ import { IUserReducer, addUserToMatches } from "../../services/modules/User/user
 import { apiTempUser, setOtherUser, clearState } from "../../services/modules/otherUserSlice";
 import VideoPreview from "../../components/VideoPreview/VideoPreview";
 import Peer from "simple-peer";
-import socketEmitters from "../../constants/emitters";
+import socketEmitters from "../../constants/types/emitters";
 import { joinRoom, setupMediaStream } from "../../utils/videoCall.util";
-import socket from "../../../config/Socket";
+import socket from "../../utils/Socket/socket.utils";
 import { useRouter } from "next/router";
 import { currentENV, status } from "../../../config/Server";
-import { fmtMSS } from "../../utils/timeUtils";
+import { fmtMSS } from "../../utils/time.utils";
 import { findRoom, IRoomReducer, createRoom, removeRoom } from "../../services/modules/roomSlice";
-import { acceptCallData, callUserData } from "../../constants/callTypes";
+import { acceptCallData, callUserData } from "../../constants/types/callTypes";
 import { IAddUserToMatches } from "../../services/modules/User/api";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -21,8 +21,9 @@ import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Head from 'next/head'
 import Snackbar from '@mui/material/Snackbar';
-import { revealStatus, matchStatus, peerMsgInfo } from "../../constants/chatPageTypes";
+import { revealStatus, matchStatus, peerMsgInfo } from "../../constants/types/chatPageTypes";
 import ButtonContainer from "./components/ButtonContainer";
+import analyticEvents from "../../constants/analytics/analyticEvents";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -69,7 +70,7 @@ const Index = () => {
 
     //Google Analytics
     useEffect(() => {
-        gtag("event", "chat-focus", {
+        gtag("event", analyticEvents.PAGE.CHAT, {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });
@@ -246,7 +247,7 @@ const Index = () => {
     }
 
     const revealHandler = () => {
-        gtag("event", "reveal-clicked", {
+        gtag("event", analyticEvents.CLICK.CHAT_REVEAL_BTTN, {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });
@@ -267,7 +268,7 @@ const Index = () => {
     };
 
     const matchHandler = () => {
-        gtag("event", "match-clicked", {
+        gtag("event", analyticEvents.CLICK.CHAT_MATCH_BTTN, {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });
@@ -298,7 +299,7 @@ const Index = () => {
     };
 
     const skipHandler = () => {
-        gtag("event", "skip-clicked", {
+        gtag("event", analyticEvents.CLICK.CHAT_SKIP_BTTN, {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });

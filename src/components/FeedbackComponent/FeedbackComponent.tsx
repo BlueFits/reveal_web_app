@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Fab from '@mui/material/Fab';
-import colors from '../../constants/colors';
+import colors from '../../constants/ui/colors';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,7 +10,8 @@ import { useTheme } from '@mui/material/styles';
 import StepperFeedback from '../StepperFeedback/StepperFeedback';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
-
+import analyticEvents from "../../constants/analytics/analyticEvents";
+import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 
 const FeedbackComponent = () => {
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -40,7 +41,13 @@ const FeedbackComponent = () => {
             </Dialog>
             <div className='z-10 fixed right-[5%] bottom-[10%]'>
                 <Fab
-                    onClick={() => setIsFeedbackOpen(true)}
+                    onClick={() => {
+                        gtag("event", analyticEvents.CLICK.FEEDBACK_FAB, {
+                            page_path: window.location.pathname,
+                            send_to: TRACKING_ID,
+                        });
+                        setIsFeedbackOpen(true)
+                    }}
                     style={{ borderRadius: 9999, backgroundColor: colors.primary }}
                     color="secondary"
                     size="large"

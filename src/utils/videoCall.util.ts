@@ -1,5 +1,5 @@
-import socket from "../../config/Socket";
-import socketEmitters from "../constants/emitters";
+import socket from "./Socket/socket.utils";
+import socketEmitters from "../constants/types/emitters";
 
 export const setupMediaStream = async (setStream) => {
     try {

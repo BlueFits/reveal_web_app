@@ -3,22 +3,23 @@ import { Container, Typography, TextField, Button, Alert } from "@mui/material"
 import { useDispatch } from "react-redux";
 import { setUsername, setPreference, setSocketID, setAvatar, IUserReducer, setOpener } from "../../../../services/modules/User/userSlice";
 import { useRouter } from "next/router";
-import socket from "../../../../../config/Socket";
-import socketEmitters from "../../../../constants/emitters";
+import socket from "../../../../utils/Socket/socket.utils";
+import socketEmitters from "../../../../constants/types/emitters";
 import { useSelector } from "react-redux";
 import { IliveCountReducer, updateCount } from "../../../../services/modules/LiveCount/LiveCount";
 import { IReducer } from "../../../../services/store";
-import colors from "../../../../constants/colors";
+import colors from "../../../../constants/ui/colors";
 import Switch from '@mui/material/Switch';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import PickupLines from "../../../../constants/pickupLines";
+import PickupLines from "../../../../constants/ui/pickupLines";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 import InterestsInput from "../../../../components/Interests/InterestsInput";
 import InterestsChips from "../../../../components/Interests/InterestsChips";
+import analyticEvents from "../../../../constants/analytics/analyticEvents";
 
 
 interface IPreChatPage {
@@ -46,7 +47,7 @@ const PreChatPage: React.FC<IPreChatPage> = ({ user }) => {
 
 	//Google Analytics
 	useEffect(() => {
-		gtag("event", "pre-chat-focus", {
+		gtag("event", analyticEvents.PAGE.PRE_CHAT, {
 			page_path: window.location.pathname,
 			send_to: TRACKING_ID,
 		});

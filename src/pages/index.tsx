@@ -7,7 +7,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Head from 'next/head'
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import colors from "../constants/colors";
+import colors from "../constants/ui/colors";
 import { useDispatch } from "react-redux";
 import { setAvatar, formSet, IFormSet, setSocketID, setTrialUser } from "../services/modules/User/userSlice";
 import { useRouter } from "next/router";
@@ -15,14 +15,15 @@ import { IChatType } from "./dashboard/components/PreChatPage/PreChatPage";
 import { gender } from "../../server/Users/dto/users.dto";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from 'uuid';
-import socket from "../../config/Socket";
-import socketEmitters from "../constants/emitters";
+import socket from "../utils/Socket/socket.utils";
+import socketEmitters from "../constants/types/emitters";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import analyticEvents from "../constants/analytics/analyticEvents";
+import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
 
 
 const backgroundURL = "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=989&q=80";
@@ -103,7 +104,15 @@ const Index = () => {
                                     </DialogContentText>
                                     <DialogActions sx={{ marginTop: 3 }}>
                                         <Button color="secondary" onClick={() => setIsUser18(2)}>Under 18</Button>
-                                        <Button color="secondary" onClick={() => tryNowHandler()}>18 or over</Button>
+                                        <Button color="secondary" onClick={() => {
+                                            gtag("event", analyticEvents.CLICK.HOME_OVER_18, {
+                                                page_path: window.location.pathname,
+                                                send_to: TRACKING_ID,
+                                            });
+                                            tryNowHandler()
+                                        }}>
+                                            18 or over
+                                        </Button>
                                     </DialogActions>
                                 </DialogContent>
                             </>
@@ -137,10 +146,15 @@ const Index = () => {
                             </Typography>
                             <div className="mt-4 flex flex-col justify-center items-center">
                                 <Button
-
                                     className="global_bttn_width"
                                     color="light"
-                                    onClick={() => setOver18Prompt(true)}
+                                    onClick={() => {
+                                        gtag("event", analyticEvents.CLICK.HOME_TRY_OPEN_CHAT, {
+                                            page_path: window.location.pathname,
+                                            send_to: TRACKING_ID,
+                                        });
+                                        setOver18Prompt(true)
+                                    }}
                                     style={{ backgroundColor: colors.primary, marginBottom: 20 }}
                                     size="large"
                                     sx={{ borderRadius: 9999 }}
@@ -149,9 +163,17 @@ const Index = () => {
                                     Try Open Chat
                                 </Button>
                                 <Button
+
                                     className="global_bttn_width"
                                     color="light"
-                                    onClick={() => loginWithRedirect()}
+                                    onClick={() => {
+                                        gtag("event", analyticEvents.CLICK.HOME_GET_STARTED, {
+                                            page_path: window.location.pathname,
+                                            send_to: TRACKING_ID,
+                                        });
+                                        setOver18Prompt(true)
+                                        loginWithRedirect()
+                                    }}
                                     style={{ border: "3px solid" }}
                                     // style={{ backgroundColor: colors.primary }}
                                     size="large"

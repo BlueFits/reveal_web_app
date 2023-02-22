@@ -30,12 +30,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import colors from "../../../../constants/colors";
+import colors from "../../../../constants/ui/colors";
 import { TRACKING_ID } from "../../../../../config/GoogleAnalyticsConfig";
 import ShareReveal from "../../../../components/ShareReveal/ShareReveal";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import GenderForm from "../../../../components/Forms/GenderForm/GenderForm";
+import analyticEvents from "../../../../constants/analytics/analyticEvents";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -82,7 +83,7 @@ const ProfilePage = () => {
     //Google Analytics
 
     useEffect(() => {
-        gtag("event", "profile-focus", {
+        gtag("event", analyticEvents.PAGE.PROFILE, {
             page_path: window.location.pathname,
             send_to: TRACKING_ID,
         });

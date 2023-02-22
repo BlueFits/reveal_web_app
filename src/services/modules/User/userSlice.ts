@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serverURL } from "../../../../config/Server";
-import avatarSimple from '../../../constants/avatar';
+import avatarSimple from '../../../constants/ui/avatar';
 import { CreateUserDto, PatchUserDto, PutUserDto } from '../../../../server/Users/dto/users.dto';
 import { gender } from '../../../../server/Users/dto/users.dto';
 import UsersApi, { IUpdateUserByForm, IAddUserToMatches, IReloadMessages } from './api';

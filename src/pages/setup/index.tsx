@@ -13,8 +13,10 @@ import { IReducer } from "../../services/store";
 import { useRouter } from "next/router";
 import { serverURL } from "../../../config/Server";
 import GenderForm from "../../components/Forms/GenderForm/GenderForm";
-import colors from "../../constants/colors";
-import Head from 'next/head'
+import colors from "../../constants/ui/colors";
+import Head from 'next/head';
+import analyticEvents from "../../constants/analytics/analyticEvents";
+import { TRACKING_ID } from "../../../config/GoogleAnalyticsConfig";
 
 export async function getServerSideProps({ params, req }) {
     const referer = req.headers.referer || null
@@ -52,6 +54,10 @@ const InitialSetup = ({ referer }) => {
     };
 
     const submitHandler = async () => {
+        gtag("event", analyticEvents.CLICK.SETUP_SIGNUP, {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
 
         let newErrs = [];
 

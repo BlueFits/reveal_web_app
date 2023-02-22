@@ -1,4 +1,6 @@
-import { IUserReducer } from "../services/modules/User/userSlice";
+import { IUserReducer } from "../../services/modules/User/userSlice";
+
+/* Socket Connection types */
 
 export interface callUserData {
     toCallID: string,
