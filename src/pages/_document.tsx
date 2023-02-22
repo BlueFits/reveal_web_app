@@ -2,7 +2,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {
 
-  description = "Try blindfold dating! With Reveal, talk with someone wihout seeing what they look like at first, and then chose wether you both will reveal or not."
+  description = "Try blindfold dating! With Reveal, talk with someone wihout seeing what they look like at first, and then chose whether you both will reveal or not."
 
   render() {
     return (
