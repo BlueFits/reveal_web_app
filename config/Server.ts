@@ -24,20 +24,10 @@ export const currentENV = process.env.NODE_ENV === "production" ? status.prod2 :
 // export const serverURL = process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development];
 
 const serverURLConfig = () => {
-
-    console.log(process.env.NEXT_PUBLIC_VERCEL_ENV);
-    console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
-
-
-    switch (process.env.NODE_ENV) {
-        case "production":
-            return apis[status.prod2];
-        case "test":
-            return apis[status.qa];
-        case "development":
-            return apis[status.development];
-        default:
-            return apis[status.development]
+    if (process.env.NEXT_PUBLIC_VERCEL_URL) {
+        return apis[status.qa]
+    } else {
+        return process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development]
     }
 }
 
