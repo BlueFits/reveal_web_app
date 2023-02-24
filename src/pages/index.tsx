@@ -171,7 +171,6 @@ const Index = () => {
                                             page_path: window.location.pathname,
                                             send_to: TRACKING_ID,
                                         });
-                                        setOver18Prompt(true)
                                         loginWithRedirect()
                                     }}
                                     style={{ border: "3px solid" }}
