@@ -31,7 +31,4 @@ const serverURLConfig = () => {
     }
 }
 
-console.log("NODE_ENV", process.env.NODE_ENV);
-console.log("ServerURL Config", serverURLConfig());
-
 export const serverURL = serverURLConfig();

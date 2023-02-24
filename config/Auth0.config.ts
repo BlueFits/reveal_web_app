@@ -19,7 +19,7 @@ const Auth0ENV = {
     },
 };
 
-const Auth0Config = process.env.NODE_ENV === "production" ? Auth0ENV.prod : Auth0ENV.dev;
+const Auth0Config = (process.env.NODE_ENV !== "production") || (process.env.NEXT_PUBLIC_VERCEL_URL) ? Auth0ENV.dev : Auth0ENV.prod;
 
 const SPACofig = {
     dev: {
@@ -32,6 +32,6 @@ const SPACofig = {
     }
 }
 
-export const SPA = process.env.NODE_ENV === "production" ? SPACofig.prod : SPACofig.dev;
+export const SPA = (process.env.NODE_ENV !== "production") || (process.env.NEXT_PUBLIC_VERCEL_URL) ? SPACofig.dev : SPACofig.prod;
 
 export default Auth0Config;
