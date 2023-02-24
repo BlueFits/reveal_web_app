@@ -31,7 +31,11 @@ const serverURLConfig = () => {
             return apis[status.qa];
         case "development":
             return apis[status.development];
+        default:
+            return apis[status.development]
     }
 }
 
-export const serverURL = process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development];
+console.log("ServerURL Config", serverURLConfig());
+
+export const serverURL = serverURLConfig();
