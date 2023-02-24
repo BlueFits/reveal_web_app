@@ -24,6 +24,11 @@ export const currentENV = process.env.NODE_ENV === "production" ? status.prod2 :
 // export const serverURL = process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development];
 
 const serverURLConfig = () => {
+
+    if (process.env.VERCEL) {
+        console.log(process.env.VERCEL_URL);
+    }
+
     switch (process.env.NODE_ENV) {
         case "production":
             return apis[status.prod2];
