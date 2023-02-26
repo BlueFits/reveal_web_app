@@ -13,6 +13,7 @@ export default {
         HOME_TRY_OPEN_CHAT: "click-home-tryOpenChat-bttn",
         HOME_OVER_18: "click-home-over18Popup-bttn",
         HOME_GET_STARTED: "click-home-getStarted-bttn",
+        HOME_EARLY_SIGN_UP: "click-home-earlySignUp-bttn",
         FEEDBACK_FAB: "click-feedback-fab",
         SETUP_SIGNUP: "click-setup-signUp-bttn",
     },

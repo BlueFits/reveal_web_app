@@ -76,6 +76,14 @@ const Index = () => {
         });
     }
 
+    const earlySignUpHandler = () => {
+        gtag("event", analyticEvents.CLICK.HOME_EARLY_SIGN_UP, {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
+        loginWithRedirect()
+    }
+
     return (
         <>
             <Head>
@@ -148,6 +156,17 @@ const Index = () => {
                                 <Button
                                     className="global_bttn_width"
                                     color="light"
+                                    onClick={earlySignUpHandler}
+                                    style={{ backgroundColor: colors.primary, marginBottom: 20 }}
+                                    size="large"
+                                    sx={{ borderRadius: 9999 }}
+                                    variant="contained"
+                                >
+                                    Early Sign Up
+                                </Button>
+                                {/* <Button
+                                    className="global_bttn_width"
+                                    color="light"
                                     onClick={() => {
                                         gtag("event", analyticEvents.CLICK.HOME_TRY_OPEN_CHAT, {
                                             page_path: window.location.pathname,
@@ -180,7 +199,7 @@ const Index = () => {
                                     variant="outlined"
                                 >
                                     Get Started
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </div>
