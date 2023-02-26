@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { gender } from "../../Users/dto/users.dto";
 import socketRoomDao from "../dao/socketRoom.dao";
+import { CreateSocketRoomDTO } from "../dto/SocketRoom.dto";
 
 class SocketRoomController {
 
@@ -14,6 +15,7 @@ class SocketRoomController {
             showMe: req.body.showMe,
             createdBy: req.body.gender,
             openRoom: req.body.openRoom || false,
+            interests: req.body.interests || [],
         });
         res.status(201).send(socketRoom);
     }
@@ -35,8 +37,18 @@ class SocketRoomController {
             });
 
         } else {
+
+            const filter: { [key: string]: any } = {
+                "_id": { $ne: roomID },
+                showMe: req.body.gender,
+                createdBy: req.body.showMe,
+                openRoom: false,
+            };
+
+            if (req.body.interests && req.body.interests.length > 0) filter.interests = { $in: req.body.interests };
+
             room = await socketRoomDao.getRooms({
-                filter: { "_id": { $ne: roomID }, showMe: req.body.gender, createdBy: req.body.showMe, openRoom: false }
+                filter
             });
         }
 

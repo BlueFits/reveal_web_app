@@ -16,6 +16,7 @@ import MatchesPage from "./components/MatchesPage/MatchesPage";
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import colors from "../../constants/ui/colors";
 
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -27,7 +28,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 const MuiBottomNavigationAction = styled(BottomNavigationAction)(`
   &.Mui-selected {
-    color: #9b59b6;
+    color: ${colors.primary};
   }
 `);
 

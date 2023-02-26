@@ -7,6 +7,7 @@ class SocketRoom {
     private socketRoomSchema = new this.Schema({
         openRoom: { type: Boolean, default: false },
         createdBy: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
+        interests: [String],
         showMe: { type: String, enum: [gender.Male, gender.Female, gender.Gay, gender.Lesbian] },
         roomID: String,
     });

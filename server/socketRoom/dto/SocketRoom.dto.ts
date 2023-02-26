@@ -4,4 +4,5 @@ export interface CreateSocketRoomDTO {
     openRoom?: boolean;
     showMe: gender;
     createdBy: gender;
+    interests: [string];
 }

@@ -153,7 +153,7 @@ const Index = () => {
                                             page_path: window.location.pathname,
                                             send_to: TRACKING_ID,
                                         });
-                                        setOver18Prompt(true)
+                                        setOver18Prompt(true);
                                     }}
                                     style={{ backgroundColor: colors.primary, marginBottom: 20 }}
                                     size="large"
