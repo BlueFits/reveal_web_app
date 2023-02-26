@@ -127,7 +127,10 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                                 Trial User
                             </Typography>
                         }
-                        {avatar.display && !user.isTrial && simillarInterest.interests.length > 0 &&
+                        {
+                            avatar.display &&
+                            !user.isTrial &&
+                            simillarInterest.interests.length > 0 &&
                             <div>
                                 <Typography marginTop={2} variant="h6" color={"#fff"}>
                                     We both like
