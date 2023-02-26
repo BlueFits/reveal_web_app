@@ -101,9 +101,11 @@ const Index = () => {
             gender: userReducer.gender,
             roomID: roomReducer._id || null,
             openRoom: router.query.chatType,
+            interests: userReducer.interests && userReducer.interests.length > 0 ? userReducer.interests : [],
         }));
         setPeerInfo(peerMsgInfo.CONNECTING);
         console.log("Joining ", roomData);
+        console.log("Joining Payload", roomData.payload);
         if (roomData.payload && roomData.payload._id) {
             joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         } else {
@@ -117,9 +119,11 @@ const Index = () => {
             showMe: userReducer.showMe,
             gender: userReducer.gender,
             openRoom: router.query.chatType,
+            interests: userReducer.interests && userReducer.interests.length > 0 ? userReducer.interests : [],
         }));
         setPeerInfo(peerMsgInfo.WAITING);
         console.log("Created room id ", roomData.payload._id);
+        console.log("Created room payload ", roomData.payload);
         joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
             await dispatch(removeRoom(roomData.payload._id));

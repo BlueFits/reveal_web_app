@@ -29,6 +29,9 @@ class SocketRoomController {
         const roomID = req.body.roomID;
 
         let room = null;
+        let roomWithInterest = null;
+
+        console.log(req.body);
 
         if (req.body.openRoom) {
 
@@ -38,22 +41,34 @@ class SocketRoomController {
 
         } else {
 
-            const filter: { [key: string]: any } = {
+            const filterDefault: { [key: string]: any } = {
                 "_id": { $ne: roomID },
                 showMe: req.body.gender,
                 createdBy: req.body.showMe,
                 openRoom: false,
             };
 
-            if (req.body.interests && req.body.interests.length > 0) filter.interests = { $in: req.body.interests };
+            if (req.body.interests && req.body.interests.length > 0) {
+                const filterInterest: { [key: string]: any } = {
+                    "_id": { $ne: roomID },
+                    showMe: req.body.gender,
+                    createdBy: req.body.showMe,
+                    openRoom: false,
+                    interests: { $in: req.body.interests }
+                };
+                roomWithInterest = await socketRoomDao.getRooms({
+                    filter: filterInterest,
+                });
+            }
 
             room = await socketRoomDao.getRooms({
-                filter
+                filter: filterDefault,
             });
         }
 
-
-        if (room.length == 0) {
+        if (roomWithInterest && roomWithInterest.length > 0) {
+            res.status(200).send(roomWithInterest[0]);
+        } else if (room.length === 0) {
             res.status(404).send(null);
         } else {
             res.status(200).send(room[0]);

@@ -28,6 +28,7 @@ export const findRoom: any = createAsyncThunk("room/findSim", async (data: {
     gender: gender,
     roomID?: string | null,
     openRoom: string,
+    interests: [string] | [],
 }) => {
     try {
         const response = await fetch(`${serverURL}${API}/preference_match`, {
@@ -41,6 +42,7 @@ export const findRoom: any = createAsyncThunk("room/findSim", async (data: {
                 gender: data.gender,
                 roomID: data.roomID || null,
                 openRoom: parseChatType(data.openRoom),
+                interests: data.interests && data.interests.length > 0 ? data.interests : [],
             }),
         });
         if (!response.ok) {
@@ -59,7 +61,8 @@ export const findRoom: any = createAsyncThunk("room/findSim", async (data: {
 export const createRoom: any = createAsyncThunk("room/create", async (data: {
     showMe: gender,
     gender: gender,
-    openRoom: string
+    openRoom: string,
+    interests: [string] | [],
 }) => {
     const response = await fetch(`${serverURL}${API}`, {
         method: "POST",
@@ -71,6 +74,7 @@ export const createRoom: any = createAsyncThunk("room/create", async (data: {
             showMe: data.showMe,
             gender: data.gender,
             openRoom: parseChatType(data.openRoom),
+            interests: data.interests.length > 0 ? data.interests : [],
         }),
     });
     if (!response.ok) {

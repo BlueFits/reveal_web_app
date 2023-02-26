@@ -11,7 +11,7 @@ class UsersDao {
         preference: [String],
         picture: { type: String, required: false, default: "" },
         matches: [{ type: this.Schema.Types.ObjectId, ref: "Users" }],
-        interests: [String],
+        interests: [{ type: String, lowercase: true }],
         auth0: {
             name: String,
             email: String,
