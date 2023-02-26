@@ -407,6 +407,7 @@ const Index = () => {
                     matched={showMatched}
                     disableDisplay={isSkipped}
                     peerInfo={peerInfo}
+                    otherUser={userReducer}
                 />
 
                 <VideoPreview
@@ -417,6 +418,7 @@ const Index = () => {
                     matched={showMatched}
                     matchStatus={userReducer.matches.some(match => match._id === otherUserReducer._id) || match === matchStatus.ACCEPTED}
                     callAccepted={callAccepted}
+                    otherUser={otherUserReducer}
                 />
                 <Container className="absolute flex flex-col bottom-5 z-20">
                     {

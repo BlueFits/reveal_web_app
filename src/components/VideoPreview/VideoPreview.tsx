@@ -17,6 +17,7 @@ interface IVideoPreview {
     matchStatus?: boolean;
     callAccepted?: boolean;
     peerInfo?: string;
+    otherUser: IUserReducer | apiTempUser;
 }
 
 
@@ -29,7 +30,8 @@ const VideoPreview: React.FC<IVideoPreview> = ({
     disableDisplay = false,
     matchStatus = false,
     callAccepted = false,
-    peerInfo = ""
+    peerInfo = "",
+    otherUser
 }) => {
     const [localRef, setLocalRef] = useState(videoRef);
     const { username, avatar } = user;
@@ -66,6 +68,19 @@ const VideoPreview: React.FC<IVideoPreview> = ({
         show: `opacity-1 z-10`,
         hidden: `opacity-0 -z-10`,
     }
+
+    const simillarInterest = useMemo(() => {
+
+        const sim = user && user.interests && user.interests.filter((interest) => {
+            if (otherUser && otherUser.interests && otherUser.interests.includes(interest)) return interest;
+        });
+
+        console.log("$$$", sim);
+
+        return {
+            interests: sim
+        };
+    }, [user, otherUser]);
 
     return (
         <Container sx={{ backgroundColor: "#000", zIndex: "11" }} disableGutters className="flex-1 relative overflow-hidden">
@@ -112,17 +127,36 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                                 Trial User
                             </Typography>
                         }
-                        {avatar.display && !user.isTrial && user.interests.length > 0 &&
-                            <Typography marginTop={2} variant="h6" color={"#fff"}>
-                                Here are some things I like
-                            </Typography>
+                        {avatar.display && !user.isTrial && simillarInterest.interests.length > 0 &&
+                            <div>
+                                <Typography marginTop={2} variant="h6" color={"#fff"}>
+                                    We both like
+                                </Typography>
+                                <div className="mt-5">
+                                    <InterestsChips
+                                        readOnly={true}
+                                        user={(simillarInterest as IUserReducer)}
+                                    />
+                                </div>
+                            </div>
                         }
-                        <div className="mt-5">
-                            <InterestsChips
-                                readOnly={true}
-                                user={user}
-                            />
-                        </div>
+                        {
+                            simillarInterest.interests && simillarInterest.interests.length === 0 &&
+                            avatar.display &&
+                            !user.isTrial &&
+                            user.interests.length > 0 &&
+                            <div>
+                                <Typography marginTop={2} variant="h6" color={"#fff"}>
+                                    Here are some things I like
+                                </Typography>
+                                <div className="mt-5">
+                                    <InterestsChips
+                                        readOnly={true}
+                                        user={user}
+                                    />
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             }
