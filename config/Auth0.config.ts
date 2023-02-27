@@ -19,9 +19,7 @@ const Auth0ENV = {
     },
 };
 
-const isQA = window && window.location.href.includes("qa-");
-
-const Auth0Config = (process.env.NODE_ENV !== "production") || isQA ? Auth0ENV.dev : Auth0ENV.prod;
+const Auth0Config = (process.env.NODE_ENV !== "production") ? Auth0ENV.dev : Auth0ENV.prod;
 
 const SPACofig = {
     dev: {
@@ -34,6 +32,6 @@ const SPACofig = {
     }
 }
 
-export const SPA = (process.env.NODE_ENV !== "production") || isQA ? SPACofig.dev : SPACofig.prod;
+export const SPA = (process.env.NODE_ENV !== "production") ? SPACofig.dev : SPACofig.prod;
 
 export default Auth0Config;

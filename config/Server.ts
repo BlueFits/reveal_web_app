@@ -24,9 +24,9 @@ export const currentENV = process.env.NODE_ENV === "production" ? status.prod2 :
 // export const serverURL = process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development];
 
 const serverURLConfig = () => {
-    const isQA = window.location.href.includes("qa-")
-    console.log("my log", isQA);
-    if (isQA) {
+    const QA_URL = process.env.RENDER_EXTERNAL_HOSTNAME;
+    console.log("$$$", QA_URL);
+    if (QA_URL) {
         return apis[status.qa]
     } else {
         return process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development]
