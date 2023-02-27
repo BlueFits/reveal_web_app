@@ -8,7 +8,7 @@ class MongooseService {
         // useUnifiedTopology: true,
         serverSelectionTimeoutMS: 5000,
     };
-    private mongoDB = db_url;
+    private mongoDB = process.env.MONGODB_URI || db_url;
 
     constructor() {
         this.connectWithRetry();
