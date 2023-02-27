@@ -75,8 +75,6 @@ const VideoPreview: React.FC<IVideoPreview> = ({
             if (otherUser && otherUser.interests && otherUser.interests.includes(interest)) return interest;
         });
 
-        console.log("$$$", sim);
-
         return {
             interests: sim
         };
@@ -131,7 +129,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                             avatar.display &&
                             !user.isTrial &&
                             simillarInterest.interests.length > 0 &&
-                            <div>
+                            <div className="flex flex-col justify-center items-center">
                                 <Typography marginTop={2} variant="h6" color={"#fff"}>
                                     We both like
                                 </Typography>
