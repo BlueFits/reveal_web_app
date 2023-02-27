@@ -13,7 +13,7 @@ export enum matchStatus {
 }
 
 export enum peerMsgInfo {
-    WAITING = "Waiting for user",
+    WAITING = "No one is availble at the moment, waiting for someone to find you",
     CONNECTING = "Connecting",
     FINDING = "Finding potential matches hold tight...",
     DISCONNECT = "User left",

@@ -101,7 +101,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
             {
                 !user.username && !isMuted &&
                 <div style={{ right: "40%", top: "45%" }} className={styles.centered_axis_x}>
-                    {peerInfo !== peerMsgInfo.DISCONNECT &&
+                    {(peerInfo !== peerMsgInfo.DISCONNECT) && (peerInfo !== peerMsgInfo.WAITING) &&
                         <CircularProgress style={{ color: "#fff" }} />
                     }
                     <Typography textAlign={"center"} marginTop={3} color={"#fff"} variant="body1">{peerInfo}</Typography>
@@ -146,7 +146,7 @@ const VideoPreview: React.FC<IVideoPreview> = ({
                             avatar.display &&
                             !user.isTrial &&
                             user.interests.length > 0 &&
-                            <div>
+                            <div className="flex flex-col justify-center items-center">
                                 <Typography marginTop={2} variant="h6" color={"#fff"}>
                                     Here are some things I like
                                 </Typography>

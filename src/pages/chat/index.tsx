@@ -103,10 +103,10 @@ const Index = () => {
             openRoom: router.query.chatType,
             interests: userReducer.interests && userReducer.interests.length > 0 ? userReducer.interests : [],
         }));
-        setPeerInfo(peerMsgInfo.CONNECTING);
         console.log("Joining ", roomData);
         console.log("Joining Payload", roomData.payload);
         if (roomData.payload && roomData.payload._id) {
+            setPeerInfo(peerMsgInfo.CONNECTING);
             joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         } else {
             /* no available rooms for database */
@@ -126,6 +126,9 @@ const Index = () => {
         console.log("Created room payload ", roomData.payload);
         joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
+
+            setPeerInfo(peerMsgInfo.CONNECTING);
+
             await dispatch(removeRoom(roomData.payload._id));
             const peer1 = new Peer({
                 initiator: true,
