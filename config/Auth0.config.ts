@@ -19,7 +19,7 @@ const Auth0ENV = {
     },
 };
 
-const isQA = window.location.href.includes("qa-")
+const isQA = window && window.location.href.includes("qa-");
 
 const Auth0Config = (process.env.NODE_ENV !== "production") || isQA ? Auth0ENV.dev : Auth0ENV.prod;
 
