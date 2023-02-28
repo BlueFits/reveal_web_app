@@ -231,10 +231,14 @@ const Index = () => {
 
     /* Reveal timer countdown */
     useEffect(() => {
+        let timer;
         if (callAccepted && revealTimer !== 0) {
-            setTimeout(() => {
+            timer = setTimeout(() => {
                 setRevealTimer(revealTimer - 1);
             }, 1000);
+        }
+        return () => {
+            clearTimeout(timer)
         }
     }, [revealTimer, callAccepted]);
 
