@@ -172,6 +172,7 @@ const Index = () => {
                 dispatch(clearState());
                 setCallAccepted(false);
                 setRevealTimer(revealTimerNum);
+                setMatch(matchStatus.STANDBY);
                 // Removed so that show avatar stays even after usker skips
                 // setReveal(revealStatus.STANDBY);
             })
@@ -179,6 +180,7 @@ const Index = () => {
                 setReveal(revealStatus.CONFIRM);
             })
             socket.on(socketEmitters.MATCH_INIT, () => {
+                console.log("match has initialized");
                 setMatch(matchStatus.CONFIRM);
             })
             findRoomThunk();
@@ -320,6 +322,7 @@ const Index = () => {
         setCallAccepted(false);
         setRevealTimer(revealTimerNum);
         setReveal(revealStatus.STANDBY);
+        setMatch(matchStatus.STANDBY);
         socket.emit(socketEmitters.ROOM_LEAVE)
 
         /* 
