@@ -18,7 +18,6 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import colors from "../../constants/ui/colors";
 
-
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
     ref,
@@ -95,7 +94,7 @@ const Index = () => {
                         }
                         {value === 1 && <MatchesPage />}
                         {value === 2 && <ProfilePage />}
-                        <Box sx={{ width: "100%" }}>
+                        <Box sx={{ width: "100%", position: "fixed", bottom: 0 }}>
                             <BottomNavigation
                                 showLabels
                                 value={value}
