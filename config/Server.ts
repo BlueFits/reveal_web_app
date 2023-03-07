@@ -20,5 +20,5 @@ export const apis: {
     qa: "https://qa-reveal-app.onrender.com",
 };
 
-export const currentENV = process.env.NODE_ENV === "production" ? status.qa : status.development;
-export const serverURL = process.env.NODE_ENV === "production" ? apis[status.qa] : apis[status.development];
+export const currentENV = process.env.NODE_ENV === "production" ? status.prod2 : status.development;
+export const serverURL = process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development];
