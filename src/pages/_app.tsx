@@ -102,7 +102,7 @@ function MyApp({ Component, pageProps }) {
           <Provider store={store}>
             <ThemeProvider theme={theme}>
               <GoogleAnalytics />
-              <FeedbackComponent />
+              {/* <FeedbackComponent /> */}
               <Component {...pageProps} />
             </ThemeProvider>
           </Provider>
