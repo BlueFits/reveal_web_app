@@ -16,5 +16,6 @@ export default {
         HOME_EARLY_SIGN_UP: "click-home-earlySignUp-bttn",
         FEEDBACK_FAB: "click-feedback-fab",
         SETUP_SIGNUP: "click-setup-signUp-bttn",
+        PRELAUNCH_SIGNUP: "click-prelaunch-signUp-bttn",
     },
 }

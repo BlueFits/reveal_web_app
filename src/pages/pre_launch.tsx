@@ -4,8 +4,9 @@ import { Typography, Button, Select, MenuItem, FormControl, Alert, Container, Se
 import FormBlock from "../components/FormBlock/FormBlock";
 import colors from "../constants/ui/colors";
 import { school } from "../../server/PreLaunchUser/dto/prelaunchUser.dto";
-import { color } from "@mui/system";
 import { serverURL } from "../../config/Server";
+import analyticEvents from "../constants/analytics/analyticEvents";
+import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
 
 const userCollect = () => {
 
@@ -16,7 +17,11 @@ const userCollect = () => {
     const [isFinished, setIsFinished] = useState(false);
 
     const submitHandler = async () => {
-        console.log("salut");
+
+        gtag("event", analyticEvents.CLICK.PRELAUNCH_SIGNUP, {
+            page_path: window.location.pathname,
+            send_to: TRACKING_ID,
+        });
 
         let newErrs = [];
 
