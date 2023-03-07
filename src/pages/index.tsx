@@ -153,7 +153,7 @@ const Index = () => {
                                 Try speed blindfold dating online with reveal!
                             </Typography>
                             <div className="mt-4 flex flex-col justify-center items-center">
-                                {/* <Button
+                                <Button
                                     className="global_bttn_width"
                                     color="light"
                                     onClick={earlySignUpHandler}
@@ -163,8 +163,8 @@ const Index = () => {
                                     variant="contained"
                                 >
                                     Early Sign Up
-                                </Button> */}
-                                <Button
+                                </Button>
+                                {/* <Button
                                     className="global_bttn_width"
                                     color="light"
                                     onClick={() => {
@@ -199,7 +199,7 @@ const Index = () => {
                                     variant="outlined"
                                 >
                                     Get Started
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </div>
