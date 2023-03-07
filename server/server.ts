@@ -16,6 +16,7 @@ import SocketRoom from './socketRoom/socketRoom.routes.config';
 import UserRoutes from './Users/user.routes.config';
 import MessageRoutes from './Messages/messages.routes.config';
 import FeedbackRoutes from './Feedback/feedback.routes.config';
+import PreLaunchUserRoutes from './PreLaunchUser/prelaunchUser.routes.config';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -28,6 +29,7 @@ const availableSocketRoomRouter = new SocketRoom("SocketRoomRoutes").getRouter;
 const usersRouter = new UserRoutes("UserRoutes").getRouter;
 const messageRouter = new MessageRoutes("MessageRoutes").getRouter;
 const feedbackRouter = new FeedbackRoutes("FeedbackRoute").getRouter;
+const prelaunchUserRouter = new PreLaunchUserRoutes("PrelaunchRoute").getRouter;
 
 app.prepare().then(() => {
 
@@ -43,6 +45,7 @@ app.prepare().then(() => {
 	server.use("/api/users", usersRouter);
 	server.use("/api/messages", messageRouter);
 	server.use("/api/feedback", feedbackRouter);
+	server.use("/api/prelaunch", prelaunchUserRouter);
 
 	// enableLock(server);
 
