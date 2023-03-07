@@ -9,7 +9,7 @@ import SocketInstance from './utils/socketUtils/socketInstance';
 import { auth, requiresAuth } from "express-openid-connect";
 import { enableLock } from './utils/utils';
 //Config
-import Auth0Config from '../config/Auth0.config';
+// import Auth0Config from '../config/Auth0.config';
 
 //Router
 import SocketRoom from './socketRoom/socketRoom.routes.config';
@@ -39,7 +39,7 @@ app.prepare().then(() => {
 	server.use(express.json());
 	server.use(cors());
 	server.use(cookieParser());
-	server.use(auth(Auth0Config))
+	// server.use(auth(Auth0Config))
 
 	server.use("/api/socket_room", availableSocketRoomRouter);
 	server.use("/api/users", usersRouter);
@@ -49,9 +49,9 @@ app.prepare().then(() => {
 
 	// enableLock(server);
 
-	server.get("/profile", requiresAuth(), (req, res) => {
-		res.send(JSON.stringify(req.oidc.user));
-	});
+	// server.get("/profile", requiresAuth(), (req, res) => {
+	// 	res.send(JSON.stringify(req.oidc.user));
+	// });
 
 	server.all("*", (req: express.Request, res: express.Response) => {
 		return handle(req, res);

@@ -103,10 +103,10 @@ const Index = () => {
             openRoom: router.query.chatType,
             interests: userReducer.interests && userReducer.interests.length > 0 ? userReducer.interests : [],
         }));
-        setPeerInfo(peerMsgInfo.CONNECTING);
         console.log("Joining ", roomData);
         console.log("Joining Payload", roomData.payload);
         if (roomData.payload && roomData.payload._id) {
+            setPeerInfo(peerMsgInfo.CONNECTING);
             joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         } else {
             /* no available rooms for database */
@@ -126,6 +126,9 @@ const Index = () => {
         console.log("Created room payload ", roomData.payload);
         joinRoom(roomData.payload._id, userReducer.socketID, setUserJoinedRoom);
         socket.on(socketEmitters.USER_CONNECTED, async (userID) => {
+
+            setPeerInfo(peerMsgInfo.CONNECTING);
+
             await dispatch(removeRoom(roomData.payload._id));
             const peer1 = new Peer({
                 initiator: true,
@@ -169,6 +172,7 @@ const Index = () => {
                 dispatch(clearState());
                 setCallAccepted(false);
                 setRevealTimer(revealTimerNum);
+                setMatch(matchStatus.STANDBY);
                 // Removed so that show avatar stays even after usker skips
                 // setReveal(revealStatus.STANDBY);
             })
@@ -176,6 +180,7 @@ const Index = () => {
                 setReveal(revealStatus.CONFIRM);
             })
             socket.on(socketEmitters.MATCH_INIT, () => {
+                console.log("match has initialized");
                 setMatch(matchStatus.CONFIRM);
             })
             findRoomThunk();
@@ -228,10 +233,14 @@ const Index = () => {
 
     /* Reveal timer countdown */
     useEffect(() => {
+        let timer;
         if (callAccepted && revealTimer !== 0) {
-            setTimeout(() => {
+            timer = setTimeout(() => {
                 setRevealTimer(revealTimer - 1);
             }, 1000);
+        }
+        return () => {
+            clearTimeout(timer)
         }
     }, [revealTimer, callAccepted]);
 
@@ -313,6 +322,7 @@ const Index = () => {
         setCallAccepted(false);
         setRevealTimer(revealTimerNum);
         setReveal(revealStatus.STANDBY);
+        setMatch(matchStatus.STANDBY);
         socket.emit(socketEmitters.ROOM_LEAVE)
 
         /* 

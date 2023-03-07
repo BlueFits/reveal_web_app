@@ -18,7 +18,6 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import colors from "../../constants/ui/colors";
 
-
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
     ref,
@@ -70,40 +69,61 @@ const Index = () => {
                     <Head>
                         <title>Reveal | dashboard</title>
                     </Head>
-                    <div className="flex h-screen w-screen justify-center items-center flex-col p-8">
-                        <Typography marginBottom={3} variant="h4">
-                            Thank you for signing up early!
-                        </Typography>
-                        <Typography variant="body1" marginBottom={5}>
-                            Our launch date is on April 15! Be sure to check <strong>{userReducer.auth0.email}</strong> for any updates.
-                        </Typography>
-                        <Button
-                            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                    <div className="h-screen w-screen flex flex-col justify-between">
+                        <Snackbar
+                            sx={{ maxWidth: 500 }}
+                            open={snackBarOpen}
+                            autoHideDuration={8 * 1000}
+                            onClose={handleSnackBarClose}
+                            anchorOrigin={{ horizontal: "right", vertical: "top" }}
                         >
-                            Back to home page
-                        </Button>
+                            <Alert onClose={handleSnackBarClose} severity="info" sx={{ width: '100%' }}>
+                                Thank you for participating in Reveal's early access.
+                                Should you encounter any bugs, glitches, lack of functionality or
+                                other problems on the website, please let us know immediately so we
+                                can rectify these accordingly.
+                            </Alert>
+                        </Snackbar>
+
+                        {value === 0 &&
+                            <div className="grow">
+                                <PreChatPage
+                                    user={userReducer}
+                                />
+                            </div>
+                        }
+                        {value === 1 && <MatchesPage />}
+                        {value === 2 && <ProfilePage />}
+                        <Box sx={{ width: "100%", position: "fixed", bottom: 0 }}>
+                            <BottomNavigation
+                                showLabels
+                                value={value}
+                                onChange={(event, newValue) => {
+                                    setValue(newValue);
+                                }}
+                            >
+                                <MuiBottomNavigationAction label="Chat" icon={<VideoChatIcon />} />
+                                <MuiBottomNavigationAction label="Matches" icon={<Diversity1Icon />} />
+                                <MuiBottomNavigationAction label="Profile" icon={<Person />} />
+                            </BottomNavigation>
+                        </Box>
                     </div>
                 </>
             ) : (
-                <>
-                    <Head>
-                        <title>Reveal | Verification</title>
-                    </Head>
-                    // Verification Redirect
-                    <div className="flex h-screen w-screen justify-center items-center flex-col p-8">
-                        <Typography marginBottom={3} variant="h4">
-                            Please verify your email to finish the early sign up.
-                        </Typography>
-                        <Typography variant="body1" marginBottom={5}>
-                            We sent an email to <strong>{userReducer.auth0.email}</strong>. You are moments away from finishing sign up for reveal, please refresh this page once you have verified your email.
-                        </Typography>
-                        <Button
-                            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-                        >
-                            Back to home page
-                        </Button>
-                    </div>
-                </>
+                // Verification Redirect
+                <div className="flex h-screen w-screen justify-center items-center flex-col p-8">
+                    <Typography marginBottom={3} variant="h4">
+                        Please verify your email to continue.
+                    </Typography>
+                    <Typography variant="body1" marginBottom={5}>
+                        We sent an email to <strong>{userReducer.auth0.email}</strong>. You are moments away from trying out reveal, please refresh this page once you have verified your email.
+                    </Typography>
+                    <Button
+                        onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                    >
+                        Back to home page
+                    </Button>
+                </div>
             )
         ) : (
             <Loading />

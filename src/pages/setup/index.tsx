@@ -92,8 +92,6 @@ const InitialSetup = ({ referer }) => {
                     <title>Reveal | Setup</title>
                 </Head>
                 <div className="p-7 flex flex-col">
-                    <Typography fontWeight={"bold"} variant="h4" marginBottom={2}>Reveal Early Sign Up</Typography>
-                    <Typography variant="body1" marginBottom={5}>Here are some things we need to know about you before our launch</Typography>
                     <FormControl>
                         <FormBlock
                             label="Display Name"

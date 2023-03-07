@@ -17,18 +17,8 @@ export const apis: {
     development: "http://localhost:3000",
     render: "https://reaveal-web-app.onrender.com",
     prod2: "https://reveal-app.co",
-    qa: "https://reveal-web-app.vercel.app",
+    qa: "https://qa-reveal-app.onrender.com",
 };
 
-export const currentENV = process.env.NODE_ENV === "production" ? status.prod2 : status.development;
-// export const serverURL = process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development];
-
-const serverURLConfig = () => {
-    if (process.env.NEXT_PUBLIC_VERCEL_URL) {
-        return apis[status.qa]
-    } else {
-        return process.env.NODE_ENV === "production" ? apis[status.prod2] : apis[status.development]
-    }
-}
-
-export const serverURL = serverURLConfig();
+export const currentENV = process.env.NODE_ENV === "production" ? status.qa : status.development;
+export const serverURL = process.env.NODE_ENV === "production" ? apis[status.qa] : apis[status.development];

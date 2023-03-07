@@ -366,10 +366,12 @@ const ProfilePage = () => {
             <Typography variant="h6" fontWeight={"bold"}>Reveal</Typography>
             <Typography>Version 0.0.1</Typography>
 
-            <div className="mt-10 flex flex-col justify-center items-center">
+            <div className="mt-5 flex flex-col justify-center items-center">
                 <Typography marginBottom={3} variant="body1">Share Reveal</Typography>
                 <ShareReveal />
             </div>
+            {/* Compensate for bottom tab */}
+            <div className="h-20"></div>
         </div >
     );
 };
