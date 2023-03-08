@@ -28,6 +28,8 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
         message: null,
         sender: null,
     });
+    const [isMsgSending, setIsMsgSending] = useState(false);
+    const [isUserConnected, setIsUserConnected] = useState(false);
     const messagesEndRef = useRef(null)
 
     const scrollToBottom = ({ instant = false }: { instant?: boolean; } = {}) => {
@@ -50,6 +52,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
     useEffect(() => {
         if (open) {
             socket.on(socketEmitters.USER_CONNECTED_ROOM, (otherSocketID: string) => {
+                setIsUserConnected(true);
                 setOtherSocketID(otherSocketID);
                 const data: ISendIDChat = {
                     userSocket: user.socketID,
@@ -60,11 +63,17 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             socket.on(socketEmitters.RECEIVE_ID_CHAT, (otherSocketID: string) => {
                 setOtherSocketID(otherSocketID);
             });
-            socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: IMessageSingle) => {
-                setReceiveMsg(data);
+            socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: { message: IMessageSingle, other: string }) => {
+                setReceiveMsg(data.message);
+                socket.emit(socketEmitters.RECEIVE_MSG_RESPONSE, data.other);
             });
             socket.on(socketEmitters.CHAT_DISCONNECT, () => {
                 console.log("Other user disonnected");
+                setIsUserConnected(false);
+            });
+            socket.on(socketEmitters.RECEIVE_MSG_RESPONSE, () => {
+                setIsMsgSending(false);
+                scrollToBottom({ instant: true })
             });
         }
     }, [open]);
@@ -82,6 +91,11 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
             if (msg === "") return;
 
+            if (isUserConnected) setIsMsgSending(true);
+
+            dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg })).payload;
+
+            //Puts message for me
             const data: ISendMsgChat = {
                 message: {
                     sender: user._id,
@@ -94,11 +108,8 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             pushToMsg(data.message);
             setMsg("");
 
-            //and then save to database and emit
-
-            const response = (await dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg }))).payload;
-
-
+            //Emits message for other user
+            //and then save to server and emit
             socket.emit(socketEmitters.SEND_MSG_CHAT, data);
         } catch (err) {
             throw err;
@@ -175,6 +186,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             </div>
             <div className="flex">
                 <TextField
+                    disabled={isMsgSending}
                     autoComplete="off"
                     fullWidth
                     onChange={(e) => setMsg(e.target.value)}
@@ -183,9 +195,11 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                     variant="outlined"
                 />
                 <div className="flex justify-center items-center px-2">
-                    <IconButton onClick={sendHandler} aria-label="send" color="secondary">
-                        <SendIcon />
-                    </IconButton>
+                    {isMsgSending ? <Loading responsive /> : (
+                        <IconButton onClick={sendHandler} aria-label="send" color="secondary">
+                            <SendIcon />
+                        </IconButton>
+                    )}
                 </div>
             </div>
         </Drawer>
