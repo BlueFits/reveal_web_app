@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Head from 'next/head';
-import { Typography, Button, Select, MenuItem, FormControl, Alert, Container, SelectChangeEvent } from "@mui/material";
+import { Typography, Button, Select, MenuItem, FormControl, Alert, Container, SelectChangeEvent, Link } from "@mui/material";
 import FormBlock from "../components/FormBlock/FormBlock";
 import colors from "../constants/ui/colors";
 import { school } from "../../server/PreLaunchUser/dto/prelaunchUser.dto";
@@ -144,9 +144,7 @@ const userCollect = () => {
                                     <Typography textAlign={"center"} variant="body1" marginBottom={2}>
                                         Find out more about us
                                     </Typography>
-                                    <Button variant="text">Home Page</Button>
-                                    <Button variant="text">Socials</Button>
-                                    <Button variant="text">Blog</Button>
+                                    <Link underline={"hover"} href="/">Home Page</Link>
                                 </div>
                             </div>
                         </div>
