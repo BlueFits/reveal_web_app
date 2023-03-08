@@ -107,7 +107,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             //Show users responsive message
             pushToMsg(data.message);
             setMsg("");
-
+            if (!isUserConnected) scrollToBottom({ instant: true });
             //Emits message for other user
             //and then save to server and emit
             socket.emit(socketEmitters.SEND_MSG_CHAT, data);
