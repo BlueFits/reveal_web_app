@@ -7,6 +7,7 @@ import { school } from "../../server/PreLaunchUser/dto/prelaunchUser.dto";
 import { serverURL } from "../../config/Server";
 import analyticEvents from "../constants/analytics/analyticEvents";
 import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
+import Logo from "../components/Logo/Logo";
 
 const userCollect = () => {
 
@@ -72,6 +73,9 @@ const userCollect = () => {
                     !isFinished ? (
                         <div className="flex justify-center items-center h-screen">
                             <div className="md:h-fit h-screen border-2 p-7 flex flex-col items-center md:rounded-lg shadow-lg shadow-black-500/50 bg-white">
+                                <div className="max-w-[15rem] mb-10">
+                                    <Logo />
+                                </div>
                                 <Typography textAlign={"center"} fontWeight={"bold"} variant="h4" marginBottom={2}>
                                     Be the first to experience Reveal
                                 </Typography>

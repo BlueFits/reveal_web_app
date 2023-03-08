@@ -24,6 +24,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import analyticEvents from "../constants/analytics/analyticEvents";
 import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
+import Logo from "../components/Logo/Logo";
 
 
 const backgroundURL = "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=989&q=80";
@@ -144,7 +145,7 @@ const Index = () => {
                     open={isDrawerOpen}
                 /> */}
                     <div className="flex items-center flex-col justify-center z-10">
-                        <div className="w-4/6 text-center">
+                        <div className="w-4/6 text-center flex flex-col justify-center items-center">
                             <Typography fontWeight={"bold"} color="#fff" variant="h3">
                                 Connect Beyond Sight
                             </Typography>
