@@ -4,6 +4,7 @@ export interface IMessageSingle {
     sender: IUserReducer | string;
     message: string;
     timestamp?: Date;
+    isSending?: boolean;
 }
 
 export interface CreateMessageDto {

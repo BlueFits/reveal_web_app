@@ -9,6 +9,7 @@ import Loading from "../../../../../components/Loading/Loading";
 import { useDispatch } from "react-redux";
 import { sendMessage, pushMsg } from "../../../../../services/modules/Messages/messagesSlice";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BubbleContainer from "./BubbleContainer";
 
 interface IDrawerMenu {
     open: boolean;
@@ -28,7 +29,6 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
         message: null,
         sender: null,
     });
-    const [isMsgSending, setIsMsgSending] = useState(false);
     const [isUserConnected, setIsUserConnected] = useState(false);
     const messagesEndRef = useRef(null)
 
@@ -65,15 +65,11 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             });
             socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: { message: IMessageSingle, other: string }) => {
                 setReceiveMsg(data.message);
-                socket.emit(socketEmitters.RECEIVE_MSG_RESPONSE, data.other);
+                socket.emit(socketEmitters.RECEIVE_MSG_RESPONSE, { otherSocketID: data.other, message: data.message.message });
             });
             socket.on(socketEmitters.CHAT_DISCONNECT, () => {
                 console.log("Other user disonnected");
                 setIsUserConnected(false);
-            });
-            socket.on(socketEmitters.RECEIVE_MSG_RESPONSE, () => {
-                setIsMsgSending(false);
-                scrollToBottom({ instant: true })
             });
         }
     }, [open]);
@@ -91,7 +87,6 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
             if (msg === "") return;
 
-            if (isUserConnected) setIsMsgSending(true);
 
             dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg })).payload;
 
@@ -104,13 +99,15 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 otherSocketID,
             };
 
+            if (isUserConnected) data.message.isSending = true;
+
             //Show users responsive message
+            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
             pushToMsg(data.message);
             setMsg("");
             if (!isUserConnected) scrollToBottom({ instant: true });
             //Emits message for other user
             //and then save to server and emit
-            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
         } catch (err) {
             throw err;
         }
@@ -121,22 +118,6 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
         socket.emit(socketEmitters.CHAT_LEAVE, otherSocketID);
         socket.removeAllListeners();
         onClose();
-    };
-
-    const BubbleContainer = ({ msg, orientation = "left" }: { msg: string; orientation: "left" | "right"; }) => {
-        const classType = orientation === "left" ?
-            "mt-4 break-words bg-gray-200 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-br-lg ax-w-sm sm:max-w-lg lg:max-w-xl" :
-            "mt-4 break-words bg-sky-500 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-bl-lg max-w-sm sm:max-w-lg lg:max-w-xl";
-
-        return (
-            <div className={orientation === "right" ? "flex justify-end" : ""}>
-                <div className={classType}>
-                    <Typography variant="body1" color={orientation === "right" ? "#fff" : "inherit"}>
-                        {msg}
-                    </Typography>
-                </div>
-            </div>
-        )
     };
 
     return (
@@ -168,12 +149,13 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             }
 
             <div className="h-full px-3 pb-5 overflow-y-auto">
-                {messageInfo && messageInfo.messages.map((msg, index) => {
+                {messageInfo && messageInfo.messages.map((msg: IMessageSingle, index) => {
                     return (msg.sender as string) === user._id ?
                         <BubbleContainer
                             key={`keyForCOntainer${index}`}
                             msg={msg.message}
                             orientation="right"
+                            isSendingProp={isUserConnected && msg.isSending || false}
                         /> :
                         <BubbleContainer
                             key={`keyForCOntainer${index}`}
@@ -186,7 +168,6 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             </div>
             <div className="flex">
                 <TextField
-                    disabled={isMsgSending}
                     autoComplete="off"
                     fullWidth
                     onChange={(e) => setMsg(e.target.value)}
@@ -195,11 +176,9 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                     variant="outlined"
                 />
                 <div className="flex justify-center items-center px-2">
-                    {isMsgSending ? <Loading responsive /> : (
-                        <IconButton onClick={sendHandler} aria-label="send" color="secondary">
-                            <SendIcon />
-                        </IconButton>
-                    )}
+                    <IconButton onClick={sendHandler} aria-label="send" color="secondary">
+                        <SendIcon />
+                    </IconButton>
                 </div>
             </div>
         </Drawer>

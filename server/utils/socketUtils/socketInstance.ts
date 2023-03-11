@@ -57,9 +57,9 @@ export default class SocketInit {
                     io.to(otherSocketID).emit(socketEmitters.CHAT_DISCONNECT);
                 };
 
-                const receiveMsgResponseHandler = (otherSocketID: string) => {
-                    console.log("my log", otherSocketID);
-                    io.to(otherSocketID).emit(socketEmitters.RECEIVE_MSG_RESPONSE);
+                const receiveMsgResponseHandler = ({ otherSocketID, message }: { otherSocketID: string, message: string }) => {
+                    //Also send the exact message
+                    io.to(otherSocketID).emit(socketEmitters.RECEIVE_MSG_RESPONSE, message);
                 }
 
                 socket.on(socketEmitters.SEND_ID_CHAT, sendIDHandler)
