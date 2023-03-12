@@ -8,6 +8,7 @@ import { serverURL } from "../../config/Server";
 import analyticEvents from "../constants/analytics/analyticEvents";
 import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
 import Logo from "../components/Logo/Logo";
+import validator from 'validator';
 
 const userCollect = () => {
 
@@ -27,11 +28,15 @@ const userCollect = () => {
         let newErrs = [];
 
         if (firstName === "") {
-            newErrs.push("firstname cannot empty")
+            newErrs.push("first name cannot empty")
         }
 
         if (email === "") {
             newErrs.push("Email cannot be empty");
+        }
+
+        if (!validator.isEmail(email)) {
+            newErrs.push("Invalid email");
         }
 
         if (schoolSelect === "") {
@@ -125,14 +130,12 @@ const userCollect = () => {
                                     >
                                         Sign Up
                                     </Button>
-                                    {
-                                        errs.length > 0 && (
-                                            errs.map((err, index) => (
-                                                <Alert sx={{ marginBottom: 1 }} key={index} severity="error">{err}</Alert>
-                                            ))
-                                        )
-                                    }
                                 </div>
+                                {
+                                    errs.length > 0 && (
+                                        <Alert sx={{ marginBottom: 1 }} severity="error">{errs[0]}</Alert>
+                                    )
+                                }
                             </div>
                         </div>
                     ) : (
