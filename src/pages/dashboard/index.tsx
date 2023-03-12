@@ -17,6 +17,7 @@ import Diversity1Icon from '@mui/icons-material/Diversity1';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import colors from "../../constants/ui/colors";
+import FeedbackComponent from "../../components/FeedbackComponent/FeedbackComponent";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -69,6 +70,7 @@ const Index = () => {
                     <Head>
                         <title>Reveal | dashboard</title>
                     </Head>
+                    <FeedbackComponent />
                     <div className="h-screen w-screen flex flex-col justify-between">
                         <Snackbar
                             sx={{ maxWidth: 500 }}
