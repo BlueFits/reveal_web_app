@@ -44,7 +44,13 @@ const BubbleContainer = ({ msg, orientation = "left", isSendingProp }: { msg: st
     return (
         <div className={orientation === "right" ? "flex justify-end" : ""}>
             <div className={classType}>
-                <Typography variant="body1" color={orientation === "right" ? "#fff" : "inherit"}>
+                <Typography
+                    sx={{
+                        wordBreak: "break-word"
+                    }}
+                    variant="body1"
+                    color={orientation === "right" ? "#fff" : "inherit"}
+                >
                     {msg}
                 </Typography>
                 {
