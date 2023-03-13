@@ -27,8 +27,8 @@ const BubbleContainer = ({ msg, orientation = "left", isSendingProp }: { msg: st
     }, [isSendingProp]);
 
     const classType = orientation === "left" ?
-        "flex items-center mt-4 break-words bg-gray-200 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-br-lg ax-w-sm sm:max-w-lg lg:max-w-xl" :
-        "pl-5 flex items-center mt-4 break-words bg-sky-500 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-bl-lg max-w-sm sm:max-w-lg lg:max-w-xl";
+        "flex items-center mt-4 break-words bg-gray-200 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-br-lg max-w-xs sm:max-w-lg lg:max-w-xl" :
+        "pl-5 flex items-center mt-4 break-words bg-sky-500 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-bl-lg max-w-xs sm:max-w-lg lg:max-w-xl";
 
 
     const Status = isMsgSending ? (
@@ -46,6 +46,7 @@ const BubbleContainer = ({ msg, orientation = "left", isSendingProp }: { msg: st
             <div className={classType}>
                 <Typography
                     sx={{
+
                         wordBreak: "break-word"
                     }}
                     variant="body1"

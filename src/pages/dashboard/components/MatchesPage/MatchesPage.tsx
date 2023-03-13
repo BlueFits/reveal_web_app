@@ -16,6 +16,7 @@ import socket from '../../../../utils/Socket/socket.utils';
 import socketEmitters, { IJoinChatData } from '../../../../constants/types/emitters';
 import { TRACKING_ID } from '../../../../../config/GoogleAnalyticsConfig';
 import analyticEvents from '../../../../constants/analytics/analyticEvents';
+import { truncate } from '../../../../utils/string.utils';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -132,7 +133,12 @@ const MatchesPage = () => {
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={otherUser && otherUser.username}
-                                        secondary={msgExist ? `${userReducer.username === latestSender.username ? "You" : latestSender.username}: ${message.messages[message.messages.length - 1].message}` : ""}
+                                        secondary={msgExist ? `${userReducer.username === latestSender.username ? "You" :
+                                            latestSender.username}: ${message.messages[message.messages.length - 1].message.length > 10 ?
+                                                truncate({ length: 20, string: (message.messages[message.messages.length - 1].message) }) :
+                                                message.messages[message.messages.length - 1].message
+                                            }` : ""
+                                        }
                                     />
                                 </ListItemButton>
                             </List>
