@@ -17,6 +17,7 @@ import UserRoutes from './Users/user.routes.config';
 import MessageRoutes from './Messages/messages.routes.config';
 import FeedbackRoutes from './Feedback/feedback.routes.config';
 import PreLaunchUserRoutes from './PreLaunchUser/prelaunchUser.routes.config';
+import PreAlphaUserRoutes from './PreAlpha/preAlphaUser.routes.config';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -30,6 +31,7 @@ const usersRouter = new UserRoutes("UserRoutes").getRouter;
 const messageRouter = new MessageRoutes("MessageRoutes").getRouter;
 const feedbackRouter = new FeedbackRoutes("FeedbackRoute").getRouter;
 const prelaunchUserRouter = new PreLaunchUserRoutes("PrelaunchRoute").getRouter;
+const preAlphaUserRouter = new PreAlphaUserRoutes("PreAlphaUserRoutes").getRouter;
 
 app.prepare().then(() => {
 
@@ -46,6 +48,7 @@ app.prepare().then(() => {
 	server.use("/api/messages", messageRouter);
 	server.use("/api/feedback", feedbackRouter);
 	server.use("/api/prelaunch", prelaunchUserRouter);
+	server.use("/api/prealpha", preAlphaUserRouter);
 
 	// enableLock(server);
 
