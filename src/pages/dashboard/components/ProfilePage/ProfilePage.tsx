@@ -53,7 +53,7 @@ const sxStyles = {
     box: {
         width: '100%',
         bgcolor: 'background.paper',
-        marginBottom: 4
+        marginBottom: 4,
     },
 };
 
@@ -254,10 +254,9 @@ const ProfilePage = () => {
 
             <Box sx={{ ...sxStyles.box }}>
                 <List subheader={<ListSubheader>Profile</ListSubheader>} >
-                    <ListItem disablePadding>
-                        {/* <ListItemButton onClick={() => setProfilePhotoSettings(true)}> */}
-                        <ListItemIcon>
-                            {/* <AddAPhotoIcon /> */}
+                    {/* <ListItem disablePadding> */}
+                    {/* <ListItemButton onClick={() => setProfilePhotoSettings(true)}> */}
+                    {/* <ListItemIcon>
                         </ListItemIcon>
                         <ListItemText primary={<ListItemTitle title={""} />} />
                         <ListItemText>
@@ -266,9 +265,9 @@ const ProfilePage = () => {
                                 alt={`${userReducer.username} avatar`}
                                 src={(userReducer && userReducer.picture) || (userReducer.auth0 && userReducer.auth0.picture) || ""}
                             />
-                        </ListItemText>
-                        {/* </ListItemButton> */}
-                    </ListItem>
+                        </ListItemText> */}
+                    {/* </ListItemButton> */}
+                    {/* </ListItem> */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => setProfilePhotoSettings(true)}>
                             <ListItemIcon>
@@ -381,7 +380,7 @@ const ProfilePage = () => {
                 <ShareReveal />
             </div>
             {/* Compensate for bottom tab */}
-            <div className="h-20"></div>
+            <div className="h-[100px]"></div>
         </div >
     );
 };
