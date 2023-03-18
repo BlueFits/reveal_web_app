@@ -219,6 +219,13 @@ const ProfilePage = () => {
 
             <Dialog fullScreen={!notSm} fullWidth open={profilePhotoSettings} onClose={() => setProfilePhotoSettings(false)}>
                 <DialogTitle>Profile Photo</DialogTitle>
+                <div className="w-full h-full justify-center items-center flex">
+                    <Avatar
+                        sx={{ width: 80, height: 80 }}
+                        alt={`${userReducer.username} avatar`}
+                        src={(userReducer && userReducer.picture) || (userReducer.auth0 && userReducer.auth0.picture) || ""}
+                    />
+                </div>
                 <DialogContent>
                     <DialogContentText marginBottom={2}>
                         Direct upload is currently not supported, however you could use a photo from any url
@@ -254,20 +261,6 @@ const ProfilePage = () => {
 
             <Box sx={{ ...sxStyles.box }}>
                 <List subheader={<ListSubheader>Profile</ListSubheader>} >
-                    {/* <ListItem disablePadding> */}
-                    {/* <ListItemButton onClick={() => setProfilePhotoSettings(true)}> */}
-                    {/* <ListItemIcon>
-                        </ListItemIcon>
-                        <ListItemText primary={<ListItemTitle title={""} />} />
-                        <ListItemText>
-                            <Avatar
-                                sx={{ width: 80, height: 80 }}
-                                alt={`${userReducer.username} avatar`}
-                                src={(userReducer && userReducer.picture) || (userReducer.auth0 && userReducer.auth0.picture) || ""}
-                            />
-                        </ListItemText> */}
-                    {/* </ListItemButton> */}
-                    {/* </ListItem> */}
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => setProfilePhotoSettings(true)}>
                             <ListItemIcon>
