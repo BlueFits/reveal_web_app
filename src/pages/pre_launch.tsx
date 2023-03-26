@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { Typography, Button, Select, MenuItem, FormControl, Alert, Container, SelectChangeEvent, Link } from "@mui/material";
 import FormBlock from "../components/FormBlock/FormBlock";
 import colors from "../constants/ui/colors";
-import { school } from "../../server/PreLaunchUser/dto/prelaunchUser.dto";
 import { serverURL } from "../../config/Server";
 import analyticEvents from "../constants/analytics/analyticEvents";
 import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
@@ -12,9 +11,7 @@ import validator from 'validator';
 
 const userCollect = () => {
 
-    const [firstName, setFirstName] = useState("");
     const [email, setEmail] = useState("");
-    const [schoolSelect, setSchoolSelect] = useState<school | "">("");
     const [errs, setErrs] = useState<Array<any>>([]);
     const [isFinished, setIsFinished] = useState(false);
 
@@ -27,20 +24,12 @@ const userCollect = () => {
 
         let newErrs = [];
 
-        if (firstName === "") {
-            newErrs.push("first name cannot empty")
-        }
-
         if (email === "") {
             newErrs.push("Email cannot be empty");
         }
 
         if (!validator.isEmail(email)) {
             newErrs.push("Invalid email");
-        }
-
-        if (schoolSelect === "") {
-            newErrs.push("School cannot be empty");
         }
 
         if (newErrs.length > 0) {
@@ -55,18 +44,13 @@ const userCollect = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                firstName,
                 email,
-                school: schoolSelect
             }),
         });
 
         setIsFinished(true);
     }
 
-    const handleSelectChange = (event: SelectChangeEvent) => {
-        setSchoolSelect(event.target.value as school);
-    }
 
     return (
         <>
@@ -89,34 +73,11 @@ const userCollect = () => {
                                 </Typography>
                                 <FormControl style={{ width: "100%" }}>
                                     <FormBlock
-                                        label="First name"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                </FormControl>
-                                <FormControl style={{ width: "100%" }}>
-                                    <FormBlock
                                         label="Email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </FormControl>
-                                <div className="mb-4 w-full">
-                                    <Typography marginBottom={2} variant="h5">{"Your School"}</Typography>
-                                    <Select
-                                        fullWidth
-                                        labelId="school-select-label"
-                                        id="school-select"
-                                        value={schoolSelect}
-                                        onChange={handleSelectChange}
-                                    >
-                                        <MenuItem value={school.YORK}>York University</MenuItem>
-                                        <MenuItem value={school.UOFT}>University of Toronto</MenuItem>
-                                        <MenuItem value={school.CENTENNIAL}>Centennial</MenuItem>
-                                        <MenuItem value={school.GEORGE_BROWN}>George Brown</MenuItem>
-                                        <MenuItem value={school.T_METROPOLITAN}>Toronto Metropolitan</MenuItem>
-                                    </Select>
-                                </div>
                                 <div className="flex justify-center items-center flex-col w-full md:w-[150px]">
                                     <Button
                                         className="global_bttn_width"

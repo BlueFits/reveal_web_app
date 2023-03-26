@@ -12,9 +12,7 @@ export default class PreLaunchUserRoutes extends CommonRoutesConfig {
     configureRoute(): void {
         this.router.route("/")
             .post(
-                body("firstName").isString(),
                 body("email").isString(),
-                body("school").isString(),
                 BodyValidationMiddleware.verifyBodyFieldsErrors,
                 prelaunchUserController.createPrelaunchUser
             )
