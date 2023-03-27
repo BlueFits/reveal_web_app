@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from 'next/head';
 import { Typography, Button, Select, MenuItem, FormControl, Alert, Container, SelectChangeEvent, Link } from "@mui/material";
 import FormBlock from "../components/FormBlock/FormBlock";
@@ -8,17 +8,19 @@ import analyticEvents from "../constants/analytics/analyticEvents";
 import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
 import Logo from "../components/Logo/Logo";
 import validator from 'validator';
+import { formColorPreLaunch } from "../constants/ui/colors";
+import Image from 'next/image'
 
-const formColor = {
-    black: "#1E1E1E",
-    white: "#FBFBFB",
-};
 
 const userCollect = () => {
 
     const [email, setEmail] = useState("");
     const [errs, setErrs] = useState<Array<any>>([]);
     const [isFinished, setIsFinished] = useState(false);
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden'
+    }, []);
 
     const submitHandler = async () => {
 
@@ -62,29 +64,45 @@ const userCollect = () => {
             <Head>
                 <title>Reveal | Pre-launch</title>
             </Head>
-            <div style={{ backgroundColor: colors.primary }} className="w-screen h-screen flex justify-center items-center">
-                {
-                    !isFinished ? (
-                        <div className="flex justify-center flex-col h-screen items-center border-2">
-                            <h1>asdasd</h1>
-                            <div style={{ backgroundColor: formColor.black }} className="md:w-[384px] md:h-[381px] h-screen border-2 flex flex-col items-center md:rounded-lg shadow-lg shadow-black-500/50">
-                                <div className="border-2 w-full flex justify-center py-7">
-                                    <div className="max-w-[7rem] border-2">
+            <div style={{ backgroundColor: formColorPreLaunch.white }} className="w-screen h-screen flex justify-center items-center">
+                <div className="flex justify-center flex-col h-screen items-center text-center z-10">
+                    <div className="hidden md:block max-w-[700px]">
+                        <Typography fontWeight={"bold"} variant="h3" marginBottom={7}>
+                            Experience a new way to make connections
+                        </Typography>
+                    </div>
+                    {
+                        !isFinished ? (
+                            <div style={{ backgroundColor: formColorPreLaunch.grey }} className="md:w-[384px] md:h-fit h-screen flex flex-col items-center md:rounded-2xl shadow-lg shadow-black-500/50">
+                                <div className="border-b-[1px] w-full flex justify-center py-7">
+                                    <div className="max-w-[7rem]">
                                         <Logo />
                                     </div>
                                 </div>
                                 <div className="p-7">
-                                    <Typography color={formColor.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
+                                    <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
                                         Sign up to get your invitation.
                                     </Typography>
-                                    <Typography textAlign={"center"} variant="body1" marginBottom={2}>
+                                    <Typography color={formColorPreLaunch.white} textAlign={"center"} variant="body1" marginBottom={2}>
                                         Join our waitlist today and be one of the first to experience Reveal
                                     </Typography>
                                     <FormControl style={{ width: "100%" }}>
                                         <FormBlock
-                                            textFieldSx={{ marginBottom: 1 }}
+                                            textFieldInputLabelProps={{
+                                                style: {
+                                                    color: formColorPreLaunch.white,
+                                                }
+                                            }}
+                                            textFieldSx={{
+                                                marginBottom: 1,
+                                                color: formColorPreLaunch.white,
+                                                input: {
+                                                    color: formColorPreLaunch.white
+                                                }
+                                            }}
+                                            variation="white"
                                             disableLabel
-                                            label="Email"
+                                            label="Email address"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                         />
@@ -94,12 +112,16 @@ const userCollect = () => {
                                             className="global_bttn_width"
                                             onClick={submitHandler}
                                             disableElevation
-                                            style={{ padding: "12px 0", backgroundColor: "#FBFBFB", color: formColor.black }}
+                                            style={{
+                                                padding: "12px 0",
+                                                backgroundColor: "#FBFBFB",
+                                                color: formColorPreLaunch.black
+                                            }}
                                             fullWidth
                                             sx={{ margin: "15px 0" }}
                                             variant="contained"
                                         >
-                                            Sign Up
+                                            <strong>Sign Up</strong>
                                         </Button>
                                     </div>
                                     {
@@ -109,27 +131,32 @@ const userCollect = () => {
                                     }
                                 </div>
                             </div>
-                        </div>
-                    ) : (
-                        <div className="flex justify-center items-center h-screen">
-                            <div className="w-full sm:w-fit md:h-fit h-screen border-2 p-7 flex flex-col items-center md:rounded-lg shadow-lg shadow-black-500/50 bg-white justify-center">
-                                <Typography textAlign={"center"} fontWeight={"bold"} variant="h5" marginBottom={2}>
-                                    Thank you for signing up
-                                </Typography>
-                                <Typography textAlign={"center"} variant="body1" marginBottom={5}>
-                                    Be sure to check your email for updates.
-                                </Typography>
-                                <div className="flex flex-col justify-center items-center">
-                                    <Typography textAlign={"center"} variant="body1" marginBottom={2}>
-                                        Find out more about us
+                        ) : (
+                            <div style={{ backgroundColor: formColorPreLaunch.grey }} className="md:w-[384px] md:h-fit h-screen flex flex-col items-center md:rounded-2xl shadow-lg shadow-black-500/50">
+                                <div className="border-b-[1px] w-full flex justify-center py-7">
+                                    <div className="max-w-[7rem]">
+                                        <Logo />
+                                    </div>
+                                </div>
+                                <div className="p-7">
+                                    <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
+                                        Thank you for signing up
                                     </Typography>
-                                    <Link underline={"hover"} href="/">Home Page</Link>
+                                    <Typography color={formColorPreLaunch.white} textAlign={"center"} variant="body1" marginBottom={2}>
+                                        Be sure to check your email for updates.
+                                    </Typography>
+                                    <Link fontWeight={"bold"} color={formColorPreLaunch.white} underline={"hover"} href="/">Home Page</Link>
                                 </div>
                             </div>
-                        </div>
-                    )
-                }
-            </div >
+                        )
+                    }
+                </div>
+                <div className="hidden md:flex md:absolute md:-bottom-10 md:-right-10 md:max-w-[45%]">
+                    <img
+                        src={"https://lh6.googleusercontent.com/WNHGhHGiCAQYhSbK8oCdhFWUENhgHt3OaDu9xzQGDuhE9d8LjyuOlSS7Gfj76y74QDg=w2400"}
+                    />
+                </div>
+            </div>
         </>
     );
 };
