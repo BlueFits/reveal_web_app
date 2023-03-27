@@ -9,6 +9,11 @@ import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
 import Logo from "../components/Logo/Logo";
 import validator from 'validator';
 
+const formColor = {
+    black: "#1E1E1E",
+    white: "#FBFBFB",
+};
+
 const userCollect = () => {
 
     const [email, setEmail] = useState("");
@@ -57,46 +62,52 @@ const userCollect = () => {
             <Head>
                 <title>Reveal | Pre-launch</title>
             </Head>
-            <div style={{ backgroundColor: colors.primary }} className="w-screen h-screen">
+            <div style={{ backgroundColor: colors.primary }} className="w-screen h-screen flex justify-center items-center">
                 {
                     !isFinished ? (
-                        <div className="flex justify-center items-center h-screen">
-                            <div className="md:h-fit h-screen border-2 p-7 flex flex-col items-center md:rounded-lg shadow-lg shadow-black-500/50 bg-white">
-                                <div className="max-w-[15rem] mb-10">
-                                    <Logo />
+                        <div className="flex justify-center flex-col h-screen items-center border-2">
+                            <h1>asdasd</h1>
+                            <div style={{ backgroundColor: formColor.black }} className="md:w-[384px] md:h-[381px] h-screen border-2 flex flex-col items-center md:rounded-lg shadow-lg shadow-black-500/50">
+                                <div className="border-2 w-full flex justify-center py-7">
+                                    <div className="max-w-[7rem] border-2">
+                                        <Logo />
+                                    </div>
                                 </div>
-                                <Typography textAlign={"center"} fontWeight={"bold"} variant="h4" marginBottom={2}>
-                                    Be the first to experience Reveal
-                                </Typography>
-                                <Typography textAlign={"center"} variant="body1" marginBottom={5}>
-                                    Sign up to get your invitation.
-                                </Typography>
-                                <FormControl style={{ width: "100%" }}>
-                                    <FormBlock
-                                        label="Email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </FormControl>
-                                <div className="flex justify-center items-center flex-col w-full md:w-[150px]">
-                                    <Button
-                                        className="global_bttn_width"
-                                        onClick={submitHandler}
-                                        disableElevation
-                                        style={{ borderRadius: 9999, padding: 10, backgroundColor: colors.primary }}
-                                        fullWidth
-                                        color="secondary"
-                                        sx={{ margin: "15px 0" }}
-                                        variant="contained"
-                                    >
-                                        Sign Up
-                                    </Button>
+                                <div className="p-7">
+                                    <Typography color={formColor.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
+                                        Sign up to get your invitation.
+                                    </Typography>
+                                    <Typography textAlign={"center"} variant="body1" marginBottom={2}>
+                                        Join our waitlist today and be one of the first to experience Reveal
+                                    </Typography>
+                                    <FormControl style={{ width: "100%" }}>
+                                        <FormBlock
+                                            textFieldSx={{ marginBottom: 1 }}
+                                            disableLabel
+                                            label="Email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                    </FormControl>
+                                    <div className="flex justify-center items-center flex-col w-full">
+                                        <Button
+                                            className="global_bttn_width"
+                                            onClick={submitHandler}
+                                            disableElevation
+                                            style={{ padding: "12px 0", backgroundColor: "#FBFBFB", color: formColor.black }}
+                                            fullWidth
+                                            sx={{ margin: "15px 0" }}
+                                            variant="contained"
+                                        >
+                                            Sign Up
+                                        </Button>
+                                    </div>
+                                    {
+                                        errs.length > 0 && (
+                                            <Alert sx={{ marginBottom: 1 }} severity="error">{errs[0]}</Alert>
+                                        )
+                                    }
                                 </div>
-                                {
-                                    errs.length > 0 && (
-                                        <Alert sx={{ marginBottom: 1 }} severity="error">{errs[0]}</Alert>
-                                    )
-                                }
                             </div>
                         </div>
                     ) : (
@@ -118,7 +129,7 @@ const userCollect = () => {
                         </div>
                     )
                 }
-            </div>
+            </div >
         </>
     );
 };
