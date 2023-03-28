@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import SocketInstance from './utils/socketUtils/socketInstance';
 import { auth, requiresAuth } from "express-openid-connect";
 import { enableLock } from './utils/utils';
+import path from 'path';
 //Config
 import Auth0Config from '../config/Auth0.config';
 
@@ -40,6 +41,7 @@ app.prepare().then(() => {
 	server.use(cors());
 	server.use(cookieParser());
 	server.use(auth(Auth0Config))
+	server.use(express.static(__dirname + "/public"));
 
 	server.use("/api/socket_room", availableSocketRoomRouter);
 	server.use("/api/users", usersRouter);

@@ -17,6 +17,10 @@ class MyDocument extends Document {
             `,
             }}
           />
+          <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico"></link>
+          <link rel="icon" type="image/png" href="/favicon/favicon-32x32.png" sizes="32x32" />
+          <link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
+
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="stylesheet"
