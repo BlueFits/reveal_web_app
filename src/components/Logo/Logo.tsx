@@ -1,5 +1,5 @@
 interface ILogo {
-    variant?: "default" | "white" | "minimalNormal" | "minimalLight";
+    variant?: "default" | "white" | "minimalNormal" | "minimalLight" | "dark";
 }
 
 const Logo: React.FC<ILogo> = ({ variant = "default" }) => {
@@ -9,6 +9,7 @@ const Logo: React.FC<ILogo> = ({ variant = "default" }) => {
         white: "https://lh3.googleusercontent.com/nrRman3AbHXawIHnf2RmBTIf0debQtGJLAe3d-vrCBCCIgVEW4nbAR8cBkXr-9_HLZQ=w2400",
         minimalNormal: "https://lh5.googleusercontent.com/xpdYnEVoG55NdllVohW6h6d6y0EdJvrffZ4QpLEcfRTHeCTXSF9479lMVREUgvjFoRs=w2400",
         minimalLight: "https://lh4.googleusercontent.com/qqcAu9Q49d9IxdhTgusvmuwrQ-CulhuJblzBF93badUJQ-hNlSbnQ2h39lpMTJ2CWlY=w2400",
+        dark: "https://lh3.googleusercontent.com/j7zVY0BFZ1kM0-_M5N_rCy_FXdCmPVCBBcPPscGccUHDqvDAwv3oC6eAYTOzTuHTt70=w2400",
     };
 
     return (
