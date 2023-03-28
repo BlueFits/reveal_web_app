@@ -73,9 +73,27 @@ const userCollect = () => {
                                     </Typography>
                                 </div>
                                 <div style={{ backgroundColor: formColorPreLaunch.grey }} className="border-red-400 md:w-[384px] md:h-fit h-screen flex flex-col items-center md:rounded-2xl shadow-lg shadow-black-500/50 w-screen">
-                                    <div className="border-b-[1px] w-full flex justify-center py-7">
+                                    <div className="hidden border-b-[1px] w-full md:flex justify-center py-7">
                                         <div style={{ backgroundColor: formColorPreLaunch.white }} className="max-w-[8rem] py-1 px-3 md:rounded-md">
                                             <Logo variant="dark" />
+                                        </div>
+                                    </div>
+                                    <div className="basis-2/5 sm:hidden w-full flex justify-center bg-white">
+                                        <div
+                                            style={{
+                                                backgroundColor: "rgb(218, 0, 119, 0.1)"
+                                            }}
+                                            className="h-full w-full flex items-end"
+                                        >
+                                            <div className="absolute top-5 max-w-[5rem] py-1 px-3 md:rounded-md">
+                                                <Logo variant="dark" />
+                                            </div>
+                                            <img
+                                                style={{
+                                                    width: "100%",
+                                                }}
+                                                src="https://lh3.googleusercontent.com/2XX33DdqijYStj6OkbFJBJj_OWjzYEY-YerEChb68XXkgRQsVe8TmAJgF8lRPrA1M7E=w2400"
+                                            />
                                         </div>
                                     </div>
                                     <div className="p-7">
