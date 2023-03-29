@@ -33,6 +33,7 @@ const feedbackRouter = new FeedbackRoutes("FeedbackRoute").getRouter;
 const prelaunchUserRouter = new PreLaunchUserRoutes("PrelaunchRoute").getRouter;
 
 app.prepare().then(() => {
+	console.log(__dirname);
 
 	if (dev) {
 		server.use(morgan("dev"));
