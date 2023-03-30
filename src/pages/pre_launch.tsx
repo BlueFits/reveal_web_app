@@ -65,7 +65,7 @@ const userCollect = () => {
             <div style={{ backgroundColor: formColorPreLaunch.white }} className="w-screen h-screen flex justify-center items-center flex-col">
                 <div className="flex justify-center flex-col items-center h-screen text-center z-10">
                     {
-                        isFinished ? (
+                        !isFinished ? (
                             <div className="flex flex-col justify-center items-center relative md:top-[120px] lg:-top-[120px]">
                                 <div className="hidden md:block max-w-[700px]">
                                     <Typography fontWeight={"bold"} variant="h3" marginBottom={7}>
