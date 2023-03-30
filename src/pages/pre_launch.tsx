@@ -65,7 +65,7 @@ const userCollect = () => {
             <div style={{ backgroundColor: formColorPreLaunch.white }} className="w-screen h-screen flex justify-center items-center flex-col">
                 <div className="flex justify-center flex-col items-center h-screen text-center z-10">
                     {
-                        !isFinished ? (
+                        isFinished ? (
                             <div className="flex flex-col justify-center items-center relative md:top-[120px] lg:-top-[120px]">
                                 <div className="hidden md:block max-w-[700px]">
                                     <Typography fontWeight={"bold"} variant="h3" marginBottom={7}>
@@ -152,7 +152,7 @@ const userCollect = () => {
                         ) : (
                             <div className="flex flex-col justify-center items-center relative md:top-[120px] lg:-top-[120px]">
                                 <div style={{ backgroundColor: formColorPreLaunch.grey }} className="md:w-[384px] md:h-fit h-screen flex flex-col items-center md:rounded-2xl shadow-lg shadow-black-500/50 w-screen">
-                                    <div className="border-b-[1px] w-full flex justify-center py-10">
+                                    <div className="border-b-[1px] w-full flex justify-center items-center py-10 basis-2/5">
                                         <div className="py-1 px-3 md:rounded-md">
                                             <svg width="80" height="80" viewBox="0 0 57 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <rect x="0.780029" y="0.279785" width="55.44" height="55.44" rx="27.72" fill="#008705" />
