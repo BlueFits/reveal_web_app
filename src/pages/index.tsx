@@ -238,9 +238,9 @@ const Index = () => {
                 <footer className="p-4">
                     <Divider sx={{ margin: "10px 0" }} />
                     <ul className="flex justify-center items-center">
-                        <FooterLinks>
+                        {/* <FooterLinks>
                             <Typography variant="caption">FAQ</Typography>
-                        </FooterLinks>
+                        </FooterLinks> */}
                         <FooterLinks disableSlash>
                             <Link style={{ textDecoration: "none", color: "inherit" }} href="/privacy">
                                 <Typography variant="caption">Terms</Typography>
