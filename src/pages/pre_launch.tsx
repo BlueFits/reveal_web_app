@@ -98,7 +98,7 @@ const userCollect = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div style={{ backgroundColor: formColorPreLaunch.grey }} className="p-7 z-10 relative z-10">
+                                    <div style={{ backgroundColor: formColorPreLaunch.grey }} className="p-7 z-10 relative z-10 md:rounded-2xl">
                                         <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
                                             Sign up to get your invitation.
                                         </Typography>
