@@ -91,12 +91,14 @@ const userCollect = () => {
                                             <img
                                                 style={{
                                                     width: "100%",
+                                                    position: "relative",
+                                                    bottom: -20
                                                 }}
                                                 src="https://lh3.googleusercontent.com/2XX33DdqijYStj6OkbFJBJj_OWjzYEY-YerEChb68XXkgRQsVe8TmAJgF8lRPrA1M7E=w2400"
                                             />
                                         </div>
                                     </div>
-                                    <div className="p-7">
+                                    <div style={{ backgroundColor: formColorPreLaunch.grey }} className="p-7 z-10 relative z-10">
                                         <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
                                             Sign up to get your invitation.
                                         </Typography>
