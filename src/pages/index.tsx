@@ -149,9 +149,13 @@ const Index = () => {
                             <Typography fontWeight={"bold"} color="#fff" variant="h3">
                                 Connect Beyond Sight
                             </Typography>
-                            <Typography marginTop={2} marginBottom={5} color="#fff" variant="subtitle1">
+                            <Typography marginTop={2} color="#fff" variant="subtitle1">
                                 {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
                                 Try speed blindfold dating online with reveal!
+                            </Typography>
+                            <Typography marginBottom={5} color="#fff" variant="subtitle1">
+                                {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
+                                Join us on our launch at <em><strong>April 8 at 7:00PM EST</strong></em>
                             </Typography>
                             <div className="mt-4 flex flex-col justify-center items-center">
                                 <Button
