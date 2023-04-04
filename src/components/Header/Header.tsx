@@ -14,7 +14,7 @@ const Header: React.FC<IHeader> = ({ icon, headerButtonOnClick, disableIcon = fa
     return (
         <div className="z-10 px-4 py-4 flex justify-between items-center bg-gradient-to-b from-black ">
             <Link className="flex" href="/">
-                <div className="h-[30px] relative">
+                <div className="h-[30px] w-[35px] relative">
                     <Logo
                         variant="minimalLight"
                     />
