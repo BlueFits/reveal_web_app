@@ -99,11 +99,11 @@ const userCollect = () => {
                                         </div>
                                     </div>
                                     <div style={{ backgroundColor: formColorPreLaunch.grey }} className="p-7 z-10 relative z-10 md:rounded-2xl">
-                                        <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
+                                        <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h5" marginBottom={2}>
                                             Sign up to get your invitation.
                                         </Typography>
                                         <Typography color={formColorPreLaunch.white} textAlign={"center"} variant="body1" marginBottom={2}>
-                                            Join our waitlist today and be one of the first to experience Reveal
+                                            Join us on <em>April 8th at 7:00 PM EST</em> to be among the first to experience Reveal.
                                         </Typography>
                                         <FormControl style={{ width: "100%" }}>
                                             <FormBlock
