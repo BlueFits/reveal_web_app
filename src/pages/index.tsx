@@ -24,6 +24,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import analyticEvents from "../constants/analytics/analyticEvents";
 import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
+import Logo from "../components/Logo/Logo";
 
 
 const backgroundURL = "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=989&q=80";
@@ -144,13 +145,17 @@ const Index = () => {
                     open={isDrawerOpen}
                 /> */}
                     <div className="flex items-center flex-col justify-center z-10">
-                        <div className="w-4/6 text-center">
+                        <div className="w-4/6 text-center flex flex-col justify-center items-center">
                             <Typography fontWeight={"bold"} color="#fff" variant="h3">
                                 Connect Beyond Sight
                             </Typography>
-                            <Typography marginTop={2} marginBottom={5} color="#fff" variant="subtitle1">
+                            <Typography marginTop={2} color="#fff" variant="subtitle1">
                                 {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
                                 Try speed blindfold dating online with reveal!
+                            </Typography>
+                            <Typography marginBottom={5} color="#fff" variant="subtitle1">
+                                {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
+                                Join us on our launch at <em><strong>April 8 at 7:00PM EST</strong></em>
                             </Typography>
                             <div className="mt-4 flex flex-col justify-center items-center">
                                 {/* <Button
@@ -237,9 +242,9 @@ const Index = () => {
                 <footer className="p-4">
                     <Divider sx={{ margin: "10px 0" }} />
                     <ul className="flex justify-center items-center">
-                        <FooterLinks>
+                        {/* <FooterLinks>
                             <Typography variant="caption">FAQ</Typography>
-                        </FooterLinks>
+                        </FooterLinks> */}
                         <FooterLinks disableSlash>
                             <Link style={{ textDecoration: "none", color: "inherit" }} href="/privacy">
                                 <Typography variant="caption">Terms</Typography>

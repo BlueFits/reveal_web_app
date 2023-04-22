@@ -8,8 +8,9 @@ import { Server } from "socket.io";
 import SocketInstance from './utils/socketUtils/socketInstance';
 import { auth, requiresAuth } from "express-openid-connect";
 import { enableLock } from './utils/utils';
+import path from 'path';
 //Config
-// import Auth0Config from '../config/Auth0.config';
+import Auth0Config from '../config/Auth0.config';
 
 //Router
 import SocketRoom from './socketRoom/socketRoom.routes.config';
@@ -32,14 +33,14 @@ const feedbackRouter = new FeedbackRoutes("FeedbackRoute").getRouter;
 const prelaunchUserRouter = new PreLaunchUserRoutes("PrelaunchRoute").getRouter;
 
 app.prepare().then(() => {
-
 	if (dev) {
 		server.use(morgan("dev"));
 	}
 	server.use(express.json());
 	server.use(cors());
 	server.use(cookieParser());
-	// server.use(auth(Auth0Config))
+	server.use(auth(Auth0Config))
+	server.use(express.static(__dirname + "/public"));
 
 	server.use("/api/socket_room", availableSocketRoomRouter);
 	server.use("/api/users", usersRouter);

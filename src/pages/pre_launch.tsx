@@ -1,20 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from 'next/head';
-import { Typography, Button, Select, MenuItem, FormControl, Alert, Container, SelectChangeEvent } from "@mui/material";
+import { Typography, Button, FormControl, Alert, Link } from "@mui/material";
 import FormBlock from "../components/FormBlock/FormBlock";
-import colors from "../constants/ui/colors";
-import { school } from "../../server/PreLaunchUser/dto/prelaunchUser.dto";
 import { serverURL } from "../../config/Server";
 import analyticEvents from "../constants/analytics/analyticEvents";
 import { TRACKING_ID } from "../../config/GoogleAnalyticsConfig";
+import Logo from "../components/Logo/Logo";
+import validator from 'validator';
+import { formColorPreLaunch } from "../constants/ui/colors";
+
 
 const userCollect = () => {
 
-    const [firstName, setFirstName] = useState("");
     const [email, setEmail] = useState("");
-    const [schoolSelect, setSchoolSelect] = useState<school | "">("");
     const [errs, setErrs] = useState<Array<any>>([]);
     const [isFinished, setIsFinished] = useState(false);
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden'
+    }, []);
 
     const submitHandler = async () => {
 
@@ -25,16 +29,12 @@ const userCollect = () => {
 
         let newErrs = [];
 
-        if (firstName === "") {
-            newErrs.push("firstname cannot empty")
-        }
-
         if (email === "") {
             newErrs.push("Email cannot be empty");
         }
 
-        if (schoolSelect === "") {
-            newErrs.push("School cannot be empty");
+        if (!validator.isEmail(email)) {
+            newErrs.push("Invalid email");
         }
 
         if (newErrs.length > 0) {
@@ -49,109 +49,142 @@ const userCollect = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                firstName,
                 email,
-                school: schoolSelect
             }),
         });
 
         setIsFinished(true);
     }
 
-    const handleSelectChange = (event: SelectChangeEvent) => {
-        setSchoolSelect(event.target.value as school);
-    }
 
     return (
         <>
             <Head>
                 <title>Reveal | Pre-launch</title>
             </Head>
-            <div style={{ backgroundColor: colors.primary }} className="w-screen h-screen">
-                {
-                    !isFinished ? (
-                        <div className="flex justify-center items-center h-screen">
-                            <div className="md:h-fit h-screen border-2 p-7 flex flex-col items-center md:rounded-lg shadow-lg shadow-black-500/50 bg-white">
-                                <Typography textAlign={"center"} fontWeight={"bold"} variant="h4" marginBottom={2}>
-                                    Be the first to experience Reveal
-                                </Typography>
-                                <Typography textAlign={"center"} variant="body1" marginBottom={5}>
-                                    Sign up to get your invitation.
-                                </Typography>
-                                <FormControl style={{ width: "100%" }}>
-                                    <FormBlock
-                                        label="First name"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                </FormControl>
-                                <FormControl style={{ width: "100%" }}>
-                                    <FormBlock
-                                        label="Email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </FormControl>
-                                <div className="mb-4 w-full">
-                                    <Typography marginBottom={2} variant="h5">{"Your School"}</Typography>
-                                    <Select
-                                        fullWidth
-                                        labelId="school-select-label"
-                                        id="school-select"
-                                        value={schoolSelect}
-                                        onChange={handleSelectChange}
-                                    >
-                                        <MenuItem value={school.YORK}>York University</MenuItem>
-                                        <MenuItem value={school.UOFT}>University of Toronto</MenuItem>
-                                        <MenuItem value={school.CENTENNIAL}>Centennial</MenuItem>
-                                        <MenuItem value={school.GEORGE_BROWN}>George Brown</MenuItem>
-                                        <MenuItem value={school.T_METROPOLITAN}>Toronto Metropolitan</MenuItem>
-                                    </Select>
-                                </div>
-                                <div className="flex justify-center items-center flex-col w-full md:w-[150px]">
-                                    <Button
-                                        className="global_bttn_width"
-                                        onClick={submitHandler}
-                                        disableElevation
-                                        style={{ borderRadius: 9999, padding: 10, backgroundColor: colors.primary }}
-                                        fullWidth
-                                        color="secondary"
-                                        sx={{ margin: "15px 0" }}
-                                        variant="contained"
-                                    >
-                                        Sign Up
-                                    </Button>
-                                    {
-                                        errs.length > 0 && (
-                                            errs.map((err, index) => (
-                                                <Alert sx={{ marginBottom: 1 }} key={index} severity="error">{err}</Alert>
-                                            ))
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="flex justify-center items-center h-screen">
-                            <div className="w-full sm:w-fit md:h-fit h-screen border-2 p-7 flex flex-col items-center md:rounded-lg shadow-lg shadow-black-500/50 bg-white justify-center">
-                                <Typography textAlign={"center"} fontWeight={"bold"} variant="h5" marginBottom={2}>
-                                    Thank you for signing up
-                                </Typography>
-                                <Typography textAlign={"center"} variant="body1" marginBottom={5}>
-                                    Be sure to check your email for updates.
-                                </Typography>
-                                <div className="flex flex-col justify-center items-center">
-                                    <Typography textAlign={"center"} variant="body1" marginBottom={2}>
-                                        Find out more about us
+            <div style={{ backgroundColor: formColorPreLaunch.white }} className="w-screen h-screen flex justify-center items-center flex-col">
+                <div className="flex justify-center flex-col items-center h-screen text-center z-10">
+                    {
+                        !isFinished ? (
+                            <div className="flex flex-col justify-center items-center relative md:top-[120px] lg:-top-[120px]">
+                                <div className="hidden md:block max-w-[700px]">
+                                    <Typography fontWeight={"bold"} variant="h3" marginBottom={7}>
+                                        Experience a new way to make connections
                                     </Typography>
-                                    <Button variant="text">Home Page</Button>
-                                    <Button variant="text">Socials</Button>
-                                    <Button variant="text">Blog</Button>
+                                </div>
+                                <div style={{ backgroundColor: formColorPreLaunch.grey }} className="border-red-400 md:w-[384px] md:h-fit h-screen flex flex-col items-center md:rounded-2xl shadow-lg shadow-black-500/50 w-screen">
+                                    <div className="hidden border-b-[1px] w-full md:flex justify-center py-7">
+                                        <div style={{ backgroundColor: formColorPreLaunch.white }} className="max-w-[8rem] py-1 px-3 md:rounded-md">
+                                            <Logo variant="dark" />
+                                        </div>
+                                    </div>
+                                    <div className="basis-2/5 sm:hidden w-full flex justify-center bg-white">
+                                        <div
+                                            style={{
+                                                backgroundColor: "rgb(218, 0, 119, 0.1)"
+                                            }}
+                                            className="h-full w-full flex items-end"
+                                        >
+                                            <div className="absolute top-5 max-w-[5rem] py-1 px-3 md:rounded-md">
+                                                <Logo variant="dark" />
+                                            </div>
+                                            <img
+                                                style={{
+                                                    width: "100%",
+                                                    position: "relative",
+                                                    bottom: -20
+                                                }}
+                                                src="https://lh3.googleusercontent.com/2XX33DdqijYStj6OkbFJBJj_OWjzYEY-YerEChb68XXkgRQsVe8TmAJgF8lRPrA1M7E=w2400"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div style={{ backgroundColor: formColorPreLaunch.grey }} className="p-7 z-10 relative z-10 md:rounded-2xl">
+                                        <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h5" marginBottom={2}>
+                                            Sign up to get your invitation.
+                                        </Typography>
+                                        <Typography color={formColorPreLaunch.white} textAlign={"center"} variant="body1" marginBottom={2}>
+                                            Join us on <em>April 8th at 7:00 PM EST</em> to be among the first to experience Reveal.
+                                        </Typography>
+                                        <FormControl style={{ width: "100%" }}>
+                                            <FormBlock
+                                                textFieldInputLabelProps={{
+                                                    style: {
+                                                        color: formColorPreLaunch.white,
+                                                    }
+                                                }}
+                                                textFieldSx={{
+                                                    marginBottom: 1,
+                                                    color: formColorPreLaunch.white,
+                                                    input: {
+                                                        color: formColorPreLaunch.white
+                                                    }
+                                                }}
+                                                variation="white"
+                                                disableLabel
+                                                label="Email address"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                            />
+                                        </FormControl>
+                                        <div className="flex justify-center items-center flex-col w-full">
+                                            <Button
+                                                className="global_bttn_width"
+                                                onClick={submitHandler}
+                                                disableElevation
+                                                style={{
+                                                    padding: "12px 0",
+                                                    backgroundColor: "#FBFBFB",
+                                                    color: formColorPreLaunch.black
+                                                }}
+                                                fullWidth
+                                                sx={{ margin: "15px 0" }}
+                                                variant="contained"
+                                            >
+                                                <strong>Sign Up</strong>
+                                            </Button>
+                                        </div>
+                                        {
+                                            errs.length > 0 && (
+                                                <Alert sx={{ marginBottom: 1 }} severity="error">{errs[0]}</Alert>
+                                            )
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )
-                }
+                        ) : (
+                            <div className="flex flex-col justify-center items-center relative md:top-[120px] lg:-top-[120px]">
+                                <div style={{ backgroundColor: formColorPreLaunch.grey }} className="md:w-[384px] md:h-fit h-screen flex flex-col items-center md:rounded-2xl shadow-lg shadow-black-500/50 w-screen">
+                                    <div className="border-b-[1px] w-full flex justify-center items-center py-10 basis-2/5">
+                                        <div className="py-1 px-3 md:rounded-md">
+                                            <svg width="80" height="80" viewBox="0 0 57 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="0.780029" y="0.279785" width="55.44" height="55.44" rx="27.72" fill="#008705" />
+                                                <path d="M10.245 29.6971L24.3132 38.0102C24.9661 38.396 25.8079 38.1854 26.2022 37.5376L40.0442 14.7976" stroke="#FBFBFB" stroke-width="2.8" stroke-linecap="round" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div className="p-7">
+                                        <Typography color={formColorPreLaunch.white} textAlign={"center"} fontWeight={"bold"} variant="h6" marginBottom={2}>
+                                            We’ve reserved your spot!
+                                        </Typography>
+                                        <Typography color={formColorPreLaunch.white} textAlign={"center"} variant="body2" marginBottom={5}>
+                                            You’ll receive an email from us once we launch
+                                        </Typography>
+                                        <Link color={formColorPreLaunch.white} underline={"hover"} href="/">
+                                            <Typography fontWeight={"bold"} variant="body2">
+                                                EXPLORE OUR HOME PAGE
+                                            </Typography>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }
+                </div>
+                <div className="hidden md:flex md:justify-center md:items-center lg:absolute lg:-bottom-10 lg:-right-10 lg:max-w-[48%]">
+                    <img
+                        src={"https://lh4.googleusercontent.com/d4ymoQbtSliRobT7NU5bDwc-oRyzndVETN2aM8oxNmjfJCCu1oRSOgGAj6-VoONbGxo=w2400"}
+                    />
+                </div>
             </div>
         </>
     );
