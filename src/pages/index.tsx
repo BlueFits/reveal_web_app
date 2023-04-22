@@ -153,10 +153,9 @@ const Index = () => {
                                 {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
                                 Try speed blindfold dating online with reveal!
                             </Typography>
-                            <Typography marginBottom={5} color="#fff" variant="subtitle1">
-                                {/* Get on a call without showing what you look like, and then decide if you both want to reveal! */}
+                            {/* <Typography marginBottom={5} color="#fff" variant="subtitle1">
                                 Join us on our launch at <em><strong>April 8 at 7:00PM EST</strong></em>
-                            </Typography>
+                            </Typography> */}
                             <div className="mt-4 flex flex-col justify-center items-center">
                                 {/* <Button
                                     className="global_bttn_width"
