@@ -37,6 +37,8 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import GenderForm from "../../../../components/Forms/GenderForm/GenderForm";
 import analyticEvents from "../../../../constants/analytics/analyticEvents";
+import ListItemTitle from "./components/ListItemTitle";
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -51,7 +53,7 @@ const sxStyles = {
     box: {
         width: '100%',
         bgcolor: 'background.paper',
-        marginBottom: 4
+        marginBottom: 4,
     },
 };
 
@@ -217,6 +219,13 @@ const ProfilePage = () => {
 
             <Dialog fullScreen={!notSm} fullWidth open={profilePhotoSettings} onClose={() => setProfilePhotoSettings(false)}>
                 <DialogTitle>Profile Photo</DialogTitle>
+                <div className="w-full h-full justify-center items-center flex">
+                    <Avatar
+                        sx={{ width: 80, height: 80 }}
+                        alt={`${userReducer.username} avatar`}
+                        src={(userReducer && userReducer.picture) || (userReducer.auth0 && userReducer.auth0.picture) || ""}
+                    />
+                </div>
                 <DialogContent>
                     <DialogContentText marginBottom={2}>
                         Direct upload is currently not supported, however you could use a photo from any url
@@ -252,19 +261,12 @@ const ProfilePage = () => {
 
             <Box sx={{ ...sxStyles.box }}>
                 <List subheader={<ListSubheader>Profile</ListSubheader>} >
-                    <div className="flex justify-center items-center mb-5">
-                        <Avatar
-                            sx={{ width: 80, height: 80 }}
-                            alt={`${userReducer.username} avatar`}
-                            src={(userReducer && userReducer.picture) || (userReducer.auth0 && userReducer.auth0.picture) || ""}
-                        />
-                    </div>
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => setProfilePhotoSettings(true)}>
                             <ListItemIcon>
                                 <AddAPhotoIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Photo URL" />
+                            <ListItemText primary={<ListItemTitle title={"Photo URL"} />} />
                             <ListItemText
                                 sx={{ color: colors.grey }}
                                 style={{ width: "min-content" }}
@@ -287,7 +289,7 @@ const ProfilePage = () => {
                                 <ListItemIcon>
                                     <EmailIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Email" />
+                                <ListItemText primary={<ListItemTitle title={"Email"} />} />
                                 <ListItemText primary={userReducer && userReducer.auth0 && userReducer.auth0.email} />
                             </ListItemButton>
                         </ListItem>
@@ -296,7 +298,7 @@ const ProfilePage = () => {
                                 <ListItemIcon>
                                     <AccountCircleIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Username" />
+                                <ListItemText primary={<ListItemTitle title={"Username"} />} />
                                 <ListItemText sx={{ color: colors.grey }} primary={userReducer && userReducer.username} />
                             </ListItemButton>
                         </ListItem>
@@ -305,7 +307,7 @@ const ProfilePage = () => {
                                 <ListItemIcon>
                                     <PermIdentityIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Gender" />
+                                <ListItemText primary={<ListItemTitle title={"Gender"} />} />
                                 <ListItemText sx={{ color: colors.grey }} primary={(() => {
                                     switch (userReducer && userReducer.gender) {
                                         case gender.Male:
@@ -327,7 +329,7 @@ const ProfilePage = () => {
                                 <ListItemIcon>
                                     <FavoriteIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Looking For" />
+                                <ListItemText primary={<ListItemTitle title={"Looking for"} />} />
                                 <ListItemText sx={{ color: colors.grey }} primary={(() => {
                                     switch (userReducer && userReducer.showMe) {
                                         case gender.Male:
@@ -371,7 +373,7 @@ const ProfilePage = () => {
                 <ShareReveal />
             </div>
             {/* Compensate for bottom tab */}
-            <div className="h-20"></div>
+            <div className="h-[100px]"></div>
         </div >
     );
 };

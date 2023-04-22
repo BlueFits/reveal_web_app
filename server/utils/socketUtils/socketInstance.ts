@@ -32,7 +32,7 @@ export default class SocketInit {
                 socket.removeAllListeners(socketEmitters.SEND_ID_CHAT);
                 socket.removeAllListeners(socketEmitters.SEND_MSG_CHAT);
                 socket.removeAllListeners(socketEmitters.CHAT_LEAVE);
-
+                socket.removeAllListeners(socketEmitters.RECEIVE_MSG_RESPONSE);
 
                 let isRoomFull = io.sockets.adapter.rooms.get(data.messageRoomID) && io.sockets.adapter.rooms.get(data.messageRoomID).size === 2
                 if (isRoomFull) throw new Error("More than 2 people in room")
@@ -48,7 +48,7 @@ export default class SocketInit {
 
                 const sendMsgHandler = ({ message, otherSocketID }: ISendMsgChat) => {
                     // console.log("listened to", socketEmitters.SEND_MSG_CHAT);
-                    io.to(otherSocketID).emit(socketEmitters.RECEIVE_MSG_CHAT, message);
+                    io.to(otherSocketID).emit(socketEmitters.RECEIVE_MSG_CHAT, { message, other: socket.id });
                 };
 
                 const chatLeaveHandler = (otherSocketID: string) => {
@@ -57,9 +57,16 @@ export default class SocketInit {
                     io.to(otherSocketID).emit(socketEmitters.CHAT_DISCONNECT);
                 };
 
+                const receiveMsgResponseHandler = ({ otherSocketID, message }: { otherSocketID: string, message: string }) => {
+                    //Also send the exact message
+                    io.to(otherSocketID).emit(socketEmitters.RECEIVE_MSG_RESPONSE, message);
+                }
+
                 socket.on(socketEmitters.SEND_ID_CHAT, sendIDHandler)
 
                 socket.on(socketEmitters.SEND_MSG_CHAT, sendMsgHandler);
+
+                socket.on(socketEmitters.RECEIVE_MSG_RESPONSE, receiveMsgResponseHandler);
 
                 socket.on(socketEmitters.CHAT_LEAVE, chatLeaveHandler)
 

@@ -9,6 +9,7 @@ import Loading from "../../../../../components/Loading/Loading";
 import { useDispatch } from "react-redux";
 import { sendMessage, pushMsg } from "../../../../../services/modules/Messages/messagesSlice";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BubbleContainer from "./BubbleContainer";
 
 interface IDrawerMenu {
     open: boolean;
@@ -28,6 +29,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
         message: null,
         sender: null,
     });
+    const [isUserConnected, setIsUserConnected] = useState(false);
     const messagesEndRef = useRef(null)
 
     const scrollToBottom = ({ instant = false }: { instant?: boolean; } = {}) => {
@@ -50,6 +52,7 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
     useEffect(() => {
         if (open) {
             socket.on(socketEmitters.USER_CONNECTED_ROOM, (otherSocketID: string) => {
+                setIsUserConnected(true);
                 setOtherSocketID(otherSocketID);
                 const data: ISendIDChat = {
                     userSocket: user.socketID,
@@ -60,11 +63,13 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             socket.on(socketEmitters.RECEIVE_ID_CHAT, (otherSocketID: string) => {
                 setOtherSocketID(otherSocketID);
             });
-            socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: IMessageSingle) => {
-                setReceiveMsg(data);
+            socket.on(socketEmitters.RECEIVE_MSG_CHAT, (data: { message: IMessageSingle, other: string }) => {
+                setReceiveMsg(data.message);
+                socket.emit(socketEmitters.RECEIVE_MSG_RESPONSE, { otherSocketID: data.other, message: data.message.message });
             });
             socket.on(socketEmitters.CHAT_DISCONNECT, () => {
                 console.log("Other user disonnected");
+                setIsUserConnected(false);
             });
         }
     }, [open]);
@@ -82,6 +87,10 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
 
             if (msg === "") return;
 
+
+            dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg })).payload;
+
+            //Puts message for me
             const data: ISendMsgChat = {
                 message: {
                     sender: user._id,
@@ -90,16 +99,15 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
                 otherSocketID,
             };
 
+            if (isUserConnected) data.message.isSending = true;
+
             //Show users responsive message
+            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
             pushToMsg(data.message);
             setMsg("");
-
-            //and then save to database and emit
-
-            const response = (await dispatch(sendMessage({ messageID: messageInfo._id, userID: user._id, msg }))).payload;
-
-
-            socket.emit(socketEmitters.SEND_MSG_CHAT, data);
+            if (!isUserConnected) scrollToBottom({ instant: true });
+            //Emits message for other user
+            //and then save to server and emit
         } catch (err) {
             throw err;
         }
@@ -110,22 +118,6 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
         socket.emit(socketEmitters.CHAT_LEAVE, otherSocketID);
         socket.removeAllListeners();
         onClose();
-    };
-
-    const BubbleContainer = ({ msg, orientation = "left" }: { msg: string; orientation: "left" | "right"; }) => {
-        const classType = orientation === "left" ?
-            "mt-4 break-words bg-gray-200 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-br-lg ax-w-sm sm:max-w-lg lg:max-w-xl" :
-            "mt-4 break-words bg-sky-500 w-fit py-2 px-2 rounded-tl-lg rounded-tr-lg rounded-bl-lg max-w-sm sm:max-w-lg lg:max-w-xl";
-
-        return (
-            <div className={orientation === "right" ? "flex justify-end" : ""}>
-                <div className={classType}>
-                    <Typography variant="body1" color={orientation === "right" ? "#fff" : "inherit"}>
-                        {msg}
-                    </Typography>
-                </div>
-            </div>
-        )
     };
 
     return (
@@ -157,12 +149,13 @@ const DrawerMessages: React.FC<IDrawerMenu> = ({ open, onClose, user, OtherUser,
             }
 
             <div className="h-full px-3 pb-5 overflow-y-auto">
-                {messageInfo && messageInfo.messages.map((msg, index) => {
+                {messageInfo && messageInfo.messages.map((msg: IMessageSingle, index) => {
                     return (msg.sender as string) === user._id ?
                         <BubbleContainer
                             key={`keyForCOntainer${index}`}
                             msg={msg.message}
                             orientation="right"
+                            isSendingProp={isUserConnected && msg.isSending || false}
                         /> :
                         <BubbleContainer
                             key={`keyForCOntainer${index}`}

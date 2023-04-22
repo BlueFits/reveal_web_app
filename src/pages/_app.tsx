@@ -9,7 +9,6 @@ import { serverURL } from "../../config/Server";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import GoogleAnalytics from "../components/GoogleAnalytics/GoogleAnalytics";
-import FeedbackComponent from "../components/FeedbackComponent/FeedbackComponent";
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -102,7 +101,6 @@ function MyApp({ Component, pageProps }) {
           <Provider store={store}>
             <ThemeProvider theme={theme}>
               <GoogleAnalytics />
-              {/* <FeedbackComponent /> */}
               <Component {...pageProps} />
             </ThemeProvider>
           </Provider>
